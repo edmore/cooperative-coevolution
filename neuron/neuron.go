@@ -20,6 +20,7 @@ func NewNeuron(size int) *Neuron {
 	return n
 }
 
+// Create a new set of random weights
 func (n *Neuron) Create() {
 	for i := 0; i < len(n.weight); i++ {
 		n.weight[i] = (rand.Float64() * 12.0) - 6.0
