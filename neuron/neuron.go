@@ -4,6 +4,8 @@ Package neuron implements an Artificial Neural Network neuron.
 
 package neuron
 
+import "math/rand"
+
 type Neuron struct {
 	weight   []float64
 	lesioned bool
@@ -19,4 +21,7 @@ func NewNeuron(size int) *Neuron {
 }
 
 func (n *Neuron) Create() {
+	for i := 0; i < len(n.weight); i++ {
+		n.weight[i] = (rand.Float64() * 12.0) - 6.0
+	}
 }
