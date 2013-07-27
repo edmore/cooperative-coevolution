@@ -1,5 +1,5 @@
 /*
-Package neuron implements an artificial network neuron.
+Package neuron implements an Artificial Neural Network neuron.
 */
 
 package neuron
