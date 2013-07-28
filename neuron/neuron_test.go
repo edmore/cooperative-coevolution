@@ -32,5 +32,4 @@ func TestPerturb(t *testing.T) {
 
 	n.Perturb()
 	fmt.Println(n)
-
 }
