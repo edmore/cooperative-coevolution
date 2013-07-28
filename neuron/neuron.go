@@ -11,13 +11,24 @@ type Neuron struct {
 	lesioned bool
 	trials   int
 	fitness  float64
+	tag      bool
+	parent1  int
+	parent2  int
+	name     string
+	id       int
 }
+
+var counter int = 0
 
 // Neuron constructor
 func NewNeuron(size int) *Neuron {
-	var n *Neuron = new(Neuron)
-	n.weight = make([]float64, size)
-	return n
+	counter++
+	return &Neuron{
+		id:      counter,
+		weight:  make([]float64, size),
+		name:    "basic neuron",
+		parent1: -1,
+		parent2: -1}
 }
 
 // Create a new set of random weights
