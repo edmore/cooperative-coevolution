@@ -29,7 +29,13 @@ func TestPerturb(t *testing.T) {
 	n := NewNeuron(5)
 	n.Create()
 	fmt.Println(n)
+	old_weight := n.weight[1]
 
 	n.Perturb()
 	fmt.Println(n)
+	new_weight := n.weight[1]
+
+	if old_weight == new_weight {
+		t.Errorf("The weights should be perturbed")
+	}
 }
