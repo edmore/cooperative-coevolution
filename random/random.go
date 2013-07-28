@@ -1,5 +1,23 @@
 package random
 
+import (
+	"math"
+	"math/rand"
+)
+
+// Generate a random number form a cauchy distribution centered on zero.
+
 func Cauchy(wtrange float64) float64 {
-	return wtrange
+	u, Cauchy_cut := 0.5, 10.0
+
+	for u == 0.5 {
+		u = rand.Float64()
+	}
+
+	u = wtrange * math.Tan(u*math.Pi)
+	if math.Abs(u) > Cauchy_cut {
+		u = Cauchy(wtrange)
+	}
+
+	return u
 }

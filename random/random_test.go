@@ -2,5 +2,5 @@ package random
 
 import "testing"
 
-func TestCachy(t *testing.T) {
+func TestCauchy(t *testing.T) {
 }
