@@ -6,7 +6,6 @@ import (
 )
 
 // Generate a random number form a cauchy distribution centered on zero.
-
 func Cauchy(wtrange float64) float64 {
 	u, Cauchy_cut := 0.5, 10.0
 
@@ -18,6 +17,5 @@ func Cauchy(wtrange float64) float64 {
 	if math.Abs(u) > Cauchy_cut {
 		u = Cauchy(wtrange)
 	}
-
 	return u
 }
