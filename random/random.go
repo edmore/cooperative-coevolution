@@ -15,7 +15,7 @@ func Cauchy(wtrange float64) float64 {
 
 	u = wtrange * math.Tan(u*math.Pi)
 	if math.Abs(u) > Cauchy_cut {
-		u = Cauchy(wtrange)
+		return Cauchy(wtrange)
 	}
 	return u
 }
