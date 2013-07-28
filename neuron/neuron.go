@@ -5,8 +5,8 @@ Package neuron implements an Artificial Neural Network neuron.
 package neuron
 
 import (
-	"math/rand"
 	"github.com/edmore/esp/random"
+	"math/rand"
 )
 
 type Neuron struct {
