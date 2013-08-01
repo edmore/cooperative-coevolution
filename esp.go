@@ -3,26 +3,41 @@ package main
 import (
 	"fmt"
 	"github.com/edmore/esp/population"
-	"sync"
 	"time"
 )
 
-func main() {
-	var pops [10]*population.Population
-	var wg sync.WaitGroup
+func initialize(h int, n int) []*population.Population {
+	var pops []*population.Population // population pool
+	ch := make(chan *population.Population)
 
-	for i := 0; i < 10; i++ {
-		go func(i int) {
-			wg.Add(1)
-			p := population.NewPopulation(1000)
+	for i := 0; i < h; i++ {
+		go func() {
+			fmt.Println("Creating subpopulation ...")
+			p := population.NewPopulation(n)
 			p.Create()
-			pops[i] = p
-			wg.Done()
-		}(i)
+			ch <- p
+		}()
 	}
-	wg.Wait()
-	// do something else while you wait ...
-	time.Sleep(15)
-	// after some time pops is available for use
-	fmt.Println(pops)
+
+	for {
+		select {
+		case pop := <-ch:
+			fmt.Println("Subpopulation initialized.")
+			pops = append(pops, pop)
+			if len(pops) == h {
+				return pops
+			}
+		case <-time.After(50 * time.Millisecond):
+			fmt.Printf(".")
+		}
+	}
+	return pops
+}
+
+func main() {
+	var h int = 50   // number of hidden units / subpopulations
+	var n int = 1000 // number of neuron chromosomes per subpopulation
+
+	subpops := initialize(h, n)
+	fmt.Println(subpops)
 }
