@@ -35,8 +35,13 @@ func initialize(h int, n int) []*population.Population {
 }
 
 func main() {
-	var h int = 50   // number of hidden units / subpopulations
-	var n int = 1000 // number of neuron chromosomes per subpopulation
+	var h int // number of hidden units / subpopulations
+	var n int // number of neuron chromosomes per subpopulation
+
+	fmt.Printf("Please enter the number of hidden units : ")
+	fmt.Scanf("%d", &h)
+	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
+	fmt.Scanf("%d", &n)
 
 	subpops := initialize(h, n)
 	fmt.Println(subpops)
