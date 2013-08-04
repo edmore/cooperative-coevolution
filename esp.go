@@ -22,8 +22,8 @@ func initialize(h int, n int) []*population.Population {
 	for {
 		select {
 		case pop := <-ch:
-			fmt.Println("Subpopulation initialized.")
 			pops = append(pops, pop)
+			fmt.Println("Subpopulation initialized.")
 			if len(pops) == h {
 				return pops
 			}
