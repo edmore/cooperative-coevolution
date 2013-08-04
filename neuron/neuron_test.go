@@ -9,8 +9,8 @@ func TestNewNeuron(t *testing.T) {
 	const in, out = 5, 5
 	n := NewNeuron(in)
 	fmt.Println(n)
-	if x := len(n.weight); x != out {
-		t.Errorf("len(NewNeuron(%v).weight) = %v, we want %v", in, x, out)
+	if x := len(n.Weight); x != out {
+		t.Errorf("len(NewNeuron(%v).Weight) = %v, we want %v", in, x, out)
 	}
 }
 
@@ -18,7 +18,7 @@ func TestCreate(t *testing.T) {
 	n := NewNeuron(5)
 	n.Create()
 	fmt.Println(n)
-	for _, w := range n.weight {
+	for _, w := range n.Weight {
 		if w == 0 {
 			t.Errorf("This value should not be zero")
 		}
@@ -29,13 +29,13 @@ func TestPerturb(t *testing.T) {
 	n := NewNeuron(5)
 	n.Create()
 	fmt.Println(n)
-	old_weight := n.weight[1]
+	old_Weight := n.Weight[1]
 
 	n.Perturb()
 	fmt.Println(n)
-	new_weight := n.weight[1]
+	new_Weight := n.Weight[1]
 
-	if old_weight == new_weight {
-		t.Errorf("The weights should be perturbed")
+	if old_Weight == new_Weight {
+		t.Errorf("The Weights should be perturbed")
 	}
 }

@@ -9,11 +9,11 @@ import (
 )
 
 type Population struct {
-	id          int
-	neurons     []*neuron.Neuron
-	individuals int
-	evolvable   bool
-	numbreed    int
+	Id          int
+	Neurons     []*neuron.Neuron
+	Individuals int
+	Evolvable   bool
+	Numbreed    int
 }
 
 var counter int = 0
@@ -22,19 +22,19 @@ var counter int = 0
 func NewPopulation(size int) *Population {
 	counter++
 	return &Population{
-		id:          counter,
-		individuals: size,
-		evolvable:   true,
-		numbreed:    size / 4,
-		neurons:     make([]*neuron.Neuron, size)}
+		Id:          counter,
+		Individuals: size,
+		Evolvable:   true,
+		Numbreed:    size / 4,
+		Neurons:     make([]*neuron.Neuron, size)}
 }
 
 // Create the neurons, put them in the (sub)population and initialize their weights
 func (p *Population) Create() {
-	if p.evolvable {
-		for i := 0; i < p.individuals; i++ {
-			p.neurons[i] = neuron.NewNeuron(p.individuals)
-			p.neurons[i].Create()
+	if p.Evolvable {
+		for i := 0; i < p.Individuals; i++ {
+			p.Neurons[i] = neuron.NewNeuron(p.Individuals)
+			p.Neurons[i].Create()
 		}
 	}
 }
