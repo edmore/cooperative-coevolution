@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/edmore/esp/population"
 	"time"
+        "runtime"
 )
 
 func initialize(h int, n int) []*population.Population {
@@ -35,6 +36,10 @@ func initialize(h int, n int) []*population.Population {
 }
 
 func main() {
+	nCPU := runtime.NumCPU()
+	runtime.GOMAXPROCS(nCPU)
+	fmt.Println("Number of CPUs: ", nCPU)
+
 	var h int // number of hidden units / subpopulations
 	var n int // number of neuron chromosomes per subpopulation
 
