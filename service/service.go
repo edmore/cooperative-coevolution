@@ -11,7 +11,7 @@ func (t *Arith) Mul(args *Args, reply *int) error {
 	return nil
 }
 
-type Ping string
+type Ping struct{}
 
 func (t *Ping) Pong(arg string, reply *string) error {
 	*reply = arg + " pong\n"

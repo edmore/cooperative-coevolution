@@ -1,10 +1,12 @@
 package main
 
-import "net"
-import "net/http"
-import "net/rpc"
-import "log"
-import "github.com/edmore/esp/service"
+import (
+	"github.com/edmore/esp/service"
+	"log"
+	"net"
+	"net/http"
+	"net/rpc"
+)
 
 func main() {
 	arith := new(service.Arith)
