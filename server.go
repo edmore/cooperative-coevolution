@@ -15,7 +15,7 @@ func main() {
 	rpc.HandleHTTP()
 
 	l, e := net.Listen("tcp", ":1234")
-	log.Println("ESP Server listening on", l.Addr())
+	log.Println("Server listening on", l.Addr())
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
