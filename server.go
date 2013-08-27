@@ -8,7 +8,10 @@ import "github.com/edmore/esp/service"
 
 func main() {
 	arith := new(service.Arith)
+	ping := new(service.Ping)
+
 	rpc.Register(arith)
+	rpc.Register(ping)
 	rpc.HandleHTTP()
 
 	l, e := net.Listen("tcp", ":1234")
