@@ -21,7 +21,7 @@ func main() {
 	}
 	var pong, ping string
 
-	for ping != "exit" {
+
 		// Arith Service
 		args := &service.Args{7, 8}
 		var reply int
@@ -31,8 +31,8 @@ func main() {
 		}
 		fmt.Printf("Arith: %d*%d=%d", args.A, args.B, reply)
 
-		// Ping Service
-
+	// Ping Service
+	for ping != "exit" {
 		fmt.Printf("\nPlease enter your ping string :\n")
 		fmt.Scanf("%s", &ping)
 
