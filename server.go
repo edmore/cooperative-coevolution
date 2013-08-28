@@ -9,11 +9,14 @@ import (
 )
 
 func main() {
+	log.Println("Server starting up ...")
 	arith := new(service.Arith)
 	ping := new(service.Ping)
 
 	rpc.Register(arith)
+	log.Println("Arith Service Registered.")
 	rpc.Register(ping)
+	log.Println("Ping Service Registered.")
 	rpc.HandleHTTP()
 
 	l, e := net.Listen("tcp", ":1234")
