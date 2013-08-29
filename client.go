@@ -6,16 +6,22 @@ import (
 	"log"
 	"net/rpc"
         "os"
+        "flag"
+)
+
+var (
+	ip = flag.String("ip", "", "server IP address; must be set.")
+	port = flag.String("port", "", "server port; must be set.")
 )
 
 func main() {
-	if len(os.Args) != 2 {
-		fmt.Println("Usage: ", os.Args[0], "[Server IP Address]")
-		os.Exit(1)
+	flag.Parse()
+		if *ip == "" || *port == "" {
+		flag.Usage()
+		os.Exit(2)
 	}
-	ipAddr := os.Args[1]
 
-	client, err := rpc.DialHTTP("tcp", ipAddr)
+	client, err := rpc.DialHTTP("tcp", *ip + ":" + *port)
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}
