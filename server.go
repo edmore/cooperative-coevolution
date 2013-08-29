@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/edmore/esp/service"
 	"log"
 	"net"
@@ -31,6 +32,9 @@ func main() {
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Server running ...")
+	})
 	go http.Serve(l, nil)
 	select {}
 }
