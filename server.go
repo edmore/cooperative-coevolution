@@ -24,6 +24,6 @@ func main() {
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
-
-	http.Serve(l, nil)
+	go http.Serve(l, nil)
+	select {}
 }
