@@ -1,16 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/edmore/esp/service"
 	"log"
 	"net/rpc"
-        "os"
-        "flag"
+	"os"
 )
 
 var (
-	ip = flag.String("ip", "", "server IP address; must be set.")
+	ip   = flag.String("ip", "", "server IP address; must be set.")
 	port = flag.String("port", "", "server port; must be set.")
 )
 
@@ -21,7 +21,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	client, err := rpc.DialHTTP("tcp", *ip + ":" + *port)
+	client, err := rpc.DialHTTP("tcp", *ip+":"+*port)
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}

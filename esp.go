@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/edmore/esp/population"
+	"runtime"
 	"time"
-        "runtime"
 )
 
 func initialize(h int, n int) []*population.Population {
@@ -37,7 +37,7 @@ func initialize(h int, n int) []*population.Population {
 
 func main() {
 	nCPU := runtime.NumCPU()
-        cCPU := 2
+	cCPU := 2
 	runtime.GOMAXPROCS(cCPU)
 	fmt.Println("Number of CPUs available: ", nCPU)
 	fmt.Println("Number of CPUs currently in use: ", cCPU)

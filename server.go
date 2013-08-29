@@ -1,16 +1,16 @@
 package main
 
 import (
+	"flag"
 	"github.com/edmore/esp/service"
 	"log"
 	"net"
 	"net/http"
 	"net/rpc"
-	"flag"
 	"os"
 )
 
-var	port = flag.String("port", "", "server listening port; must be set.")
+var port = flag.String("port", "", "server listening port; must be set.")
 
 func main() {
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	log.Println("Ping Service Registered.")
 	rpc.HandleHTTP()
 
-	l, e := net.Listen("tcp", ":" + *port)
+	l, e := net.Listen("tcp", ":"+*port)
 	log.Println("Server listening on", l.Addr())
 	if e != nil {
 		log.Fatal("listen error:", e)
