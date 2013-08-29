@@ -10,12 +10,9 @@ import (
 
 func main() {
 	log.Println("Server starting up ...")
-	arith := new(service.Arith)
-	ping := new(service.Ping)
-
-	rpc.Register(arith)
+	rpc.Register(new(service.Arith))
 	log.Println("Arith Service Registered.")
-	rpc.Register(ping)
+	rpc.Register(new(service.Ping))
 	log.Println("Ping Service Registered.")
 	rpc.HandleHTTP()
 
