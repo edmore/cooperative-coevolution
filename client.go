@@ -16,7 +16,7 @@ var (
 
 func main() {
 	flag.Parse()
-		if *ip == "" || *port == "" {
+	if *ip == "" || *port == "" {
 		flag.Usage()
 		os.Exit(2)
 	}
