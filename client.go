@@ -11,12 +11,12 @@ import (
 
 var (
 	ip   = flag.String("ip", "", "server IP address; must be set.")
-	port = flag.String("port", "", "server port; must be set.")
+	port = flag.String("port", "9999", "default server port; can be reset.")
 )
 
 func main() {
 	flag.Parse()
-	if *ip == "" || *port == "" {
+	if *ip == "" {
 		flag.Usage()
 		os.Exit(2)
 	}

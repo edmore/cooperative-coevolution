@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var port = flag.String("port", "", "server listening port; must be set.")
+var port = flag.String("port", "9999", "default server listening port; can be reset.")
 
 func main() {
 	flag.Parse()
