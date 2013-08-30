@@ -27,10 +27,10 @@ func main() {
 	rpc.HandleHTTP()
 
 	l, e := net.Listen("tcp", ":"+*port)
-	log.Println("Server listening on", l.Addr())
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
+	log.Println("Server listening on", l.Addr())
 	go http.Serve(l, nil)
 	select {}
 }
