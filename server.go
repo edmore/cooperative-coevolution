@@ -32,9 +32,6 @@ func main() {
 	if e != nil {
 		log.Fatal("listen error:", e)
 	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Server running ...")
-	})
 	go http.Serve(l, nil)
 	select {}
 }
