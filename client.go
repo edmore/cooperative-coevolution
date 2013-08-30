@@ -11,7 +11,7 @@ import (
 
 var (
 	ip   = flag.String("ip", "", "server IP address; must be set.")
-	port = flag.String("port", "9999", "default server port; can be reset.")
+	port = flag.Int("port", 9999, "default server port; can be reset.")
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	client, err := rpc.DialHTTP("tcp", *ip+":"+*port)
+	client, err := rpc.DialHTTP("tcp", fmt.Sprintf(*ip+":%d", *port))
 	if err != nil {
 		log.Fatal("dialing:", err)
 	}
