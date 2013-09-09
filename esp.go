@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
 	"runtime"
 	"time"
@@ -35,6 +36,9 @@ func initialize(h int, n int) []*population.Population {
 	return pops
 }
 
+func evaluate(network *network.Network) {
+}
+
 func main() {
 	nCPU := runtime.NumCPU()
 	cCPU := 2
@@ -50,6 +54,14 @@ func main() {
 	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
 	fmt.Scanf("%d", &n)
 
+	// Initialization
 	subpops := initialize(h, n)
 	fmt.Println(subpops)
+
+	// Evaluation
+	network := network.NewNetwork(3, h, 1)
+	network.Create(subpops)
+	fmt.Println("First Hidden Unit Id:", network.HiddenUnits[0].Id)
+	fmt.Println("Second Hidden Unit Id:", network.HiddenUnits[1].Id)
+	evaluate(network)
 }

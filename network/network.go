@@ -6,6 +6,7 @@ package network
 
 import (
 	"github.com/edmore/esp/neuron"
+	"github.com/edmore/esp/population"
 )
 
 type Network struct {
@@ -37,4 +38,10 @@ func NewNetwork(in int, hid int, out int) *Network {
 		Fitness:     0.0,
 		Parent1:     -1,
 		Parent2:     -1}
+}
+
+func (n *Network) Create(pops []*population.Population) {
+	for i := 0; i < len(pops); i++ {
+		n.HiddenUnits[i] = pops[i].SelectNeuron()
+	}
 }

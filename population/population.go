@@ -6,6 +6,7 @@ package population
 
 import (
 	"github.com/edmore/esp/neuron"
+	"math/rand"
 )
 
 type Population struct {
@@ -37,4 +38,10 @@ func (p *Population) Create() {
 			p.Neurons[i].Create()
 		}
 	}
+}
+
+// Select a neuron at random
+func (p *Population) SelectNeuron() *neuron.Neuron {
+	index := rand.Int() % p.Individuals
+	return p.Neurons[index]
 }
