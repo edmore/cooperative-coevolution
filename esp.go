@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
+	"reflect"
 	"runtime"
 	"time"
 )
@@ -36,7 +37,8 @@ func initialize(h int, n int) []*population.Population {
 	return pops
 }
 
-func evaluate(network *network.Network) {
+func evaluate(n network.Network) {
+	fmt.Println(reflect.TypeOf(n))
 }
 
 func main() {
@@ -59,9 +61,9 @@ func main() {
 	fmt.Println(subpops)
 
 	// Evaluation
-	network := network.NewNetwork(3, h, 1)
-	network.Create(subpops)
-	fmt.Println("First Hidden Unit Id:", network.HiddenUnits[0].Id)
-	fmt.Println("Second Hidden Unit Id:", network.HiddenUnits[1].Id)
-	evaluate(network)
+	feedForward := network.NewFeedForward(3, h, 1)
+	feedForward.Create(subpops)
+	fmt.Println("First Hidden Unit Id:", feedForward.HiddenUnits[0].Id)
+	fmt.Println("Second Hidden Unit Id:", feedForward.HiddenUnits[1].Id)
+	evaluate(feedForward)
 }

@@ -9,7 +9,11 @@ import (
 	"github.com/edmore/esp/population"
 )
 
-type Network struct {
+type Network interface {
+	activate()
+}
+
+type FeedForward struct {
 	Activation  []float64
 	HiddenUnits []*neuron.Neuron
 	NumInputs   int
@@ -22,12 +26,15 @@ type Network struct {
 	Id          int
 }
 
+func (f *FeedForward) activate() {
+}
+
 var counter int = 0
 
-// Network constructor
-func NewNetwork(in int, hid int, out int) *Network {
+// FeedForward Network constructor
+func NewFeedForward(in int, hid int, out int) *FeedForward {
 	counter++
-	return &Network{
+	return &FeedForward{
 		Id:          counter,
 		Activation:  make([]float64, hid),
 		HiddenUnits: make([]*neuron.Neuron, hid),
@@ -41,8 +48,8 @@ func NewNetwork(in int, hid int, out int) *Network {
 }
 
 // Create the hidden units by randomly selecting them
-func (n *Network) Create(pops []*population.Population) {
+func (f *FeedForward) Create(pops []*population.Population) {
 	for i := 0; i < len(pops); i++ {
-		n.HiddenUnits[i] = pops[i].SelectNeuron()
+		f.HiddenUnits[i] = pops[i].SelectNeuron()
 	}
 }
