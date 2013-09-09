@@ -26,9 +26,6 @@ type FeedForward struct {
 	Id          int
 }
 
-func (f *FeedForward) activate() {
-}
-
 var counter int = 0
 
 // FeedForward Network constructor
@@ -45,6 +42,10 @@ func NewFeedForward(in int, hid int, out int) *FeedForward {
 		Fitness:     0.0,
 		Parent1:     -1,
 		Parent2:     -1}
+}
+
+// Activate
+func (f *FeedForward) activate() {
 }
 
 // Create the hidden units by randomly selecting them
