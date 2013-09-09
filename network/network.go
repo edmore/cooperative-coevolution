@@ -40,6 +40,7 @@ func NewNetwork(in int, hid int, out int) *Network {
 		Parent2:     -1}
 }
 
+// Create the hidden units by randomly selecting them
 func (n *Network) Create(pops []*population.Population) {
 	for i := 0; i < len(pops); i++ {
 		n.HiddenUnits[i] = pops[i].SelectNeuron()
