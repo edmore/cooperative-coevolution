@@ -50,18 +50,25 @@ func main() {
 
 	var h int // number of hidden units / subpopulations
 	var n int // number of neuron chromosomes per subpopulation
+	var i int // number of inputs
+	var o int // number of outputs
 
 	fmt.Printf("Please enter the number of hidden units : ")
 	fmt.Scanf("%d", &h)
 	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
 	fmt.Scanf("%d", &n)
+	fmt.Printf("Please enter the number of inputs : ")
+	fmt.Scanf("%d", &i)
+	fmt.Printf("Please enter the number of outputs : ")
+	fmt.Scanf("%d", &o)
+
+	feedForward := network.NewFeedForward(i, h, o, false)
 
 	// Initialization
-	subpops := initialize(h, n)
-	fmt.Println(subpops)
+	subpops := initialize(h, feedForward.GeneSize)
+	fmt.Println(subpops[0].Neurons[0])
 
 	// Evaluation
-	feedForward := network.NewFeedForward(3, h, 1)
 	feedForward.Create(subpops)
 	fmt.Println("First Hidden Unit Id:", feedForward.HiddenUnits[0].Id)
 	fmt.Println("Second Hidden Unit Id:", feedForward.HiddenUnits[1].Id)

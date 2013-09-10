@@ -10,7 +10,7 @@ import (
 )
 
 type Network interface {
-	activate()
+	Activate()
 }
 
 type FeedForward struct {
@@ -20,32 +20,38 @@ type FeedForward struct {
 	NumOutputs  int
 	Bias        float64
 	Trials      int
-	Fitness     int
+	Fitness     float64
 	Parent1     int
 	Parent2     int
 	Id          int
+	Name        string
+	GeneSize    int
 }
 
 var counter int = 0
 
 // FeedForward Network constructor
-func NewFeedForward(in int, hid int, out int) *FeedForward {
+func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 	counter++
+	genesize := in + out
+	if bias == true {
+		genesize++
+	}
+
 	return &FeedForward{
 		Id:          counter,
 		Activation:  make([]float64, hid),
 		HiddenUnits: make([]*neuron.Neuron, hid),
 		NumInputs:   in,
 		NumOutputs:  out,
-		Bias:        0.0,
-		Trials:      0,
-		Fitness:     0.0,
 		Parent1:     -1,
-		Parent2:     -1}
+		Parent2:     -1,
+		Name:        "Feed Forward",
+		GeneSize:    genesize}
 }
 
 // Activate
-func (f *FeedForward) activate() {
+func (f *FeedForward) Activate() {
 }
 
 // Create the hidden units by randomly selecting them
