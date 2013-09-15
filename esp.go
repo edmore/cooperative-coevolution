@@ -9,14 +9,14 @@ import (
 	"time"
 )
 
-func initialize(h int, n int) []*population.Population {
+func initialize(h int, n int, s int) []*population.Population {
 	var pops []*population.Population // population pool
 	ch := make(chan *population.Population)
 
 	for i := 0; i < h; i++ {
 		go func() {
 			fmt.Println("Creating subpopulation ...")
-			p := population.NewPopulation(n)
+			p := population.NewPopulation(n, s)
 			p.Create()
 			ch <- p
 		}()
@@ -65,7 +65,8 @@ func main() {
 	feedForward := network.NewFeedForward(i, h, o, false)
 
 	// Initialization
-	subpops := initialize(h, feedForward.GeneSize)
+	subpops := initialize(h, n, feedForward.GeneSize)
+	fmt.Println(subpops[0])
 	fmt.Println(subpops[0].Neurons[0])
 
 	// Evaluation

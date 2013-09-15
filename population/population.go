@@ -15,26 +15,28 @@ type Population struct {
 	Individuals int
 	Evolvable   bool
 	Numbreed    int
+	GeneSize    int
 }
 
 var counter int = 0
 
 // Population constructor
-func NewPopulation(size int) *Population {
+func NewPopulation(size int, genesize int) *Population {
 	counter++
 	return &Population{
 		Id:          counter,
 		Individuals: size,
 		Evolvable:   true,
 		Numbreed:    size / 4,
-		Neurons:     make([]*neuron.Neuron, size)}
+		Neurons:     make([]*neuron.Neuron, size),
+		GeneSize:    genesize}
 }
 
 // Create the neurons, put them in the (sub)population and initialize their weights
 func (p *Population) Create() {
 	if p.Evolvable {
 		for i := 0; i < p.Individuals; i++ {
-			p.Neurons[i] = neuron.NewNeuron(p.Individuals)
+			p.Neurons[i] = neuron.NewNeuron(p.GeneSize)
 			p.Neurons[i].Create()
 		}
 	}

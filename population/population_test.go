@@ -6,18 +6,18 @@ import (
 )
 
 func TestNewPopulation(t *testing.T) {
-	p := NewPopulation(10)
+	p := NewPopulation(10, 5)
 	fmt.Println(p)
 }
 
 func TestCreate(t *testing.T) {
-	p := NewPopulation(10)
+	p := NewPopulation(10, 5)
 	p.Create()
 	fmt.Println(p)
 }
 
 func TestSelectNeuron(t *testing.T) {
-	p := NewPopulation(10)
+	p := NewPopulation(10, 5)
 	p.Create()
 	fmt.Println(p)
 	fmt.Println(p.SelectNeuron())
