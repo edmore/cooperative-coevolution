@@ -2,7 +2,7 @@ package network
 
 import (
 	"fmt"
-	"population"
+	//	"github.com/edmore/esp/population"
 	"testing"
 )
 
