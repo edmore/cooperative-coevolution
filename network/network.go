@@ -14,6 +14,7 @@ type Network interface {
 }
 
 type FeedForward struct {
+	Id          int
 	Activation  []float64
 	HiddenUnits []*neuron.Neuron
 	NumInputs   int
@@ -23,7 +24,6 @@ type FeedForward struct {
 	Fitness     float64
 	Parent1     int
 	Parent2     int
-	Id          int
 	Name        string
 	GeneSize    int
 }
@@ -34,7 +34,7 @@ var counter int = 0
 func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 	counter++
 	genesize := in + out
-	if bias == true {
+	if bias {
 		genesize++
 	}
 
