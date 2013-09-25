@@ -62,7 +62,7 @@ func main() {
 	fmt.Printf("Please enter the number of outputs : ")
 	fmt.Scanf("%d", &o)
 
-	feedForward := network.NewFeedForward(i, h, o, false)
+	feedForward := network.NewFeedForward(i, h, o, 1)
 
 	// Initialization
 	subpops := initialize(h, n, feedForward.GeneSize)

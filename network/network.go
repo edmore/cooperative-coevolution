@@ -19,7 +19,7 @@ type FeedForward struct {
 	HiddenUnits []*neuron.Neuron
 	NumInputs   int
 	NumOutputs  int
-	Bias        float64
+	Bias        float32
 	Trials      int
 	Fitness     float64
 	Parent1     int
@@ -31,10 +31,10 @@ type FeedForward struct {
 var counter int = 0
 
 // FeedForward Network constructor
-func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
+func NewFeedForward(in int, hid int, out int, bias float32) *FeedForward {
 	counter++
 	genesize := in + out
-	if bias {
+	if bias != 0 {
 		genesize++
 	}
 
@@ -44,6 +44,7 @@ func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 		HiddenUnits: make([]*neuron.Neuron, hid),
 		NumInputs:   in,
 		NumOutputs:  out,
+		Bias:        bias,
 		Parent1:     -1,
 		Parent2:     -1,
 		Name:        "Feed Forward",
