@@ -18,7 +18,7 @@ var (
 type Cartpole struct {
 	Name       string
 	NumOfPoles int
-	Markov     boolean
+	Markov     bool
 	TrackSize  float64
 	MUp        float64 // Pole-hinge Friction Coefficient
 	MUc        float64 // Cart-track Friction Coefficient
@@ -33,7 +33,7 @@ type Cartpole struct {
 
 }
 
-func NewCartpole(markov boolean, numofpoles int) *Cartpole {
+func NewCartpole(markov bool, numofpoles int) *Cartpole {
 	return &Cartpole{
 		Name:       "Pole Balancing Task",
 		NumOfPoles: numofpoles,
