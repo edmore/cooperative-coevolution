@@ -20,8 +20,8 @@ type Cartpole struct {
 	NumOfPoles int
 	Markov     boolean
 	TrackSize  float64
-	MUP        float64
-	MUC        float64
+	MUp        float64 // Pole-hinge Friction Coefficient
+	MUc        float64 // Cart-track Friction Coefficient
 	Gravity    float64
 	MassCart   float64
 	MassPole1  float64
@@ -39,8 +39,8 @@ func NewCartpole(markov boolean, numofpoles int) *Cartpole {
 		NumOfPoles: numofpoles,
 		Markov:     markov,
 		TrackSize:  2.4,
-		MUP:        0.000002,
-		MUC:        0.0005,
+		MUp:        0.000002,
+		MUc:        0.0005,
 		Gravity:    -9.8,
 		MassCart:   1.0,
 		MassPole1:  0.1,
