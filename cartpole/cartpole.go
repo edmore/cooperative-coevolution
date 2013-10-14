@@ -29,7 +29,7 @@ type Cartpole struct {
 	Length1    float64 // actually half the pole's length
 	Length2    float64
 	ForceMag   float64
-	TAU        float64 //seconds between state updates
+	TAU        float64 //seconds between state updates (the time step)
 
 }
 
