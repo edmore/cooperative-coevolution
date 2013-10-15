@@ -22,12 +22,12 @@ var (
 	maxFitness       int     = 1000
 	poleInc          float64 = 0.05
 	massInc          float64 = 0.01
+	minInc           float64 = 0.001
+	gravity          float64 = 9.8
 )
 
 const (
-	RK4     bool    = true
-	Gravity float64 = 9.8
-	MinInc  float64 = 0.001
+	RK4 bool = true
 )
 
 type Cartpole struct {
