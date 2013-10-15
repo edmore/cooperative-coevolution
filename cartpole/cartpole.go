@@ -23,13 +23,10 @@ var (
 	massInc          float64 = 0.01
 	minInc           float64 = 0.001
 	gravity          float64 = 9.8
+	RK4              bool    = true
 	state                    = make([]float64, inputDimension-1)
 	input                    = make([]float64, inputDimension)
 	output                   = make([]float64, outputDimension)
-)
-
-const (
-	RK4 bool = true
 )
 
 type Cartpole struct {
