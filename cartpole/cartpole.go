@@ -16,7 +16,6 @@ var (
 	fiftyDegrees     float64 = 0.87266
 	inputDimension   int     = 7
 	outputDimension  int     = 1
-	state                    = make([]float64, inputDimension)
 	tau              float64 = 0.01 //seconds between state updates (the time step)
 	euler_tau        float64 = tau / 4
 	maxFitness       int     = 1000
@@ -24,6 +23,9 @@ var (
 	massInc          float64 = 0.01
 	minInc           float64 = 0.001
 	gravity          float64 = 9.8
+	state                    = make([]float64, inputDimension-1)
+	input                    = make([]float64, inputDimension)
+	output                   = make([]float64, outputDimension)
 )
 
 const (
