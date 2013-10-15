@@ -1,9 +1,9 @@
 /*
-Package cartpole implements the Pole balancing / Inverted Pendulum Task
-Current implementation - double pole balancing with full state information
+ Package environment implements the simulation environment(s)
+ Current implementation - Pole balancing / Inverted Pendulum Task (double pole balancing with full state information)
 */
 
-package cartpole
+package environment
 
 var (
 	bias             float32 = 0.5
@@ -41,7 +41,7 @@ type Cartpole struct {
 	MassPole2  float64
 	Length1    float64 // actually half the pole's length
 	Length2    float64
-	ForceMag   float64
+	ForceMag   float64 // force magnitude in Newtons
 }
 
 func NewCartpole(markov bool, numofpoles int) *Cartpole {
