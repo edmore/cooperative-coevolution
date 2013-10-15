@@ -1,5 +1,6 @@
 /*
 Package cartpole implements the Pole balancing / Inverted Pendulum Task
+Current implementation - double pole balancing with full state information
 */
 
 package cartpole
