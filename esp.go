@@ -48,10 +48,12 @@ func main() {
 	fmt.Println("Number of CPUs available: ", nCPU)
 	fmt.Println("Number of CPUs currently in use: ", cCPU)
 
-	var h int // number of hidden units / subpopulations
-	var n int // number of neuron chromosomes per subpopulation
-	var i int // number of inputs
-	var o int // number of outputs
+	var (
+		h int // number of hidden units / subpopulations
+		n int // number of neuron chromosomes per subpopulation
+		i int // number of inputs
+		o int // number of outputs
+	)
 
 	fmt.Printf("Please enter the number of hidden units : ")
 	fmt.Scanf("%d", &h)
