@@ -4,6 +4,14 @@
 
 package euler
 
+/*********************************
+
+dx - step size / change in x
+dy - change in y
+dydx - the differential equation
+
+**********************************/
+
 type Point struct {
 	X, Y float64
 }
