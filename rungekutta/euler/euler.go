@@ -4,8 +4,6 @@
 
 package euler
 
-import "fmt"
-
 type Point struct {
 	X, Y float64
 }
