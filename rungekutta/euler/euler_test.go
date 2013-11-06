@@ -14,7 +14,7 @@ func TestNewPoint(t *testing.T) {
 }
 
 func TestSolve(t *testing.T) {
-	eq := func(p *Point) float64 { return 2 * (p.X - 1) }
+	eq := func(x, y float64) float64 { return 2 * (x - 1) }
 	const x, y, dx, xFinal, yFinal = 1, 0, 0.5, 3, 3
 	initialPoint := NewPoint(x, y)
 	solution := initialPoint.Solve(dx, eq, xFinal)
