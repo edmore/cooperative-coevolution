@@ -17,8 +17,8 @@ func TestNewPoint(t *testing.T) {
 }
 
 func TestSolve(t *testing.T) {
-	eq := func(p *Point) float64 {
-		return -2.2067 * math.Pow(10, -12) * (math.Pow(p.Y, 4) - 81*math.Pow(10, 8))
+	eq := func(x, y float64) float64 {
+		return -2.2067 * math.Pow(10, -12) * (math.Pow(y, 4) - 81*math.Pow(10, 8))
 	}
 	const x, y, dx, xFinal, yFinal = 0, 1200, 240, 480, 594.912631110278
 	initialPoint := NewPoint(x, y)
