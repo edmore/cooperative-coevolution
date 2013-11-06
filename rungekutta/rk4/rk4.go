@@ -1,7 +1,7 @@
 package rk4
 
 /*
- Package rk4 implements the Runge-Kutta Fourth Order (Rk4) Method
+ Package rk4 implements the Runge-Kutta Fourth Order (RK4) Method
 */
 
 /*********************************
@@ -28,7 +28,7 @@ func step(dx float64, dydx Equation, p *Point) {
 	k2 := dydx(p.X+(0.5*dx), p.Y+(0.5*k1*dx))
 	k3 := dydx(p.X+(0.5*dx), p.Y+(0.5*k2*dx))
 	k4 := dydx(p.X+dx, p.Y+k3*dx)
-	// Update points
+	// Update
 	p.X += dx
 	p.Y = p.Y + (1.0/6.0)*(k1+2*k2+2*k3+k4)*dx
 }
