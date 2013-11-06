@@ -1,4 +1,4 @@
-package classic
+package rk4
 
 /*
  Package classic implements the Runge-Kutta Fourth Order (Rk4) Method

@@ -1,4 +1,4 @@
-package classic
+package rk4
 
 import (
 	"math"
