@@ -22,5 +22,4 @@ func TestSolve(t *testing.T) {
 	if solution != yFinal {
 		t.Errorf("value of yFinal should be %v, we got %v", yFinal, solution)
 	}
-
 }
