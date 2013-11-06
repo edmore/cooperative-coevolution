@@ -21,8 +21,8 @@ func TestSolve(t *testing.T) {
 		return -2.2067 * math.Pow(10, -12) * (math.Pow(p.Y, 4) - 81*math.Pow(10, 8))
 	}
 	const x, y, dx, xFinal, yFinal = 0, 1200, 240, 480, 594.912631110278
-	p := NewPoint(x, y)
-	solution := p.Solve(dx, eq, xFinal)
+	initialPoint := NewPoint(x, y)
+	solution := initialPoint.Solve(dx, eq, xFinal)
 
 	if solution != yFinal {
 		t.Errorf("value of yFinal should be %v, we got %v", yFinal, solution)
