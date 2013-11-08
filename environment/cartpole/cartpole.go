@@ -3,7 +3,7 @@
  Current implementation - Pole balancing / Inverted Pendulum Task (double pole balancing with full state information)
 */
 
-package environment
+package cartpole
 
 var (
 	bias             float32 = 0.5
