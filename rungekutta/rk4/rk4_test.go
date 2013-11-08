@@ -25,7 +25,7 @@ func TestSolve(t *testing.T) {
 	solution := initialPoint.Solve(dx, eq, xFinal)
 
 	if solution != yFinal {
-		t.Errorf("value of yFinal should be %v, we got %v", yFinal, solution)
+		t.Errorf("value of yFinal is %v, we got %v", yFinal, solution)
 	}
 
 }
