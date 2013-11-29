@@ -8,7 +8,7 @@ package cartpole
 import "math"
 
 var (
-	ForceMag float64 = 10.0 // Force magnitude - (+ / -) 10.0
+	ForceMag float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
 	Tau      float64 = 0.01 //seconds between state updates (the time step)
 )
 
@@ -41,6 +41,7 @@ type Cartpole struct {
 	Length2   float64 // actually half the pole's length
 }
 
+// Cartpole Environment constructor
 func NewCartpole() *Cartpole {
 	return &Cartpole{
 		Name:      "Double Pole Balancing Task",
@@ -56,6 +57,7 @@ func NewCartpole() *Cartpole {
 
 // Re-initialize the environment
 func (c *Cartpole) Reset() *State {
+	state := new(State)
 	state.X = 0.2
 	state.Theta1 = DegToRad
 	return state
@@ -69,6 +71,7 @@ func (c *Cartpole) PerformAction(action int) *State {
 
 // Runge-Kutta Step - approximate state variables at time dt
 func step(action int) *State {
+	dt := tau
 	if action == 0 {
 		F := ForceMag * -1
 	} else {
