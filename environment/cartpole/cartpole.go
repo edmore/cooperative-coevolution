@@ -5,7 +5,11 @@
 
 package cartpole
 
-import "math"
+import (
+	"fmt"
+	"github.com/edmore/esp/rungekutta/rk4"
+	"math"
+)
 
 var (
 	ForceMag float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
@@ -56,26 +60,34 @@ func NewCartpole() *Cartpole {
 }
 
 // Re-initialize the environment
-func (c *Cartpole) Reset() *State {
-	state := new(State)
+func (c *Cartpole) Reset() {
 	state.X = 0.2
 	state.Theta1 = DegToRad
-	return state
 }
 
 // Stores the desired action for the next Runge-Kutta step
 func (c *Cartpole) PerformAction(action int) *State {
-	state := step(action)
+	step(action, c)
 	return state
 }
 
 // Runge-Kutta Step - approximate state variables at time dt
-func step(action int) *State {
-	dt := tau
+func step(action int, c *Cartpole) {
+	dt := Tau
+	fmt.Println(c)
 	if action == 0 {
-		F := ForceMag * -1
+		//	F := ForceMag * -1
 	} else {
-		F := ForceMag
+		//	F := ForceMag
 	}
+
+	// position of cart
+	eq1 := func(x, y float64) float64 { return x }
+	initialPoint := rk4.NewPoint(state.XDot, state.X)
+	state.X = initialPoint.Solve(dt, eq1, state.XDot+dt)
+}
+
+// Get the current state variables
+func (c *Cartpole) GetState() *State {
 	return state
 }
