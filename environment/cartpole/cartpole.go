@@ -145,7 +145,7 @@ func (c *Cartpole) WithinTrackBounds() bool {
 
 // Pole angles within acceptable bounds
 func (c *Cartpole) WithinAngleBounds() bool {
-	failure := FailureAngle * DegToRad
+	failure := FailureAngle * DegToRad // ~ 0.6283185 radians
 	return (state.Theta1 > -failure && state.Theta1 < failure) &&
 		(state.Theta2 > -failure && state.Theta2 < failure)
 }
