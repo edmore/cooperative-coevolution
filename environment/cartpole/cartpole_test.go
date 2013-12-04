@@ -2,6 +2,7 @@ package cartpole
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
@@ -19,9 +20,18 @@ func TestPerformAction(t *testing.T) {
 	c := NewCartpole()
 	c.Reset()
 
-	fmt.Println("Initial State:", c.GetState())
+	fmt.Println("[Initial State:]\n", c.GetState())
 	for c.WithinTrackBounds() && c.WithinAngleBounds() {
 		s := c.PerformAction(1)
-		fmt.Println("New State", s)
+		elem := reflect.ValueOf(s).Elem()
+		typeOfCartpole := elem.Type()
+		fmt.Println("\n[Update ...]")
+		for i := 0; i < elem.NumField(); i++ {
+			f := elem.Field(i)
+			fmt.Printf("%s = %v | ",
+				typeOfCartpole.Field(i).Name, f.Interface())
+		}
+
 	}
+	fmt.Println("\n")
 }
