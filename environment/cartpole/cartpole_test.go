@@ -19,9 +19,9 @@ func TestPerformAction(t *testing.T) {
 	c := NewCartpole()
 	c.Reset()
 
-	fmt.Println("Og State:", c.GetState())
-	for state := c.GetState(); state.X > -2.4 && state.X < 2.4; {
-		s := c.PerformAction(0)
+	fmt.Println("Initial State:", c.GetState())
+	for c.WithinTrackBounds() && c.WithinAngleBounds() {
+		s := c.PerformAction(1)
 		fmt.Println("New State", s)
 	}
 }

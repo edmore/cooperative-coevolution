@@ -25,8 +25,8 @@ type State struct {
 	X         float64 // position of the cart
 	XDot      float64 // velocity of the cart
 	Theta1    float64 // angle of the 1st pole
-	ThetaDot1 float64 // angular velocity of the 1st pole
 	Theta2    float64 // angle of the 2nd pole
+	ThetaDot1 float64 // angular velocity of the 1st pole
 	ThetaDot2 float64 // angular velocity of the 2nd pole
 }
 
@@ -75,26 +75,11 @@ func (c *Cartpole) PerformAction(action int) *State {
 func step(action int, c *Cartpole) {
 	dt := 0.01 // step size
 	var F float64
-	// Equations for cart position and pole angles
-	eq1 := func(x, y float64) float64 { return state.XDot }
-	eq2 := func(x, y float64) float64 { return state.ThetaDot1 }
-	eq3 := func(x, y float64) float64 { return state.ThetaDot2 }
-
 	if action > 0 {
 		F = ForceMag
 	} else {
 		F = -ForceMag
 	}
-
-	// update position of cart
-	pt := rk4.NewPoint(0, state.X)
-	state.X = pt.Solve(dt, eq1, Tau)
-
-	// update angles of the poles
-	pt = rk4.NewPoint(0, state.Theta1)
-	state.Theta1 = pt.Solve(dt, eq2, Tau)
-	pt = rk4.NewPoint(0, state.Theta2)
-	state.Theta2 = pt.Solve(dt, eq3, Tau)
 
 	sinTheta1 := math.Sin(state.Theta1)
 	cosTheta1 := math.Cos(state.Theta1)
@@ -115,10 +100,24 @@ func step(action int, c *Cartpole) {
 	thetaDotDot1 := -0.75 * (xDotDot*cosTheta1 + gSinTheta1 + temp1) / c.Length1
 	thetaDotDot2 := -0.75 * (xDotDot*cosTheta2 + gSinTheta2 + temp2) / c.Length2
 
+	// Equations for cart position and pole angles
+	eq1 := func(x, y float64) float64 { return state.XDot }
+	eq2 := func(x, y float64) float64 { return state.ThetaDot1 }
+	eq3 := func(x, y float64) float64 { return state.ThetaDot2 }
 	// Equations of motion derivatives
 	eq4 := func(x, y float64) float64 { return xDotDot }
 	eq5 := func(x, y float64) float64 { return thetaDotDot1 }
 	eq6 := func(x, y float64) float64 { return thetaDotDot2 }
+
+	// update position of cart
+	pt := rk4.NewPoint(0, state.X)
+	state.X = pt.Solve(dt, eq1, Tau)
+
+	// update angles of the poles
+	pt = rk4.NewPoint(0, state.Theta1)
+	state.Theta1 = pt.Solve(dt, eq2, Tau)
+	pt = rk4.NewPoint(0, state.Theta2)
+	state.Theta2 = pt.Solve(dt, eq3, Tau)
 
 	// update velocity of cart
 	pt = rk4.NewPoint(0, state.XDot)
@@ -134,4 +133,15 @@ func step(action int, c *Cartpole) {
 // Get the current state variables
 func (c *Cartpole) GetState() *State {
 	return state
+}
+
+// Within acceptable track and angle bounds
+func (c *Cartpole) WithinTrackBounds() bool {
+	return state.X > -2.4 && state.X < 2.4
+}
+
+// Pole angles within acceptable bounds
+func (c *Cartpole) WithinAngleBounds() bool {
+	thirtySixDegrees := 36 * DegToRad
+	return (state.Theta1 > -thirtySixDegrees && state.Theta1 < thirtySixDegrees) && (state.Theta2 > -thirtySixDegrees && state.Theta2 < thirtySixDegrees)
 }
