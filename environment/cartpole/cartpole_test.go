@@ -31,7 +31,6 @@ func TestPerformAction(t *testing.T) {
 			fmt.Printf("%s = %v | ",
 				typeOfCartpole.Field(i).Name, f.Interface())
 		}
-
 	}
 	fmt.Println("\n")
 }
