@@ -7,18 +7,21 @@ package cartpole
 
 import (
 	"github.com/edmore/esp/rungekutta/rk4"
-	"math"
-)
 
-var (
-	ForceMag float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
-	Tau      float64 = 0.02 //seconds between state updates (the time step)
+	"math"
 )
 
 const (
 	RadToDeg         = 180 / math.Pi
 	DegToRad         = math.Pi / 180
 	Gravity  float64 = 9.81
+)
+
+var (
+	ForceMag        float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
+	Tau             float64 = 0.02 //seconds between state updates (the time step)
+	FailureAngle    float64 = 36.0 // failure angle in degrees
+	FailurePosition float64 = 2.4  // failure position in metres
 )
 
 type State struct {
@@ -137,11 +140,11 @@ func (c *Cartpole) GetState() *State {
 
 // Cart within track bounds
 func (c *Cartpole) WithinTrackBounds() bool {
-	return (state.X > -2.4 && state.X < 2.4)
+	return (state.X > -FailurePosition && state.X < FailurePosition)
 }
 
 // Pole angles within acceptable bounds
 func (c *Cartpole) WithinAngleBounds() bool {
-	thirtySixDegrees := 36 * DegToRad
-	return (state.Theta1 > -thirtySixDegrees && state.Theta1 < thirtySixDegrees) && (state.Theta2 > -thirtySixDegrees && state.Theta2 < thirtySixDegrees)
+	failure := FailureAngle * DegToRad
+	return (state.Theta1 > -failure && state.Theta1 < failure) && (state.Theta2 > -failure && state.Theta2 < failure)
 }
