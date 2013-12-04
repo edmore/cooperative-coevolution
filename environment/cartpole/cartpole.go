@@ -74,7 +74,7 @@ func (c *Cartpole) PerformAction(action int) *State {
 	return state
 }
 
-// Runge-Kutta Step - approximate state variables at time dt
+// Runge-Kutta Step - approximate state variables at time Tau
 func step(action int, c *Cartpole) {
 	dt := 0.01 // step size
 	var F float64
@@ -94,8 +94,10 @@ func step(action int, c *Cartpole) {
 
 	temp1 := c.Up * state.Theta1 / c.Length1 * c.MassPole1
 	temp2 := c.Up * state.Theta2 / c.Length2 * c.MassPole2
-	fi1 := (c.Length1 * c.MassPole1 * math.Pow(state.Theta1, 2) * sinTheta1) + (0.75 * c.MassPole1 * cosTheta1 * (temp1 + gSinTheta1))
-	fi2 := (c.Length2 * c.MassPole2 * math.Pow(state.Theta2, 2) * sinTheta2) + (0.75 * c.MassPole2 * cosTheta2 * (temp2 + gSinTheta2))
+	fi1 := (c.Length1 * c.MassPole1 * math.Pow(state.Theta1, 2) * sinTheta1) +
+		(0.75 * c.MassPole1 * cosTheta1 * (temp1 + gSinTheta1))
+	fi2 := (c.Length2 * c.MassPole2 * math.Pow(state.Theta2, 2) * sinTheta2) +
+		(0.75 * c.MassPole2 * cosTheta2 * (temp2 + gSinTheta2))
 	mi1 := c.MassPole1 * (1 - (0.75 * math.Pow(cosTheta1, 2)))
 	mi2 := c.MassPole2 * (1 - (0.75 * math.Pow(cosTheta2, 2)))
 
@@ -146,5 +148,6 @@ func (c *Cartpole) WithinTrackBounds() bool {
 // Pole angles within acceptable bounds
 func (c *Cartpole) WithinAngleBounds() bool {
 	failure := FailureAngle * DegToRad
-	return (state.Theta1 > -failure && state.Theta1 < failure) && (state.Theta2 > -failure && state.Theta2 < failure)
+	return (state.Theta1 > -failure && state.Theta1 < failure) &&
+		(state.Theta2 > -failure && state.Theta2 < failure)
 }
