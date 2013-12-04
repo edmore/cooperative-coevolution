@@ -6,8 +6,7 @@ import (
 )
 
 func TestNewCartpole(t *testing.T) {
-	c := NewCartpole()
-	fmt.Println(c)
+	//c := NewCartpole()
 }
 
 func TestReset(t *testing.T) {
