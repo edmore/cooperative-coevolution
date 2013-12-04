@@ -7,7 +7,6 @@ package cartpole
 
 import (
 	"github.com/edmore/esp/rungekutta/rk4"
-
 	"math"
 )
 
