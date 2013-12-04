@@ -20,6 +20,8 @@ func TestPerformAction(t *testing.T) {
 	c.Reset()
 
 	fmt.Println("Og State:", c.GetState())
-	s := c.PerformAction(1)
-	fmt.Println("New State", s)
+	for state := c.GetState(); state.X > -2.4 && state.X < 2.4; {
+		s := c.PerformAction(0)
+		fmt.Println("New State", s)
+	}
 }

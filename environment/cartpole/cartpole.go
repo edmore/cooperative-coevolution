@@ -7,7 +7,6 @@ package cartpole
 
 import (
 	"github.com/edmore/esp/rungekutta/rk4"
-
 	"math"
 )
 
@@ -75,14 +74,16 @@ func (c *Cartpole) PerformAction(action int) *State {
 // Runge-Kutta Step - approximate state variables at time dt
 func step(action int, c *Cartpole) {
 	dt := 0.01 // step size
+	var F float64
 	// Equations for cart position and pole angles
 	eq1 := func(x, y float64) float64 { return state.XDot }
 	eq2 := func(x, y float64) float64 { return state.ThetaDot1 }
 	eq3 := func(x, y float64) float64 { return state.ThetaDot2 }
+
 	if action > 0 {
-		//	F := ForceMag
+		F = ForceMag
 	} else {
-		//	F := -ForceMag
+		F = -ForceMag
 	}
 
 	// update position of cart
@@ -92,9 +93,42 @@ func step(action int, c *Cartpole) {
 	// update angles of the poles
 	pt = rk4.NewPoint(0, state.Theta1)
 	state.Theta1 = pt.Solve(dt, eq2, Tau)
-
 	pt = rk4.NewPoint(0, state.Theta2)
 	state.Theta2 = pt.Solve(dt, eq3, Tau)
+
+	sinTheta1 := math.Sin(state.Theta1)
+	cosTheta1 := math.Cos(state.Theta1)
+	gSinTheta1 := Gravity * sinTheta1
+
+	sinTheta2 := math.Sin(state.Theta2)
+	cosTheta2 := math.Cos(state.Theta2)
+	gSinTheta2 := Gravity * sinTheta2
+
+	temp1 := c.Up * state.Theta1 / c.Length1 * c.MassPole1
+	temp2 := c.Up * state.Theta2 / c.Length2 * c.MassPole2
+	fi1 := (c.Length1 * c.MassPole1 * math.Pow(state.Theta1, 2) * sinTheta1) + (0.75 * c.MassPole1 * cosTheta1 * (temp1 + gSinTheta1))
+	fi2 := (c.Length2 * c.MassPole2 * math.Pow(state.Theta2, 2) * sinTheta2) + (0.75 * c.MassPole2 * cosTheta2 * (temp2 + gSinTheta2))
+	mi1 := c.MassPole1 * (1 - (0.75 * math.Pow(cosTheta1, 2)))
+	mi2 := c.MassPole2 * (1 - (0.75 * math.Pow(cosTheta2, 2)))
+
+	xDotDot := (F + fi1 + fi2) / (mi1 + mi2 + c.MassCart)
+	thetaDotDot1 := -0.75 * (xDotDot*cosTheta1 + gSinTheta1 + temp1) / c.Length1
+	thetaDotDot2 := -0.75 * (xDotDot*cosTheta2 + gSinTheta2 + temp2) / c.Length2
+
+	// Equations of motion derivatives
+	eq4 := func(x, y float64) float64 { return xDotDot }
+	eq5 := func(x, y float64) float64 { return thetaDotDot1 }
+	eq6 := func(x, y float64) float64 { return thetaDotDot2 }
+
+	// update velocity of cart
+	pt = rk4.NewPoint(0, state.XDot)
+	state.XDot = pt.Solve(dt, eq4, Tau)
+
+	// update angular velocities of the poles
+	pt = rk4.NewPoint(0, state.ThetaDot1)
+	state.ThetaDot1 = pt.Solve(dt, eq5, Tau)
+	pt = rk4.NewPoint(0, state.ThetaDot2)
+	state.ThetaDot2 = pt.Solve(dt, eq6, Tau)
 }
 
 // Get the current state variables
