@@ -17,10 +17,9 @@ const (
 )
 
 var (
-	ForceMag        float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
-	Tau             float64 = 0.02 //seconds between state updates (the time step)
-	FailureAngle    float64 = 36.0 // failure angle in degrees
-	FailurePosition float64 = 2.4  // failure position in metres
+	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
+	Tau          float64 = 0.02 //seconds between state updates (the time step)
+	FailureAngle float64 = 36.0 // failure angle in degrees
 )
 
 type State struct {
@@ -141,7 +140,7 @@ func (c *Cartpole) GetState() *State {
 
 // Cart within track bounds
 func (c *Cartpole) WithinTrackBounds() bool {
-	return (state.X > -FailurePosition && state.X < FailurePosition)
+	return (state.X > -c.TrackSize && state.X < c.TrackSize)
 }
 
 // Pole angles within acceptable bounds
