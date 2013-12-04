@@ -135,9 +135,9 @@ func (c *Cartpole) GetState() *State {
 	return state
 }
 
-// Within acceptable track and angle bounds
+// Cart within track bounds
 func (c *Cartpole) WithinTrackBounds() bool {
-	return state.X > -2.4 && state.X < 2.4
+	return (state.X > -2.4 && state.X < 2.4)
 }
 
 // Pole angles within acceptable bounds
