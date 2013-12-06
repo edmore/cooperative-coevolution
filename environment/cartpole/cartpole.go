@@ -61,9 +61,7 @@ func NewCartpole() *Cartpole {
 
 // Re-initialize the environment
 func (c *Cartpole) Reset() {
-	state.X = 0.2            // position of cart
-	state.Theta1 = DegToRad  // angle of the 1st pole - 1 degree
-	state.Theta2 = -DegToRad // angle of the 2nd pole - minus 1 degree
+	state.Theta1 = DegToRad // angle of the long pole - 1 degree
 }
 
 // Stores the desired action for the next Runge-Kutta step
