@@ -1,4 +1,4 @@
-package cartpole
+package environment
 
 import (
 	"fmt"
@@ -22,8 +22,8 @@ func TestPerformAction(t *testing.T) {
 
 	fmt.Println("[Initial State:]\n", c.GetState())
 	for c.WithinTrackBounds() && c.WithinAngleBounds() {
-		s := c.PerformAction(1)
-		elem := reflect.ValueOf(s).Elem()
+		c.PerformAction(0)
+		elem := reflect.ValueOf(c.GetState()).Elem()
 		typeOfCartpole := elem.Type()
 		fmt.Println("\n[Update ...]")
 		for i := 0; i < elem.NumField(); i++ {

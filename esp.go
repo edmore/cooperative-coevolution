@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+
+	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
-	"reflect"
 	"runtime"
 	"time"
 )
+
+var maxFitness float64 = 100000.0 // the maximum fitness in time steps
 
 func initialize(h int, n int, s int) []*population.Population {
 	var pops []*population.Population // population pool
@@ -37,8 +40,8 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
-func evaluate(n network.Network) {
-	fmt.Println(reflect.TypeOf(n))
+func evaluate(e environment.Environment, n network.Network) float64 {
+	return maxFitness
 }
 
 func main() {
@@ -55,25 +58,29 @@ func main() {
 		o int // number of outputs
 	)
 
-	fmt.Printf("Please enter the number of hidden units : ")
-	fmt.Scanf("%d", &h)
-	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
-	fmt.Scanf("%d", &n)
 	fmt.Printf("Please enter the number of inputs : ")
 	fmt.Scanf("%d", &i)
+	fmt.Printf("Please enter the number of hidden units : ")
+	fmt.Scanf("%d", &h)
 	fmt.Printf("Please enter the number of outputs : ")
 	fmt.Scanf("%d", &o)
+	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
+	fmt.Scanf("%d", &n)
 
-	feedForward := network.NewFeedForward(i, h, o, 1)
+	numTrials := 10 * n
 
-	// Initialization
-	subpops := initialize(h, n, feedForward.GeneSize)
-	fmt.Println(subpops[0])
-	fmt.Println(subpops[0].Neurons[0])
+	for x := 0; x < numTrials; x++ {
+		feedForward := network.NewFeedForward(i, h, o, 1)
 
-	// Evaluation
-	feedForward.Create(subpops)
-	fmt.Println("First Hidden Unit Id:", feedForward.HiddenUnits[0].Id)
-	fmt.Println("Second Hidden Unit Id:", feedForward.HiddenUnits[1].Id)
-	evaluate(feedForward)
+		// Initialization
+		subpops := initialize(h, n, feedForward.GeneSize)
+
+		// Building the network
+		feedForward.Create(subpops)
+
+		// Evaluation of the network in environment(e)
+		e := environment.NewCartpole()
+		e.Reset()
+		fmt.Println(evaluate(e, feedForward))
+	}
 }

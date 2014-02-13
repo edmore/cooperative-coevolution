@@ -1,12 +1,13 @@
 /*
- Package cartpole implements the Double Pole balancing / Inverted Pendulum Task.
+ Cartpole - The Double Pole balancing / Inverted Pendulum Task.
  Currently - with full state information (markov)
 */
 
-package cartpole
+package environment
 
 import (
 	"github.com/edmore/esp/rungekutta/rk4"
+
 	"math"
 )
 
@@ -20,6 +21,7 @@ var (
 	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
 	Tau          float64 = 0.02 //seconds between state updates (the time step)
 	FailureAngle float64 = 36.0 // failure angle in degrees
+
 )
 
 type State struct {
@@ -65,9 +67,8 @@ func (c *Cartpole) Reset() {
 }
 
 // Stores the desired action for the next Runge-Kutta step
-func (c *Cartpole) PerformAction(action int) *State {
+func (c *Cartpole) PerformAction(action int) {
 	step(action, c)
-	return state
 }
 
 // Runge-Kutta Step - approximate state variables at time Tau
