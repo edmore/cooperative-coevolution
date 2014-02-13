@@ -21,7 +21,6 @@ var (
 	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
 	Tau          float64 = 0.02 //seconds between state updates (the time step)
 	FailureAngle float64 = 36.0 // failure angle in degrees
-
 )
 
 type State struct {
