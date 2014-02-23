@@ -13,6 +13,7 @@ import (
 
 var maxFitness float64 = 100000.0 // the maximum fitness in time steps
 
+// Initialize subpopulations
 func initialize(h int, n int, s int) []*population.Population {
 	nCPU := runtime.NumCPU()
 	cCPU := nCPU - 3
@@ -58,10 +59,11 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
-func evaluate(e environment.Environment, n network.Network) float64 {
+// Evaluate the network in the trial environment
+func evaluate(e environment.Environment, n network.Network) {
 	// award fitness score to network
 	// add the fitness score to cumulative fitness of neurons that participated in trial
-	return maxFitness
+	//	return maxFitness
 }
 
 func main() {
@@ -97,6 +99,6 @@ func main() {
 		e := environment.NewCartpole()
 		e.Reset()
 		// TODO : Call a goroutine for evaluation
-		fmt.Println(evaluate(e, feedForward))
+		go evaluate(e, feedForward)
 	}
 }
