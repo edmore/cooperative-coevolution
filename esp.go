@@ -7,49 +7,64 @@ import (
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
 	"runtime"
-	"time"
+
+//	"time"
 )
 
 var maxFitness float64 = 100000.0 // the maximum fitness in time steps
 
 func initialize(h int, n int, s int) []*population.Population {
+	nCPU := runtime.NumCPU()
+	cCPU := nCPU - 3
+	// add more threads to the goroutine schedulers thread pool (default is 1)
+	runtime.GOMAXPROCS(cCPU)
+	//fmt.Println("Number of Logical CPUs currently in use: ", cCPU)
+	//fmt.Println("Number of Logical CPUs available: ", nCPU)
 	var pops []*population.Population // population pool
-	ch := make(chan *population.Population)
 
-	for i := 0; i < h; i++ {
-		go func() {
-			fmt.Println("Creating subpopulation ...")
-			p := population.NewPopulation(n, s)
-			p.Create()
-			ch <- p
-		}()
-	}
-
-	for {
-		select {
-		case pop := <-ch:
-			pops = append(pops, pop)
-			fmt.Println("Subpopulation initialized.")
-			if len(pops) == h {
-				return pops
-			}
-		case <-time.After(50 * time.Millisecond):
-			fmt.Printf(".")
+	// Using goroutines and channels - overhead due to use of channels
+	//ch := make(chan *population.Population)
+	/*
+		for i := 0; i < h; i++ {
+			go func() {
+				//fmt.Println("Creating subpopulation ...")
+				p := population.NewPopulation(n, s)
+				p.Create()
+				ch <- p
+			}()
 		}
+
+		for {
+			select {
+			case pop := <-ch:
+				pops = append(pops, pop)
+				//fmt.Println("Subpopulation initialized.")
+				if len(pops) == h {
+					return pops
+				}
+			case <-time.After(50 * time.Millisecond):
+				fmt.Printf(".")
+			}
+		}
+	*/
+
+	// Using a basic "for" loop - with "blocking" - actually faster
+	for i := 0; i < h; i++ {
+		//fmt.Println("Creating subpopulation ...")
+		p := population.NewPopulation(n, s)
+		p.Create()
+		pops = append(pops, p)
 	}
 	return pops
 }
 
 func evaluate(e environment.Environment, n network.Network) float64 {
+	// award fitness score to network
+	// add the fitness score to cumulative fitness of neurons that participated in trial
 	return maxFitness
 }
 
 func main() {
-	nCPU := runtime.NumCPU()
-	cCPU := 2
-	runtime.GOMAXPROCS(cCPU)
-	fmt.Println("Number of CPUs available: ", nCPU)
-	fmt.Println("Number of CPUs currently in use: ", cCPU)
 
 	var (
 		h int // number of hidden units / subpopulations
@@ -81,6 +96,7 @@ func main() {
 		// Evaluation of the network in environment(e)
 		e := environment.NewCartpole()
 		e.Reset()
+		// TODO : Call a goroutine for evaluation
 		fmt.Println(evaluate(e, feedForward))
 	}
 }
