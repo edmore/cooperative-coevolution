@@ -1,0 +1,42 @@
+
+Initialization:
+
+
+Goroutines and channels
+
+
+➜  esp git:(master) ✗ go test -bench=".*"
+
+PASSBenchmarkInitialize    2000    782736 ns/op
+testing: BenchmarkInitialize left GOMAXPROCS set to 4
+ok  github.com/edmore/esp1.695s
+➜  esp git:(master) ✗ go test -bench=".*"
+PASS
+BenchmarkInitialize    2000    767641 ns/op
+testing: BenchmarkInitialize left GOMAXPROCS set to 3
+ok  github.com/edmore/esp1.667s
+➜  esp git:(master) ✗ go test -bench=".*"
+PASS
+BenchmarkInitialize    5000    586836 ns/op
+testing: BenchmarkInitialize left GOMAXPROCS set to 2
+ok  github.com/edmore/esp3.051s
+➜  esp git:(master) ✗ go test -bench=".*"
+PASS
+BenchmarkInitialize  10000    300398 ns/op
+ok  github.com/edmore/esp3.076s
+➜  esp git:(master) ✗ 
+
+
+Basic "for" loop:
+
+
+➜  esp git:(master) ✗ go test -bench=".*"
+PASS
+BenchmarkInitialize        10000         269040 ns/op
+ok       github.com/edmore/esp     2.756s
+➜  esp git:(master) ✗ go test -bench=".*"
+PASS
+BenchmarkInitialize        10000         268493 ns/op
+testing: BenchmarkInitialize left GOMAXPROCS set to 4
+ok       github.com/edmore/esp     2.764s
+
