@@ -67,7 +67,6 @@ func evaluate(e environment.Environment, n network.Network) {
 }
 
 func main() {
-
 	var (
 		h int // number of hidden units / subpopulations
 		n int // number of neuron chromosomes per subpopulation
@@ -84,21 +83,37 @@ func main() {
 	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
 	fmt.Scanf("%d", &n)
 
-	numTrials := 10 * n
+	bestFitness := 0.0
 
-	for x := 0; x < numTrials; x++ {
+	for bestFitness < maxFitness {
+		// INITIALIZATION
 		feedForward := network.NewFeedForward(i, h, o, 1)
-
-		// Initialization
 		subpops := initialize(h, n, feedForward.GeneSize)
+		//fmt.Println(subpops)
 
-		// Building the network
-		feedForward.Create(subpops)
+		numTrials := 10 * n
+		// EVALUATION
+		for x := 0; x < numTrials; x++ {
+			// Build the network
+			feedForward.Create(subpops)
+			//			fmt.Println(feedForward)
+			// Evaluate the network in the environment(e)
+			e := environment.NewCartpole()
+			e.Reset()
+			go evaluate(e, feedForward)
+		}
+		// block to add fitness to each neuron and ...
+		// also save bestFitness (and probably best-network)
+		// if fitness > bestFitness ... save bestFitness
+		bestFitness = maxFitness
 
-		// Evaluation of the network in environment(e)
-		e := environment.NewCartpole()
-		e.Reset()
-		// TODO : Call a goroutine for evaluation
-		go evaluate(e, feedForward)
+		// CHECK STAGNATION
+		// if bestFitness has not improved in b generations
+		// if this is the second consecutive time
+		// then ADAPT-NETWORK-SIZE()
+		// else BURST_MUTATE()
+
+		// RECOMBINATION
+		// sort neurons - mate and mutate
 	}
 }
