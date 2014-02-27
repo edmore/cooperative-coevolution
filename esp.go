@@ -61,9 +61,12 @@ func initialize(h int, n int, s int) []*population.Population {
 
 // Evaluate the network in the trial environment
 func evaluate(e environment.Environment, n network.Network) {
+	// loop while within bounds
+	// e.PerformAction(n.activate())
+	// fitness++
+
 	// award fitness score to network
 	// add the fitness score to cumulative fitness of neurons that participated in trial
-	//	return maxFitness
 }
 
 func main() {
