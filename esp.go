@@ -15,43 +15,9 @@ var maxFitness float64 = 100000.0 // the maximum fitness in time steps
 
 // Initialize subpopulations
 func initialize(h int, n int, s int) []*population.Population {
-	nCPU := runtime.NumCPU()
-	cCPU := nCPU - 3
-	// add more threads to the goroutine schedulers thread pool (default is 1)
-	runtime.GOMAXPROCS(cCPU)
-	//fmt.Println("Number of Logical CPUs currently in use: ", cCPU)
-	//fmt.Println("Number of Logical CPUs available: ", nCPU)
 	var pops []*population.Population // population pool
 
-	// Using goroutines and channels - overhead due to use of channels
-	//ch := make(chan *population.Population)
-	/*
-		for i := 0; i < h; i++ {
-			go func() {
-				//fmt.Println("Creating subpopulation ...")
-				p := population.NewPopulation(n, s)
-				p.Create()
-				ch <- p
-			}()
-		}
-
-		for {
-			select {
-			case pop := <-ch:
-				pops = append(pops, pop)
-				//fmt.Println("Subpopulation initialized.")
-				if len(pops) == h {
-					return pops
-				}
-			case <-time.After(50 * time.Millisecond):
-				fmt.Printf(".")
-			}
-		}
-	*/
-
-	// Using a basic "for" loop - with "blocking" - actually faster
 	for i := 0; i < h; i++ {
-		//fmt.Println("Creating subpopulation ...")
 		p := population.NewPopulation(n, s)
 		p.Create()
 		pops = append(pops, p)
