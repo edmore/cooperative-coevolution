@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
-	"runtime"
-
-//	"time"
 )
+
+// Evaluator interface
+type Evaluator interface {
+	evaluate(environment.Environment, network.Network)
+}
 
 var maxFitness float64 = 100000.0 // the maximum fitness in time steps
 
@@ -23,16 +26,6 @@ func initialize(h int, n int, s int) []*population.Population {
 		pops = append(pops, p)
 	}
 	return pops
-}
-
-// Evaluate the network in the trial environment
-func evaluate(e environment.Environment, n network.Network) {
-	// loop while within bounds
-	// e.PerformAction(n.activate())
-	// fitness++
-
-	// award fitness score to network
-	// add the fitness score to cumulative fitness of neurons that participated in trial
 }
 
 func main() {
@@ -74,6 +67,16 @@ func main() {
 		// block to add fitness to each neuron and ...
 		// also save bestFitness (and probably best-network)
 		// if fitness > bestFitness ... save bestFitness
+		for {
+			select {
+			case n := <-ch:
+				// You can define a getter method for setting the neuron fitness
+				fmt.Println(n)
+			case <-time.After(50 * time.Millisecond):
+				return
+			}
+		}
+
 		bestFitness = maxFitness
 
 		// CHECK STAGNATION

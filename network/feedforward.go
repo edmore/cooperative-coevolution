@@ -51,6 +51,11 @@ func NewFeedForward(in int, hid int, out int, bias float32) *FeedForward {
 func (f *FeedForward) Activate() {
 }
 
+// Return the hidden units
+func (f *FeedForward) GetHiddenUnits() []*neuron.Neuron {
+	return f.HiddenUnits
+}
+
 // Create the hidden units by randomly selecting them
 func (f *FeedForward) Create(pops []*population.Population) {
 	for i := 0; i < len(pops); i++ {
