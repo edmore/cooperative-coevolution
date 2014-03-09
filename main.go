@@ -70,13 +70,12 @@ func main() {
 		for {
 			select {
 			case n := <-ch:
-				// You can define a getter method for setting the neuron fitness
+				// You can define a setter method for setting the neuron fitness
 				fmt.Println(n)
 			case <-time.After(50 * time.Millisecond):
 				return
 			}
 		}
-
 		bestFitness = maxFitness
 
 		// CHECK STAGNATION
