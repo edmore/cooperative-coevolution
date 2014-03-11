@@ -3,10 +3,9 @@ package main
 import (
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
-	"github.com/edmore/esp/neuron"
 )
 
-var ch = make(chan []*neuron.Neuron)
+var ch = make(chan network.Network)
 
 // Evaluate the network in the trial environment
 func evaluate(e environment.Environment, n network.Network) {
@@ -21,5 +20,5 @@ func evaluate(e environment.Environment, n network.Network) {
 	// neurons that participated in trial.
 	// beware of race conditions when adding the fitness
 	// to each neuron needs to be synchronized.
-	ch <- n.GetHiddenUnits()
+	ch <- n
 }
