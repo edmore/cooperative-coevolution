@@ -25,6 +25,18 @@ func TestCreate(t *testing.T) {
 	}
 }
 
+func TestSetFitness(t *testing.T) {
+	const out = 2
+	n := NewNeuron(5)
+	n.SetFitness(1)
+	n.SetFitness(1)
+	fmt.Println(n)
+	if x := n.Fitness; x != out {
+		t.Errorf("Fitness = %v, we want %v", x, out)
+	}
+
+}
+
 func TestPerturb(t *testing.T) {
 	n := NewNeuron(5)
 	n.Create()

@@ -41,6 +41,11 @@ func (n *Neuron) Create() {
 	}
 }
 
+// Set the (cumulative) fitness for the neuron
+func (n *Neuron) SetFitness(fitness float64) {
+	n.Fitness = n.Fitness + fitness
+}
+
 // Perturb the weights of a Neuron.
 // Used to search in a neighborhood around some Neuron (best).
 func (n *Neuron) Perturb() {
