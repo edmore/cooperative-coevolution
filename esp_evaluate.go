@@ -12,7 +12,15 @@ func evaluate(e environment.Environment, n network.Network) {
 	// loop while within bounds
 	// e.PerformAction(n.Activate())
 	// fitness++
+	fitness := 0
+	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+		// inputs has to be a slice for a general framework
+		inputs := e.GetState()
 
+		output := n.Activate(inputs)
+		e.PerformAction(output)
+		fitness++
+	}
 	// award fitness score to network
 	// define setter method for network fitness
 

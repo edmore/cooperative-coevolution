@@ -48,7 +48,8 @@ func NewFeedForward(in int, hid int, out int, bias float32) *FeedForward {
 }
 
 // Activate
-func (f *FeedForward) Activate() {
+func (f *FeedForward) Activate(inputs []float64) float64 {
+
 }
 
 // Return the hidden units
