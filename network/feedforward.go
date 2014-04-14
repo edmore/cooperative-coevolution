@@ -15,7 +15,7 @@ type FeedForward struct {
 	HiddenUnits []*neuron.Neuron
 	NumInputs   int
 	NumOutputs  int
-	Bias        float32
+	Bias        int
 	Trials      int
 	Fitness     float64
 	Parent1     int
@@ -27,7 +27,7 @@ type FeedForward struct {
 var counter int = 0
 
 // FeedForward Network constructor
-func NewFeedForward(in int, hid int, out int, bias float32) *FeedForward {
+func NewFeedForward(in int, hid int, out int, bias int) *FeedForward {
 	counter++
 	genesize := in + out
 	if bias != 0 {
@@ -49,7 +49,7 @@ func NewFeedForward(in int, hid int, out int, bias float32) *FeedForward {
 
 // Activate
 func (f *FeedForward) Activate(inputs []float64) float64 {
-
+	return 1
 }
 
 // Return the hidden units
@@ -61,5 +61,23 @@ func (f *FeedForward) GetHiddenUnits() []*neuron.Neuron {
 func (f *FeedForward) Create(pops []*population.Population) {
 	for i := 0; i < len(pops); i++ {
 		f.HiddenUnits[i] = pops[i].SelectNeuron()
+	}
+}
+
+// Return the total number of inputs
+func (f *FeedForward) GetTotalInputs() int {
+	if f.Bias == 1 {
+		return f.NumInputs + 1
+	} else {
+		return f.NumInputs
+	}
+}
+
+// Return true if network has bias
+func (f *FeedForward) HasBias() bool {
+	if f.Bias == 1 {
+		return true
+	} else {
+		return false
 	}
 }

@@ -27,3 +27,32 @@ func TestActivate(t *testing.T) {
 
 func TestCreate(t *testing.T) {
 }
+
+func TestGetTotalInputs(t *testing.T) {
+	const in, hid, out = 3, 2, 1
+	// With bias
+	ff3 := NewFeedForward(in, hid, out, 1)
+	if x := ff3.GetTotalInputs(); x != in+1 {
+		t.Errorf("With Bias : Total Inputs = %v, we want %v", x, in+1)
+	}
+	//Without bias
+	ff4 := NewFeedForward(in, hid, out, 0)
+	if x := ff4.GetTotalInputs(); x != in {
+		t.Errorf("Without Bias : Total Inputs = %v, we want %v", x, in)
+	}
+
+}
+
+func TestHasBias(t *testing.T) {
+	const in, hid, out = 3, 2, 1
+	ff5 := NewFeedForward(in, hid, out, 1)
+	ff6 := NewFeedForward(in, hid, out, 0)
+
+	if x := ff5.HasBias(); x != true {
+		t.Errorf("With Bias : Has bias = %v, we want %v", x, true)
+	}
+
+	if x := ff6.HasBias(); x != false {
+		t.Errorf("Without Bias : Has Bias = %v, we want %v", x, false)
+	}
+}

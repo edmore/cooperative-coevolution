@@ -66,12 +66,12 @@ func (c *Cartpole) Reset() {
 }
 
 // Stores the desired action for the next Runge-Kutta step
-func (c *Cartpole) PerformAction(action int) {
+func (c *Cartpole) PerformAction(action float64) {
 	step(action, c)
 }
 
 // Runge-Kutta Step - approximate state variables at time Tau
-func step(action int, c *Cartpole) {
+func step(action float64, c *Cartpole) {
 	dt := 0.01 // step size
 	var F float64
 	if action > 0 {

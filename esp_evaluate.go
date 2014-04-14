@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 )
@@ -9,15 +11,24 @@ var ch = make(chan network.Network)
 
 // Evaluate the network in the trial environment
 func evaluate(e environment.Environment, n network.Network) {
-	// loop while within bounds
-	// e.PerformAction(n.Activate())
-	// fitness++
 	fitness := 0
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
-		// inputs has to be a slice for a general framework
-		inputs := e.GetState()
+		state := e.GetState()
 
-		output := n.Activate(inputs)
+		input := make([]float64, n.GetTotalInputs())
+		input[0] = state.X
+		input[1] = state.XDot
+		input[2] = state.Theta1
+		input[3] = state.Theta2
+		input[4] = state.ThetaDot1
+		input[5] = state.ThetaDot2
+
+		if n.HasBias() {
+			input[6] = 0.5 // bias
+		}
+		fmt.Println(input)
+
+		output := n.Activate(input)
 		e.PerformAction(output)
 		fitness++
 	}
