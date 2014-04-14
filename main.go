@@ -50,14 +50,14 @@ func main() {
 	for bestFitness < maxFitness {
 		// INITIALIZATION
 		// TODO - work out whether using the network genesize is the best way to do this
-		subpops := initialize(h, n, network.NewFeedForward(i, h, o, 1).GeneSize)
+		subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
 		//fmt.Println(subpops)
 
 		numTrials := 10 * n
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
 			// Build the network
-			feedForward := network.NewFeedForward(i, h, o, 1)
+			feedForward := network.NewFeedForward(i, h, o, true)
 			feedForward.Create(subpops)
 
 			// Evaluate the network in the environment(e)
