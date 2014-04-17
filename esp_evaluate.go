@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 )
@@ -14,7 +12,6 @@ func evaluate(e environment.Environment, n network.Network) {
 	fitness := 0
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
 		state := e.GetState()
-
 		input := make([]float64, n.GetTotalInputs())
 		input[0] = state.X
 		input[1] = state.XDot
@@ -26,7 +23,6 @@ func evaluate(e environment.Environment, n network.Network) {
 		if n.HasBias() {
 			input[6] = 0.5 // bias
 		}
-		fmt.Println(input)
 
 		output := n.Activate(input)
 		e.PerformAction(output)

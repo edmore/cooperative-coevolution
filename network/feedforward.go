@@ -5,6 +5,7 @@ Package network implements an artificial neural network
 package network
 
 import (
+	"fmt"
 	"github.com/edmore/esp/neuron"
 	"github.com/edmore/esp/population"
 )
@@ -48,7 +49,10 @@ func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 }
 
 // Activate
-func (f *FeedForward) Activate(inputs []float64) float64 {
+func (f *FeedForward) Activate(input []float64) float64 {
+	for _, neuron := range f.HiddenUnits {
+		fmt.Println(neuron)
+	}
 	return 1
 }
 
