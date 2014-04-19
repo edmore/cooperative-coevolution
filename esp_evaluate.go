@@ -25,7 +25,7 @@ func evaluate(e environment.Environment, n network.Network) {
 		}
 
 		output := n.Activate(input)
-		e.PerformAction(output)
+		e.PerformAction(output[0])
 		fitness++
 	}
 	// award fitness score to network

@@ -5,7 +5,7 @@ Package network implements an artificial neural network
 package network
 
 import (
-	"fmt"
+	"github.com/edmore/esp/activation/sigmoid"
 	"github.com/edmore/esp/neuron"
 	"github.com/edmore/esp/population"
 )
@@ -49,11 +49,25 @@ func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 }
 
 // Activate
-func (f *FeedForward) Activate(input []float64) float64 {
-	for _, neuron := range f.HiddenUnits {
-		fmt.Println(neuron)
+func (f *FeedForward) Activate(input []float64) []float64 {
+	output := make([]float64, f.NumOutputs)
+	// input layer -> hidden layer
+	for key, neuron := range f.HiddenUnits {
+		if !neuron.Lesioned {
+			for i := 0; i < len(input); i++ {
+				f.Activation[key] = f.Activation[key] + (neuron.Weight[i] * input[i])
+			}
+			f.Activation[key] = sigmoid.Logistic(1.0, f.Activation[key])
+		}
 	}
-	return 1
+	// hidden layer -> output layer
+	for i := 0; i < f.NumOutputs; i++ {
+		for key, neuron := range f.HiddenUnits {
+			output[i] = output[i] + (f.Activation[key] * neuron.Weight[len(input)+i])
+		}
+		output[i] = sigmoid.Logistic(1.0, output[i])
+	}
+	return output
 }
 
 // Return the hidden units
