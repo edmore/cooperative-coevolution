@@ -14,7 +14,7 @@ type Evaluator interface {
 	evaluate(environment.Environment, network.Network)
 }
 
-var maxFitness float64 = 100000.0 // the maximum fitness in time steps
+var maxFitness int = 100000 // the maximum fitness in time steps
 
 // Initialize subpopulations
 func initialize(h int, n int, s int) []*population.Population {
@@ -45,7 +45,7 @@ func main() {
 	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
 	fmt.Scanf("%d", &n)
 
-	bestFitness := 0.0
+	bestFitness := 0
 
 	for bestFitness < maxFitness {
 		// INITIALIZATION
@@ -73,7 +73,7 @@ func main() {
 			case n := <-ch:
 				// You can define a setter method for setting the neuron fitness
 				fmt.Println(n.GetFitness())
-			case <-time.After(50 * time.Millisecond):
+			case <-time.After(500 * time.Millisecond):
 				return
 			}
 		}

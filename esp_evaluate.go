@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 )
@@ -11,6 +12,7 @@ var ch = make(chan network.Network)
 func evaluate(e environment.Environment, n network.Network) {
 	fitness := 0
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+		fmt.Println("Im in", n, e)
 		state := e.GetState()
 		input := make([]float64, n.GetTotalInputs())
 		input[0] = state.X / 4.8
