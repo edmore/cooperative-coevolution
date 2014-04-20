@@ -72,7 +72,7 @@ func main() {
 			select {
 			case n := <-ch:
 				// You can define a setter method for setting the neuron fitness
-				fmt.Println(n.GetHiddenUnits())
+				fmt.Println(n.GetFitness())
 			case <-time.After(50 * time.Millisecond):
 				return
 			}

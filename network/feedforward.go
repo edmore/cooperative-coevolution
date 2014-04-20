@@ -18,7 +18,7 @@ type FeedForward struct {
 	NumOutputs  int
 	Bias        bool
 	Trials      int
-	Fitness     float64
+	Fitness     int
 	Parent1     int
 	Parent2     int
 	Name        string
@@ -94,4 +94,14 @@ func (f *FeedForward) GetTotalInputs() int {
 // Return true if network has bias
 func (f *FeedForward) HasBias() bool {
 	return f.Bias
+}
+
+// Set the fitness for a network
+func (f *FeedForward) SetFitness(fitness int) {
+	f.Fitness = fitness
+}
+
+// Get the fitness for a network
+func (f *FeedForward) GetFitness() int {
+	return f.Fitness
 }

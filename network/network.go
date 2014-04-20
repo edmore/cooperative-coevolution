@@ -7,4 +7,6 @@ type Network interface {
 	GetHiddenUnits() []*neuron.Neuron
 	GetTotalInputs() int
 	HasBias() bool
+	SetFitness(int)
+	GetFitness() int
 }
