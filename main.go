@@ -36,8 +36,9 @@ func main() {
 		o int // number of outputs
 	)
 
-	fmt.Printf("Please enter the number of inputs : ")
-	fmt.Scanf("%d", &i)
+	//	fmt.Printf("Please enter the number of inputs : ")
+	//      fmt.Scanf("%d", &i)
+	fmt.Println("Number of inputs is 6 (Markov)")
 	fmt.Printf("Please enter the number of hidden units : ")
 	fmt.Scanf("%d", &h)
 	fmt.Printf("Please enter the number of outputs : ")
@@ -46,6 +47,7 @@ func main() {
 	fmt.Scanf("%d", &n)
 
 	bestFitness := 0
+	i = 6
 
 	for bestFitness < maxFitness {
 		// INITIALIZATION
