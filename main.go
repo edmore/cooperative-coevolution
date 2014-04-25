@@ -14,7 +14,10 @@ type Evaluator interface {
 	evaluate(environment.Environment, network.Network)
 }
 
-var maxFitness int = 100000 // the maximum fitness in time steps
+var (
+	maxFitness     int = 100000 // the maximum fitness in time steps
+	maxGenerations int = 10000
+)
 
 // Initialize subpopulations
 func initialize(h int, n int, s int) []*population.Population {
@@ -47,14 +50,15 @@ func main() {
 	fmt.Scanf("%d", &n)
 
 	bestFitness := 0
+	generations := 0
 	i = 6
 
-	for bestFitness < maxFitness {
-		// INITIALIZATION
-		// TODO - work out whether using the network genesize is the best way to do this
-		subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
-		//fmt.Println(subpops)
+	// INITIALIZATION
+	// TODO - work out whether using the network genesize is the best way to do this
+	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
 
+	for bestFitness < maxFitness || generations < maxGenerations {
+		generations++
 		numTrials := 10 * n
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
@@ -89,6 +93,6 @@ func main() {
 		// else BURST_MUTATE()
 
 		// RECOMBINATION
-		// sort neurons - mate and mutate
+		// sort neurons, mate and mutate
 	}
 }
