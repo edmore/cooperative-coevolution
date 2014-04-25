@@ -74,6 +74,7 @@ func main() {
 			select {
 			case n := <-ch:
 				// You can define a setter method for setting the neuron fitness
+				// Best network and best fitness can also be determined here
 				fmt.Println(n.GetFitness())
 			case <-time.After(500 * time.Millisecond):
 				return
