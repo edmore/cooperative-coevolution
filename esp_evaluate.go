@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 )
@@ -11,7 +10,7 @@ var ch = make(chan network.Network)
 // Evaluate the network in the trial environment
 func evaluate(e environment.Environment, n network.Network) {
 	fitness := 0
-	outputs := make([]float64, 0)
+	// outputs := make([]float64, 0)
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
 		state := e.GetState()
 		input := make([]float64, n.GetTotalInputs())
@@ -26,7 +25,7 @@ func evaluate(e environment.Environment, n network.Network) {
 			input[6] = 0.5 // bias
 		}
 		output := n.Activate(input)
-		outputs = append(outputs, output[0])
+		//	outputs = append(outputs, output[0])
 		e.PerformAction(output[0])
 		fitness++
 	}
@@ -36,6 +35,6 @@ func evaluate(e environment.Environment, n network.Network) {
 	// neurons that participated in trial.
 	// beware of race conditions when adding the fitness
 	// to each neuron needs to be synchronized.
-	fmt.Println(outputs)
+	//	fmt.Println(outputs)
 	ch <- n
 }
