@@ -80,6 +80,7 @@ func main() {
 				// You can define a setter method for setting the neuron fitness
 				// Best network and best fitness can also be determined here
 				network.SetNeuronFitness()
+				fmt.Println(network.GetHiddenUnits()[0])
 			case <-time.After(50 * time.Millisecond):
 				return
 			}

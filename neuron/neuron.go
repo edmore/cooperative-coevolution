@@ -13,7 +13,7 @@ type Neuron struct {
 	Weight   []float64
 	Lesioned bool
 	Trials   int
-	Fitness  float64
+	Fitness  int
 	Tag      bool
 	Parent1  int
 	Parent2  int
@@ -42,7 +42,7 @@ func (n *Neuron) Create() {
 }
 
 // Set the (cumulative) fitness for the neuron
-func (n *Neuron) SetFitness(fitness float64) {
+func (n *Neuron) SetFitness(fitness int) {
 	n.Fitness = n.Fitness + fitness
 }
 

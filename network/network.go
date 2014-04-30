@@ -9,4 +9,5 @@ type Network interface {
 	HasBias() bool
 	SetFitness(int)
 	GetFitness() int
+	SetNeuronFitness()
 }
