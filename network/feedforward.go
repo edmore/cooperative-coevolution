@@ -105,3 +105,11 @@ func (f *FeedForward) SetFitness(fitness int) {
 func (f *FeedForward) GetFitness() int {
 	return f.Fitness
 }
+
+// Increment the cumulative fitness and trials for the network neurons
+func (f *FeedForward) SetNeuronFitness() {
+	for _, neuron := range f.HiddenUnits {
+		neuron.Fitness = neuron.Fitness + f.Fitness
+		neuron.Trials++
+	}
+}

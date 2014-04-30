@@ -76,11 +76,11 @@ func main() {
 		// if fitness > bestFitness ... save bestFitness
 		for {
 			select {
-			case n := <-ch:
+			case network := <-ch:
 				// You can define a setter method for setting the neuron fitness
 				// Best network and best fitness can also be determined here
-				fmt.Println(n.GetFitness())
-			case <-time.After(500 * time.Millisecond):
+				network.SetNeuronFitness()
+			case <-time.After(50 * time.Millisecond):
 				return
 			}
 		}
@@ -94,5 +94,7 @@ func main() {
 
 		// RECOMBINATION
 		// sort neurons, mate and mutate
+
+		// Sort neurons
 	}
 }
