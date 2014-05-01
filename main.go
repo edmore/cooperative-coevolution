@@ -15,8 +15,8 @@ type Evaluator interface {
 }
 
 var (
-	maxFitness     int = 100000 // the maximum fitness in time steps
-	maxGenerations int = 10000
+	maxFitness  int = 100000 // the maximum fitness in time steps
+	bestNetwork network.Network
 )
 
 // Initialize subpopulations
@@ -33,10 +33,11 @@ func initialize(h int, n int, s int) []*population.Population {
 
 func main() {
 	var (
-		h int // number of hidden units / subpopulations
-		n int // number of neuron chromosomes per subpopulation
-		i int // number of inputs
-		o int // number of outputs
+		h              int // number of hidden units / subpopulations
+		n              int // number of neuron chromosomes per subpopulation
+		i              int // number of inputs
+		o              int // number of outputs
+		maxGenerations int // maximum generations
 	)
 
 	//	fmt.Printf("Please enter the number of inputs : ")
@@ -49,6 +50,9 @@ func main() {
 	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
 	fmt.Scanf("%d", &n)
 
+	fmt.Printf("Please enter the max generations : ")
+	fmt.Scanf("%d", &maxGenerations)
+
 	bestFitness := 0
 	generations := 0
 	i = 6
@@ -57,7 +61,8 @@ func main() {
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
 
-	for bestFitness < maxFitness || generations < maxGenerations {
+	for bestFitness < maxFitness && generations < maxGenerations {
+		fmt.Println(bestFitness)
 		generations++
 		numTrials := 10 * n
 		// EVALUATION
@@ -65,27 +70,26 @@ func main() {
 			// Build the network
 			feedForward := network.NewFeedForward(i, h, o, true)
 			feedForward.Create(subpops)
-
 			// Evaluate the network in the environment(e)
 			e := environment.NewCartpole()
 			e.Reset()
 			go evaluate(e, feedForward)
 		}
-		// block to add fitness to each neuron and ...
-		// also save bestFitness (and probably best-network)
-		// if fitness > bestFitness ... save bestFitness
+	OuterForSelect:
 		for {
 			select {
 			case network := <-ch:
-				// You can define a setter method for setting the neuron fitness
-				// Best network and best fitness can also be determined here
 				network.SetNeuronFitness()
-				fmt.Println(network.GetHiddenUnits()[0])
-			case <-time.After(50 * time.Millisecond):
-				return
+				fmt.Println(bestFitness, network.GetFitness())
+				if network.GetFitness() > bestFitness {
+					bestFitness = network.GetFitness()
+					bestNetwork = network
+				}
+			case <-time.After(500 * time.Millisecond):
+				break OuterForSelect
 			}
 		}
-		bestFitness = maxFitness
+		fmt.Println(bestFitness)
 
 		// CHECK STAGNATION
 		// if bestFitness has not improved in b generations
@@ -93,9 +97,7 @@ func main() {
 		// then ADAPT-NETWORK-SIZE()
 		// else BURST_MUTATE()
 
-		// RECOMBINATION
-		// sort neurons, mate and mutate
-
+		// RECOMBINATION - sort neurons, mate and mutate
 		// Sort neurons
 	}
 }
