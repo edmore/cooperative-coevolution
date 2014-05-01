@@ -31,10 +31,6 @@ func evaluate(e environment.Environment, n network.Network) {
 	}
 	// award fitness score to network
 	n.SetFitness(fitness)
-	// add the fitness score to cumulative fitness of
-	// neurons that participated in trial.
-	// beware of race conditions when adding the fitness
-	// to each neuron needs to be synchronized.
 	//	fmt.Println(outputs)
 	ch <- n
 }

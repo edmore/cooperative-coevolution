@@ -49,20 +49,18 @@ func main() {
 	fmt.Scanf("%d", &o)
 	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
 	fmt.Scanf("%d", &n)
-
 	fmt.Printf("Please enter the max generations : ")
 	fmt.Scanf("%d", &maxGenerations)
 
 	bestFitness := 0
 	generations := 0
-	i = 6
+	i = 6 // Double Pole balancing Task (Markov)
 
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
 
 	for bestFitness < maxFitness && generations < maxGenerations {
-		fmt.Println(bestFitness)
 		generations++
 		numTrials := 10 * n
 		// EVALUATION
@@ -80,7 +78,6 @@ func main() {
 			select {
 			case network := <-ch:
 				network.SetNeuronFitness()
-				fmt.Println(bestFitness, network.GetFitness())
 				if network.GetFitness() > bestFitness {
 					bestFitness = network.GetFitness()
 					bestNetwork = network
@@ -89,7 +86,6 @@ func main() {
 				break OuterForSelect
 			}
 		}
-		fmt.Println(bestFitness)
 
 		// CHECK STAGNATION
 		// if bestFitness has not improved in b generations
@@ -98,6 +94,11 @@ func main() {
 		// else BURST_MUTATE()
 
 		// RECOMBINATION - sort neurons, mate and mutate
-		// Sort neurons
+		// Sort neurons in each subpopulation
+		for _, subpop := range subpops {
+			fmt.Println(subpop.Individuals[0].Fitness)
+			subpop.SortNeurons()
+			fmt.Println(subpop.Individuals[0].Fitness)
+		}
 	}
 }
