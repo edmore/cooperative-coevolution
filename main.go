@@ -73,7 +73,7 @@ func main() {
 			e.Reset()
 			go evaluate(e, feedForward)
 		}
-	OuterForSelect:
+	ForSelect:
 		for {
 			select {
 			case network := <-ch:
@@ -83,7 +83,7 @@ func main() {
 					bestNetwork = network
 				}
 			case <-time.After(500 * time.Millisecond):
-				break OuterForSelect
+				break ForSelect
 			}
 		}
 
@@ -94,11 +94,12 @@ func main() {
 		// else BURST_MUTATE()
 
 		// RECOMBINATION - sort neurons, mate and mutate
-		// Sort neurons in each subpopulation
+		// TODO - optional to recombine if you just burst mutated.
 		for _, subpop := range subpops {
-			fmt.Println(subpop.Individuals[0].Fitness)
+			// Sort neurons in each subpopulation
 			subpop.SortNeurons()
-			fmt.Println(subpop.Individuals[0].Fitness)
+			// Mate neurons in each population
 		}
+
 	}
 }
