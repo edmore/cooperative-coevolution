@@ -13,17 +13,17 @@ import (
 
 type Neurons []*neuron.Neuron
 
-// for sorting
+// for sorting neurons by average fitness
 func (s Neurons) Len() int      { return len(s) }
 func (s Neurons) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 
-// ByFitness implements sort.Interface by providing Less and using the Len and
+// ByAvgFitness implements sort.Interface by providing Less and using the Len and
 // Swap methods of the embedded Neurons value.
-type ByFitness struct{ Neurons }
+type ByAvgFitness struct{ Neurons }
 
-func (s ByFitness) Less(i, j int) bool {
+func (s ByAvgFitness) Less(i, j int) bool {
 	// sort in descending order - largest first
-	return s.Neurons[i].Fitness > s.Neurons[j].Fitness
+	return (s.Neurons[i].Fitness / s.Neurons[i].Trials) > (s.Neurons[j].Fitness / s.Neurons[j].Trials)
 }
 
 type Population struct {
@@ -31,7 +31,7 @@ type Population struct {
 	Individuals    Neurons
 	NumIndividuals int
 	Evolvable      bool
-	Numbreed       int
+	Numbreed       int // the number of neurons to breed - top quartile
 	GeneSize       int
 }
 
@@ -67,5 +67,5 @@ func (p *Population) SelectNeuron() *neuron.Neuron {
 
 // Sort neurons in population
 func (p *Population) SortNeurons() {
-	sort.Sort(ByFitness{p.Individuals})
+	sort.Sort(ByAvgFitness{p.Individuals})
 }

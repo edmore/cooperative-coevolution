@@ -98,7 +98,7 @@ func main() {
 		for _, subpop := range subpops {
 			// Sort neurons in each subpopulation
 			subpop.SortNeurons()
-			// Mate neurons in each population
+			// Mate top quartile of neurons in each population
 		}
 
 	}
