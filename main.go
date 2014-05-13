@@ -99,7 +99,9 @@ func main() {
 			// Sort neurons in each subpopulation
 			subpop.SortNeurons()
 			// Mate top quartile of neurons in each population
+			// The top quartile neurons need to be reset as well - fitness and trials
+			subpop.Mate()
+			// Mutate
 		}
-
 	}
 }

@@ -56,3 +56,8 @@ func (n *Neuron) Perturb() {
 	// reset fitness and trials
 	n.Fitness, n.Trials = 0, 0
 }
+
+// Reset Fitness and Trials
+func (n *Neuron) ResetFitness() {
+	n.Fitness, n.Trials = 0, 0
+}
