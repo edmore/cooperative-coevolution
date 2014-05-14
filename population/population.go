@@ -6,6 +6,7 @@ package population
 
 import (
 	"github.com/edmore/esp/neuron"
+	"github.com/edmore/esp/random"
 
 	"math/rand"
 	"sort"
@@ -75,13 +76,14 @@ func (p *Population) SortNeurons() {
 // Mate neurons in population
 func (p *Population) Mate() {
 	var mate int
-	for i := 0; i < 1; i++ {
+	for i := 0; i < p.Numbreed; i++ {
 		// Find mate
 		if i == 0 {
 			mate = rand.Int() % p.Numbreed
 		} else {
 			mate = rand.Int() % i
 		}
+		// replace lower half of population
 		childIndex1 := p.NumIndividuals - (1 + (i * 2))
 		childIndex2 := p.NumIndividuals - (2 + (i * 2))
 		onePointCrossover(p.Individuals[i], p.Individuals[mate], p.Individuals[childIndex1], p.Individuals[childIndex2])
@@ -112,5 +114,11 @@ func onePointCrossover(parent1 *neuron.Neuron, parent2 *neuron.Neuron, child1 *n
 }
 
 // Mutate neurons in population
-func (p *Population) Mutate() {
+func (p *Population) Mutate(m float32) {
+	for i := p.Numbreed * 2; i < p.NumIndividuals; i++ {
+		if rand.Float32() < m {
+			mutationIndex := rand.Int() % p.GeneSize
+			p.Individuals[i].Weight[mutationIndex] = p.Individuals[i].Weight[mutationIndex] + random.Cauchy(0.3)
+		}
+	}
 }
