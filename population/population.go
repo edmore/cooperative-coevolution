@@ -23,10 +23,19 @@ func (s Neurons) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 // Swap methods of the embedded Neurons value.
 type ByAvgFitness struct{ Neurons }
 
+// sort in descending order - largest first
 func (s ByAvgFitness) Less(i, j int) bool {
-	// sort in descending order - largest first
+	//prevent division by zero
+	divisor1 := s.Neurons[i].Trials
+	divisor2 := s.Neurons[j].Trials
+	if divisor1 == 0 {
+		divisor1 = 1
+	}
+	if divisor2 == 0 {
+		divisor2 = 1
+	}
 	//	fmt.Println(s.Neurons[i].Fitness, s.Neurons[i].Trials, s.Neurons[j].Fitness, s.Neurons[j].Trials)
-	return (s.Neurons[i].Fitness / s.Neurons[i].Trials) > (s.Neurons[j].Fitness / s.Neurons[j].Trials)
+	return (s.Neurons[i].Fitness / divisor1) > (s.Neurons[j].Fitness / divisor2)
 }
 
 type Population struct {
