@@ -63,8 +63,6 @@ func (p *Population) Create() {
 // Select a neuron at random
 func (p *Population) SelectNeuron() *neuron.Neuron {
 	index := rand.Int() % p.NumIndividuals
-	// Reset the fitness and trials
-	p.Individuals[index].ResetFitness()
 	return p.Individuals[index]
 }
 
