@@ -8,6 +8,7 @@ import (
 	"github.com/edmore/esp/neuron"
 	"github.com/edmore/esp/random"
 
+	//	"fmt"
 	"math/rand"
 	"sort"
 )
@@ -24,6 +25,7 @@ type ByAvgFitness struct{ Neurons }
 
 func (s ByAvgFitness) Less(i, j int) bool {
 	// sort in descending order - largest first
+	//	fmt.Println(s.Neurons[i].Fitness, s.Neurons[i].Trials, s.Neurons[j].Fitness, s.Neurons[j].Trials)
 	return (s.Neurons[i].Fitness / s.Neurons[i].Trials) > (s.Neurons[j].Fitness / s.Neurons[j].Trials)
 }
 
