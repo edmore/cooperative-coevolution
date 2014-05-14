@@ -33,11 +33,12 @@ func initialize(h int, n int, s int) []*population.Population {
 
 func main() {
 	var (
-		h              int // number of hidden units / subpopulations
-		n              int // number of neuron chromosomes per subpopulation
-		i              int // number of inputs
-		o              int // number of outputs
-		maxGenerations int // maximum generations
+		h              int     // number of hidden units / subpopulations
+		n              int     // number of neuron chromosomes per subpopulation
+		i              int     // number of inputs
+		o              int     // number of outputs
+		maxGenerations int     // maximum generations
+		mutationRate   float32 // rate of mutation
 	)
 
 	//	fmt.Printf("Please enter the number of inputs : ")
@@ -51,10 +52,12 @@ func main() {
 	fmt.Scanf("%d", &n)
 	fmt.Printf("Please enter the max generations : ")
 	fmt.Scanf("%d", &maxGenerations)
+	fmt.Printf("Mutation Rate is set at 0.4.\n")
 
 	bestFitness := 0
 	generations := 0
 	i = 6 // Double Pole balancing Task (Markov)
+	mutationRate = 0.4
 
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
@@ -86,6 +89,7 @@ func main() {
 				break ForSelect
 			}
 		}
+		fmt.Println(bestFitness)
 
 		// CHECK STAGNATION
 		// if bestFitness has not improved in b generations
@@ -101,7 +105,8 @@ func main() {
 			// Mate top quartile of neurons in each population
 			// The top quartile neurons need to be reset as well - fitness and trials
 			subpop.Mate()
-			// Mutate
+			// Mutate lower half of population
+			subpop.Mutate(mutationRate)
 		}
 	}
 }
