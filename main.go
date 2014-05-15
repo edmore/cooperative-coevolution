@@ -34,7 +34,7 @@ func initialize(h int, n int, s int) []*population.Population {
 func main() {
 	var (
 		h              int     // number of hidden units / subpopulations
-		n              int     // number of neuron chromosomes per subpopulation
+		n              int     // number of individuals per subpopulation
 		i              int     // number of inputs
 		o              int     // number of outputs
 		maxGenerations int     // maximum generations
@@ -48,7 +48,7 @@ func main() {
 	fmt.Scanf("%d", &h)
 	fmt.Printf("Please enter the number of outputs : ")
 	fmt.Scanf("%d", &o)
-	fmt.Printf("Please enter the number of neuron chromosomes per population : ")
+	fmt.Printf("Please enter the number of individuals per population : ")
 	fmt.Scanf("%d", &n)
 	fmt.Printf("Please enter the max generations : ")
 	fmt.Scanf("%d", &maxGenerations)
