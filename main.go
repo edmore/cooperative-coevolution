@@ -89,7 +89,7 @@ func main() {
 				break ForSelect
 			}
 		}
-		fmt.Println(bestFitness)
+		fmt.Printf("Generation %v best fitness is %v\n", generations, bestFitness)
 
 		// CHECK STAGNATION
 		// if bestFitness has not improved in b generations
