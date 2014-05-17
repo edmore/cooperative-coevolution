@@ -110,6 +110,11 @@ func main() {
 		if count == b {
 			stagnated = true
 			fmt.Println("Burst Mutate ...")
+			for index, subpop := range subpops {
+				for _, neuron := range subpop.Individuals {
+					neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
+				}
+			}
 			count = 0
 		}
 

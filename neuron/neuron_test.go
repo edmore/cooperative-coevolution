@@ -38,16 +38,4 @@ func TestSetFitness(t *testing.T) {
 }
 
 func TestPerturb(t *testing.T) {
-	n := NewNeuron(5)
-	n.Create()
-	fmt.Println(n)
-	old_Weight := n.Weight[1]
-
-	n.Perturb()
-	fmt.Println(n)
-	new_Weight := n.Weight[1]
-
-	if old_Weight == new_Weight {
-		t.Errorf("The Weights should be perturbed")
-	}
 }
