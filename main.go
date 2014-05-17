@@ -95,6 +95,7 @@ func main() {
 			}
 		}
 		fmt.Printf("Generation %v best fitness is %v\n", generations, bestFitness)
+		// count so that we determine when to burst mutate
 		if previousBestFitness == bestFitness {
 			count++
 		} else {
@@ -106,7 +107,6 @@ func main() {
 		//   if fitness has not improved after two(2) burst mutations
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
-
 		if count == b {
 			stagnated = true
 			fmt.Println("Burst Mutate ...")
@@ -125,6 +125,7 @@ func main() {
 			}
 		}
 		previousBestFitness = bestFitness
+		// reset stagnation
 		stagnated = false
 	}
 }
