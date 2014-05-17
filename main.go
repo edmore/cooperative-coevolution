@@ -37,12 +37,12 @@ func main() {
 		n              int     // number of individuals per subpopulation
 		i              int     // number of inputs
 		o              int     // number of outputs
+		b              int     // number of generations before burst mutation
 		maxGenerations int     // maximum generations
 		mutationRate   float32 // rate of mutation
+		stagnated      bool
 	)
 
-	//	fmt.Printf("Please enter the number of inputs : ")
-	//      fmt.Scanf("%d", &i)
 	fmt.Println("Number of inputs is 6 (Markov)")
 	fmt.Printf("Please enter the number of hidden units : ")
 	fmt.Scanf("%d", &h)
@@ -53,11 +53,16 @@ func main() {
 	fmt.Printf("Please enter the max generations : ")
 	fmt.Scanf("%d", &maxGenerations)
 	fmt.Printf("Mutation Rate is set at 0.4.\n")
+	fmt.Printf("Burst mutate after how many generations? : ")
+	fmt.Scanf("%d", &b)
 
 	bestFitness := 0
+	previousBestFitness := 0
 	generations := 0
+	count := 0
 	i = 6 // Double Pole balancing Task (Markov)
 	mutationRate = 0.4
+	stagnated = false
 
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
@@ -90,22 +95,36 @@ func main() {
 			}
 		}
 		fmt.Printf("Generation %v best fitness is %v\n", generations, bestFitness)
+		if previousBestFitness == bestFitness {
+			count++
+		} else {
+			count = 0
+		}
 
 		// CHECK STAGNATION
 		// if bestFitness has not improved in b generations
-		// if this is the second consecutive time
-		// then ADAPT-NETWORK-SIZE()
-		// else BURST_MUTATE()
+		//   if fitness has not improved after two(2) burst mutations
+		//   then ADAPT-NETWORK-SIZE()
+		//   else BURST_MUTATE()
+
+		if count == b {
+			stagnated = true
+			fmt.Println("Burst Mutate ...")
+			count = 0
+		}
 
 		// RECOMBINATION - sort neurons, mate and mutate
-		// TODO - optional to recombine if you just burst mutated.
-		for _, subpop := range subpops {
-			// Sort neurons in each subpopulation
-			subpop.SortNeurons()
-			// Mate top quartile of neurons in each population
-			subpop.Mate()
-			// Mutate lower half of population
-			subpop.Mutate(mutationRate)
+		if stagnated == false {
+			for _, subpop := range subpops {
+				// Sort neurons in each subpopulation
+				subpop.SortNeurons()
+				// Mate top quartile of neurons in each population
+				subpop.Mate()
+				// Mutate lower half of population
+				subpop.Mutate(mutationRate)
+			}
 		}
+		previousBestFitness = bestFitness
+		stagnated = false
 	}
 }
