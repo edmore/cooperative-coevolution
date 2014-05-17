@@ -15,7 +15,7 @@ type Evaluator interface {
 }
 
 var (
-	maxFitness  int = 100000 // the maximum fitness in time steps
+	goalFitness int = 100000 // the goal fitness in time steps
 	bestNetwork network.Network
 )
 
@@ -68,7 +68,7 @@ func main() {
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
 
-	for bestFitness < maxFitness && generations < maxGenerations {
+	for bestFitness < goalFitness && generations < maxGenerations {
 		generations++
 		numTrials := 10 * n
 		// EVALUATION
