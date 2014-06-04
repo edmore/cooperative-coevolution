@@ -46,14 +46,14 @@ func main() {
 	fmt.Println("Number of inputs is 6 (Markov)")
 	fmt.Printf("Please enter the number of hidden units : ")
 	fmt.Scanf("%d", &h)
-	fmt.Printf("Please enter the number of outputs : ")
+	fmt.Printf("Please enter the number of output(s) : ")
 	fmt.Scanf("%d", &o)
 	fmt.Printf("Please enter the number of individuals per population : ")
 	fmt.Scanf("%d", &n)
 	fmt.Printf("Please enter the max generations : ")
 	fmt.Scanf("%d", &maxGenerations)
 	fmt.Printf("Mutation Rate is set at 0.4.\n")
-	fmt.Printf("Burst mutate after how many generations? : ")
+	fmt.Printf("Burst mutate after how many constant generations? : ")
 	fmt.Scanf("%d", &b)
 
 	bestFitness := 0
