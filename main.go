@@ -15,8 +15,9 @@ type Evaluator interface {
 }
 
 var (
-	goalFitness int = 100000 // the goal fitness in time steps
-	bestNetwork network.Network
+	goalFitness      int = 100000 // the goal fitness in time steps
+	bestNetwork      network.Network
+	performanceQueue = make([]int, 0)
 )
 
 // Initialize subpopulations
@@ -132,5 +133,8 @@ func main() {
 		previousBestFitness = bestFitness
 		// reset stagnation
 		stagnated = false
+		// Add fitness to performance queue
+		performanceQueue = append(performanceQueue, bestFitness)
+		fmt.Println(performanceQueue)
 	}
 }
