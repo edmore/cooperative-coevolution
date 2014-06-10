@@ -31,6 +31,28 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
+func evaluateLesioned(e environment.Environment, n network.Network) int {
+	fitness := 0
+	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+		state := e.GetState()
+		input := make([]float64, n.GetTotalInputs())
+		input[0] = state.X / 4.8
+		input[1] = state.XDot / 2
+		input[2] = state.Theta1 / 0.52
+		input[3] = state.Theta2 / 0.52
+		input[4] = state.ThetaDot1 / 2
+		input[5] = state.ThetaDot2 / 2
+
+		if n.HasBias() {
+			input[6] = 0.5 // bias
+		}
+		output := n.Activate(input)
+		e.PerformAction(output[0])
+		fitness++
+	}
+	return fitness
+}
+
 func main() {
 	var (
 		h              int     // number of hidden units / subpopulations
@@ -96,7 +118,6 @@ func main() {
 		}
 		fmt.Printf("Generation %v best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
-		fmt.Println(performanceQueue)
 
 		// CHECK STAGNATION
 		// if bestFitness has not improved in b generations
@@ -106,16 +127,43 @@ func main() {
 		if performanceQueue[b+generations] == performanceQueue[generations] {
 			if count == 2 {
 				fmt.Println("Adapting network size ...")
-				count = 0
-			} else {
-				stagnated = true
-				fmt.Println("Burst Mutate ...")
-				for index, subpop := range subpops {
-					for _, neuron := range subpop.Individuals {
-						neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
+				for _, neuron := range bestNetwork.GetHiddenUnits() {
+					neuron.Lesioned = true
+					e := environment.NewCartpole()
+					e.Reset()
+					lesionedFitness := evaluateLesioned(e, bestNetwork)
+					//					fmt.Println("Lesioned Fitness: ", lesionedFitness)
+					// TODO : Determine the threshold to use
+					threshold := 1
+					if lesionedFitness > (bestFitness * threshold) {
+						// Remove the neuron ... it is not needed
+					} else {
+						neuron.Lesioned = false
 					}
 				}
-				count++
+				// if no neuron is removed
+				// add a new population to subpops
+				// increment h
+				if len(subpops) == h {
+					h++
+					fmt.Println("subpops increased to: ", h)
+					p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
+					p.Create()
+					subpops = append(subpops, p)
+				}
+				count = 0
+			} else {
+				// Do not burst mutate just after you adapt the network size
+				if len(bestNetwork.GetHiddenUnits()) == h {
+					fmt.Println("Burst Mutate ...")
+					stagnated = true
+					for index, subpop := range subpops {
+						for _, neuron := range subpop.Individuals {
+							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
+						}
+					}
+					count++
+				}
 			}
 		}
 
