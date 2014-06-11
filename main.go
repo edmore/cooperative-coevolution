@@ -65,16 +65,16 @@ func main() {
 	)
 
 	fmt.Println("Number of inputs is 6 (Markov)")
-	fmt.Printf("Please enter the number of hidden units : ")
+	fmt.Printf("Please enter the number of hidden units (h) : ")
 	fmt.Scanf("%d", &h)
 	fmt.Printf("Please enter the number of output(s) : ")
 	fmt.Scanf("%d", &o)
-	fmt.Printf("Please enter the number of individuals per population : ")
+	fmt.Printf("Please enter the number of individuals per population (n): ")
 	fmt.Scanf("%d", &n)
 	fmt.Printf("Please enter the max generations : ")
 	fmt.Scanf("%d", &maxGenerations)
 	fmt.Printf("Mutation Rate is set at 0.4.\n")
-	fmt.Printf("Burst mutate after how many constant generations? : ")
+	fmt.Printf("Burst mutate after how many constant generations? (b) : ")
 	fmt.Scanf("%d", &b)
 
 	performanceQueue := make([]int, b)
@@ -125,7 +125,7 @@ func main() {
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
 		if performanceQueue[b+generations] == performanceQueue[generations] {
-			stagnated = true
+
 			if count == 2 {
 				fmt.Println("Adapting network size ...")
 				for item, neuron := range bestNetwork.GetHiddenUnits() {
@@ -154,16 +154,15 @@ func main() {
 				if len(subpops) == h {
 					h++
 					fmt.Println("Subpopulations increased to ", h)
-					p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
-					p.Create()
-					subpops = append(subpops, p)
+					//					p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
+					//					p.Create()
+					subpops = append(subpops, subpops[0])
 				}
 				count = 0
 			} else {
-				// Do not burst mutate just after you adapt the network size
+				fmt.Println("Burst Mutate ...")
+				stagnated = true
 				if len(bestNetwork.GetHiddenUnits()) == h {
-					fmt.Println("Burst Mutate ...")
-
 					for index, subpop := range subpops {
 						for _, neuron := range subpop.Individuals {
 							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
