@@ -146,7 +146,7 @@ func main() {
 				// increment h
 				if len(subpops) == h {
 					h++
-					fmt.Println("subpops increased to: ", h)
+					fmt.Println("Subpopulations increased to ", h)
 					p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
 					p.Create()
 					subpops = append(subpops, p)
@@ -162,8 +162,8 @@ func main() {
 							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
 						}
 					}
-					count++
 				}
+				count++
 			}
 		}
 
