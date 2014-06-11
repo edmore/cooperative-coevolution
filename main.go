@@ -128,18 +128,22 @@ func main() {
 			stagnated = true
 			if count == 2 {
 				fmt.Println("Adapting network size ...")
-				for _, neuron := range bestNetwork.GetHiddenUnits() {
+				for item, neuron := range bestNetwork.GetHiddenUnits() {
 					neuron.Lesioned = true
 					lesionedEnviron := environment.NewCartpole()
 					lesionedEnviron.Reset()
-					bestNetwork.ResetActivation()
 
 					lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
 					fmt.Println("Lesioned Fitness: ", lesionedFitness)
 					// TODO : Determine the threshold to use
 					threshold := 1
+
 					if lesionedFitness > (bestFitness * threshold) {
-						// Remove the neuron ... it is not needed
+						// delete subpopulation to subpops
+						//decrement h
+						subpops = append(subpops[:item], subpops[item+1:]...)
+						h--
+						fmt.Println("Subpopulations decreased to ", h)
 					} else {
 						neuron.Lesioned = false
 					}

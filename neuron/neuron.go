@@ -55,9 +55,9 @@ func (n *Neuron) Perturb(bestNeuron *Neuron) {
 		for i := 0; i < len(n.Weight); i++ {
 			n.Weight[i] = bestNeuron.Weight[i] + random.Cauchy(coefficient)
 		}
-		// reset fitness and trials
-		n.Fitness, n.Trials = 0, 0
 	}
+	// reset fitness and trials
+	n.Fitness, n.Trials = 0, 0
 }
 
 // Reset Fitness and Trials
