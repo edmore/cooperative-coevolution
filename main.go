@@ -32,7 +32,7 @@ func initialize(h int, n int, s int) []*population.Population {
 }
 
 func evaluateLesioned(e environment.Environment, n network.Network) int {
-	fitness := 0
+	lesionedFitness := 0
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
 		state := e.GetState()
 		input := make([]float64, n.GetTotalInputs())
@@ -42,15 +42,14 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 		input[3] = state.Theta2 / 0.52
 		input[4] = state.ThetaDot1 / 2
 		input[5] = state.ThetaDot2 / 2
-
 		if n.HasBias() {
 			input[6] = 0.5 // bias
 		}
 		output := n.Activate(input)
 		e.PerformAction(output[0])
-		fitness++
+		lesionedFitness++
 	}
-	return fitness
+	return lesionedFitness
 }
 
 func main() {
@@ -111,6 +110,7 @@ func main() {
 				if network.GetFitness() > bestFitness {
 					bestFitness = network.GetFitness()
 					bestNetwork = network
+					bestNetwork.Tag()
 				}
 			case <-time.After(500 * time.Millisecond):
 				break ForSelect
@@ -125,14 +125,17 @@ func main() {
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
 		if performanceQueue[b+generations] == performanceQueue[generations] {
+			stagnated = true
 			if count == 2 {
 				fmt.Println("Adapting network size ...")
 				for _, neuron := range bestNetwork.GetHiddenUnits() {
 					neuron.Lesioned = true
-					e := environment.NewCartpole()
-					e.Reset()
-					lesionedFitness := evaluateLesioned(e, bestNetwork)
-					//					fmt.Println("Lesioned Fitness: ", lesionedFitness)
+					lesionedEnviron := environment.NewCartpole()
+					lesionedEnviron.Reset()
+					bestNetwork.ResetActivation()
+
+					lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
+					fmt.Println("Lesioned Fitness: ", lesionedFitness)
 					// TODO : Determine the threshold to use
 					threshold := 1
 					if lesionedFitness > (bestFitness * threshold) {
@@ -156,7 +159,7 @@ func main() {
 				// Do not burst mutate just after you adapt the network size
 				if len(bestNetwork.GetHiddenUnits()) == h {
 					fmt.Println("Burst Mutate ...")
-					stagnated = true
+
 					for index, subpop := range subpops {
 						for _, neuron := range subpop.Individuals {
 							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])

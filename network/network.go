@@ -10,4 +10,7 @@ type Network interface {
 	SetFitness(int)
 	GetFitness() int
 	SetNeuronFitness()
+	ResetActivation()
+	ResetFitness()
+	Tag()
 }

@@ -113,3 +113,20 @@ func (f *FeedForward) SetNeuronFitness() {
 		neuron.Trials++
 	}
 }
+
+// Tag best neurons
+func (f *FeedForward) Tag() {
+	for _, neuron := range f.HiddenUnits {
+		neuron.Tag = true
+	}
+}
+
+// Reset the network activation
+func (f *FeedForward) ResetActivation() {
+	f.Activation = make([]float64, len(f.GetHiddenUnits()))
+}
+
+// Reset the network fitness and trials
+func (f *FeedForward) ResetFitness() {
+	f.Fitness, f.Trials = 0, 0
+}

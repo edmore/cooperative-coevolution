@@ -10,7 +10,7 @@ var ch = make(chan network.Network)
 // Evaluate the network in the trial environment
 func evaluate(e environment.Environment, n network.Network) {
 	fitness := 0
-	// outputs := make([]float64, 0)
+	//	outputs := make([]float64, 0)
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
 		state := e.GetState()
 		input := make([]float64, n.GetTotalInputs())
