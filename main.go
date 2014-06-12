@@ -148,10 +148,10 @@ func main() {
 							neuron.Lesioned = false
 						}
 					}
-					// if no neuron is removed
-					// add a new population to subpops
+					// if no neuron was removed
 					// increment h
-					if len(subpops) == h {
+					// add a new population to subpops
+					if len(bestNetwork.GetHiddenUnits()) == h {
 						h++
 						fmt.Println("Subpopulations increased to ", h)
 						p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
