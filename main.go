@@ -31,6 +31,7 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
+// Evaluate a lesioned network
 func evaluateLesioned(e environment.Environment, n network.Network) int {
 	lesionedFitness := 0
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
@@ -90,7 +91,6 @@ func main() {
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
 
 	for bestFitness < goalFitness && generations < maxGenerations {
-
 		numTrials := 10 * n
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
@@ -124,52 +124,51 @@ func main() {
 		//   if fitness has not improved after two(2) burst mutations
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
-		if performanceQueue[b+generations] == performanceQueue[generations] {
+		if len(bestNetwork.GetHiddenUnits()) == h {
+			if performanceQueue[b+generations] == performanceQueue[generations] {
+				if count == 2 {
+					fmt.Println("Adapting network size ...")
+					for item, neuron := range bestNetwork.GetHiddenUnits() {
+						neuron.Lesioned = true
+						lesionedEnviron := environment.NewCartpole()
+						lesionedEnviron.Reset()
 
-			if count == 2 {
-				fmt.Println("Adapting network size ...")
-				for item, neuron := range bestNetwork.GetHiddenUnits() {
-					neuron.Lesioned = true
-					lesionedEnviron := environment.NewCartpole()
-					lesionedEnviron.Reset()
+						lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
+						fmt.Println("Lesioned Fitness: ", lesionedFitness)
+						// TODO : Determine the threshold to use
+						threshold := 1
 
-					lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
-					fmt.Println("Lesioned Fitness: ", lesionedFitness)
-					// TODO : Determine the threshold to use
-					threshold := 1
-
-					if lesionedFitness > (bestFitness * threshold) {
-						// delete subpopulation to subpops
-						//decrement h
-						subpops = append(subpops[:item], subpops[item+1:]...)
-						h--
-						fmt.Println("Subpopulations decreased to ", h)
-					} else {
-						neuron.Lesioned = false
+						if lesionedFitness > (bestFitness * threshold) {
+							// delete subpopulation to subpops
+							//decrement h
+							subpops = append(subpops[:item], subpops[item+1:]...)
+							h--
+							fmt.Println("Subpopulations decreased to ", h)
+						} else {
+							neuron.Lesioned = false
+						}
 					}
-				}
-				// if no neuron is removed
-				// add a new population to subpops
-				// increment h
-				if len(subpops) == h {
-					h++
-					fmt.Println("Subpopulations increased to ", h)
-					//					p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
-					//					p.Create()
-					subpops = append(subpops, subpops[0])
-				}
-				count = 0
-			} else {
-				fmt.Println("Burst Mutate ...")
-				stagnated = true
-				if len(bestNetwork.GetHiddenUnits()) == h {
+					// if no neuron is removed
+					// add a new population to subpops
+					// increment h
+					if len(subpops) == h {
+						h++
+						fmt.Println("Subpopulations increased to ", h)
+						p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
+						p.Create()
+						subpops = append(subpops, p)
+					}
+					count = 0
+				} else {
+					fmt.Println("Burst Mutate ...")
+					stagnated = true
 					for index, subpop := range subpops {
 						for _, neuron := range subpop.Individuals {
 							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
 						}
 					}
+					count++
 				}
-				count++
 			}
 		}
 
