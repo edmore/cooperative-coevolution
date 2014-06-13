@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 
 	"github.com/edmore/esp/environment"
@@ -100,8 +101,10 @@ func main() {
 			// Evaluate the network in the environment(e)
 			e := environment.NewCartpole()
 			e.Reset()
+                	runtime.GOMAXPROCS(2)
 			go evaluate(e, feedForward)
 		}
+	runtime.GOMAXPROCS(1)
 	ForSelect:
 		for {
 			select {
