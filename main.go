@@ -116,7 +116,7 @@ func main() {
 				break ForSelect
 			}
 		}
-		fmt.Printf("Generation %v best fitness is %v\n", generations, bestFitness)
+		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// CHECK STAGNATION
@@ -135,9 +135,8 @@ func main() {
 
 						lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
 						fmt.Println("Lesioned Fitness: ", lesionedFitness)
-						// TODO : Determine the threshold to use
-						threshold := 1
 
+						threshold := 1
 						if lesionedFitness > (bestFitness * threshold) {
 							// delete subpopulation to subpops
 							//decrement h
@@ -185,7 +184,6 @@ func main() {
 		}
 		// reset stagnation
 		stagnated = false
-		// Add fitness to performance queue
 		generations++
 	}
 }
