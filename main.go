@@ -13,11 +13,6 @@ import (
 	"time"
 )
 
-// Evaluator interface
-type Evaluator interface {
-	evaluate(environment.Environment, network.Network)
-}
-
 var (
 	goalFitness int = 100000 // the goal fitness in time steps
 	bestNetwork network.Network
