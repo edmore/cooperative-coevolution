@@ -57,7 +57,10 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 	return lesionedFitness
 }
 
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+var (
+	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+	cpus       = flag.Int("cpus", 1, "number of cpus to use")
+)
 
 func main() {
 	flag.Parse()
@@ -103,7 +106,7 @@ func main() {
 	count := 0
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPu(s) ", defaultCPU)
-	numCPU := runtime.NumCPU()
+	numCPU := *cpus
 	fmt.Println("NumCPu(s) ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
