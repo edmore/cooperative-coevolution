@@ -21,6 +21,8 @@ type Evaluator interface {
 var (
 	goalFitness int = 100000 // the goal fitness in time steps
 	bestNetwork network.Network
+	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
+	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 )
 
 // Initialize subpopulations
@@ -57,11 +59,7 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 	return lesionedFitness
 }
 
-var (
-	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
-	cpus       = flag.Int("cpus", 1, "number of cpus to use")
-)
-
+// Run a batch of evaluations
 func batchEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population) {
 	for x := 0; x < (numTrials / numCPU); x++ {
 		// Build the network
@@ -117,9 +115,9 @@ func main() {
 	stagnated = false
 	count := 0
 	defaultCPU := runtime.GOMAXPROCS(0)
-	fmt.Println("DefaultCPu(s) ", defaultCPU)
+	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
-	fmt.Println("NumCPu(s) ", numCPU)
+	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
@@ -128,6 +126,7 @@ func main() {
 		numTrials := 10 * n
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
+		// Distribute a batch of evaluations across multiple cores/CPUs
 		for y := 0; y < numCPU; y++ {
 			go batchEvals(numTrials, numCPU, i, h, o, subpops)
 		}
