@@ -62,6 +62,18 @@ var (
 	cpus       = flag.Int("cpus", 1, "number of cpus to use")
 )
 
+func batchEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population) {
+	for x := 0; x < (numTrials / numCPU); x++ {
+		// Build the network
+		feedForward := network.NewFeedForward(i, h, o, true)
+		feedForward.Create(subpops)
+		// Evaluate the network in the environment(e)
+		e := environment.NewCartpole()
+		e.Reset()
+		go evaluate(e, feedForward)
+	}
+}
+
 func main() {
 	flag.Parse()
 	if *cpuprofile != "" {
@@ -117,15 +129,7 @@ func main() {
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
 		for y := 0; y < numCPU; y++ {
-			for x := 0; x < (numTrials / numCPU); x++ {
-				// Build the network
-				feedForward := network.NewFeedForward(i, h, o, true)
-				feedForward.Create(subpops)
-				// Evaluate the network in the environment(e)
-				e := environment.NewCartpole()
-				e.Reset()
-				go evaluate(e, feedForward)
-			}
+			go batchEvals(numTrials, numCPU, i, h, o, subpops)
 		}
 	ForSelect:
 		for {
