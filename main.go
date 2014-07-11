@@ -1,13 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"runtime"
-	"time"
-
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
+	"log"
+	"os"
+	"runtime"
+	"runtime/pprof"
+	"time"
 )
 
 // Evaluator interface
@@ -54,7 +57,19 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 	return lesionedFitness
 }
 
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+
 func main() {
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
+
 	var (
 		h              int     // number of hidden units / subpopulations
 		n              int     // number of individuals per subpopulation
@@ -86,7 +101,10 @@ func main() {
 	mutationRate = 0.4
 	stagnated = false
 	count := 0
-
+	defaultCPU := runtime.GOMAXPROCS(0)
+	fmt.Println("DefaultCPu(s) ", defaultCPU)
+	numCPU := runtime.NumCPU()
+	fmt.Println("NumCPu(s) ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
@@ -94,17 +112,18 @@ func main() {
 	for bestFitness < goalFitness && generations < maxGenerations {
 		numTrials := 10 * n
 		// EVALUATION
-		for x := 0; x < numTrials; x++ {
-			// Build the network
-			feedForward := network.NewFeedForward(i, h, o, true)
-			feedForward.Create(subpops)
-			// Evaluate the network in the environment(e)
-			e := environment.NewCartpole()
-			e.Reset()
-                	runtime.GOMAXPROCS(2)
-			go evaluate(e, feedForward)
+		runtime.GOMAXPROCS(numCPU)
+		for y := 0; y < numCPU; y++ {
+			for x := 0; x < (numTrials / numCPU); x++ {
+				// Build the network
+				feedForward := network.NewFeedForward(i, h, o, true)
+				feedForward.Create(subpops)
+				// Evaluate the network in the environment(e)
+				e := environment.NewCartpole()
+				e.Reset()
+				go evaluate(e, feedForward)
+			}
 		}
-	runtime.GOMAXPROCS(1)
 	ForSelect:
 		for {
 			select {
