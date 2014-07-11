@@ -35,9 +35,10 @@ func initialize(h int, n int, s int) []*population.Population {
 // Evaluate a lesioned network
 func evaluateLesioned(e environment.Environment, n network.Network) int {
 	lesionedFitness := 0
+	input := make([]float64, n.GetTotalInputs())
+
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
 		state := e.GetState()
-		input := make([]float64, n.GetTotalInputs())
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
 		input[2] = state.Theta1 / 0.52
