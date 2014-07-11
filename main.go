@@ -126,7 +126,7 @@ func main() {
 		numTrials := 10 * n
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
-		// Distribute a batch of evaluations across multiple cores/CPUs
+		// Distribute a batch of evaluations over multiple cores/CPUs
 		for y := 0; y < numCPU; y++ {
 			go batchEvals(numTrials, numCPU, i, h, o, subpops)
 		}
