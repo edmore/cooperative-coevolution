@@ -55,8 +55,8 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 	return lesionedFitness
 }
 
-// Run a batch of evaluations
-func batchEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population) {
+// Run a split of evaluations
+func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population) {
 	for x := 0; x < (numTrials / numCPU); x++ {
 		// Build the network
 		feedForward := network.NewFeedForward(i, h, o, true)
@@ -122,9 +122,9 @@ func main() {
 		numTrials := 10 * n
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
-		// Distribute a batch of evaluations over multiple cores/CPUs
+		// Distribute a split of evaluations over multiple cores/CPUs
 		for y := 0; y < numCPU; y++ {
-			go batchEvals(numTrials, numCPU, i, h, o, subpops)
+			go splitEvals(numTrials, numCPU, i, h, o, subpops)
 		}
 	ForSelect:
 		for {
