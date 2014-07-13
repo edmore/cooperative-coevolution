@@ -110,6 +110,7 @@ func main() {
 	mutationRate = 0.4
 	stagnated = false
 	count := 0
+	evals := 0
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
@@ -130,6 +131,7 @@ func main() {
 		for {
 			select {
 			case network := <-ch:
+				evals = evals + 1
 				network.SetNeuronFitness()
 				if network.GetFitness() > bestFitness {
 					bestFitness = network.GetFitness()
@@ -140,7 +142,7 @@ func main() {
 				break ForSelect
 			}
 		}
-		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
+		fmt.Printf("Generation %v, evaluations so far %v, best fitness is %v\n", generations, evals, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// CHECK STAGNATION
