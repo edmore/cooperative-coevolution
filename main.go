@@ -1,22 +1,23 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"time"
-
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
+	"log"
+	"os"
+	"runtime"
+	"runtime/pprof"
+	"time"
 )
-
-// Evaluator interface
-type Evaluator interface {
-	evaluate(environment.Environment, network.Network)
-}
 
 var (
 	goalFitness int = 100000 // the goal fitness in time steps
 	bestNetwork network.Network
+	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
+	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 )
 
 // Initialize subpopulations
@@ -34,9 +35,10 @@ func initialize(h int, n int, s int) []*population.Population {
 // Evaluate a lesioned network
 func evaluateLesioned(e environment.Environment, n network.Network) int {
 	lesionedFitness := 0
+	input := make([]float64, n.GetTotalInputs())
+
 	for e.WithinTrackBounds() && e.WithinAngleBounds() {
 		state := e.GetState()
-		input := make([]float64, n.GetTotalInputs())
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
 		input[2] = state.Theta1 / 0.52
@@ -53,7 +55,30 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 	return lesionedFitness
 }
 
+// Run a split of evaluations
+func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population) {
+	for x := 0; x < (numTrials / numCPU); x++ {
+		// Build the network
+		feedForward := network.NewFeedForward(i, h, o, true)
+		feedForward.Create(subpops)
+		// Evaluate the network in the environment(e)
+		e := environment.NewCartpole()
+		e.Reset()
+		go evaluate(e, feedForward)
+	}
+}
+
 func main() {
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
+
 	var (
 		h              int     // number of hidden units / subpopulations
 		n              int     // number of individuals per subpopulation
@@ -85,7 +110,11 @@ func main() {
 	mutationRate = 0.4
 	stagnated = false
 	count := 0
-
+	evals := 0
+	defaultCPU := runtime.GOMAXPROCS(0)
+	fmt.Println("DefaultCPU(s) ", defaultCPU)
+	numCPU := *cpus
+	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
@@ -93,19 +122,16 @@ func main() {
 	for bestFitness < goalFitness && generations < maxGenerations {
 		numTrials := 10 * n
 		// EVALUATION
-		for x := 0; x < numTrials; x++ {
-			// Build the network
-			feedForward := network.NewFeedForward(i, h, o, true)
-			feedForward.Create(subpops)
-			// Evaluate the network in the environment(e)
-			e := environment.NewCartpole()
-			e.Reset()
-			go evaluate(e, feedForward)
+		runtime.GOMAXPROCS(numCPU)
+		// Distribute a split of evaluations over multiple cores/CPUs
+		for y := 0; y < numCPU; y++ {
+			go splitEvals(numTrials, numCPU, i, h, o, subpops)
 		}
 	ForSelect:
 		for {
 			select {
 			case network := <-ch:
+				evals = evals + 1
 				network.SetNeuronFitness()
 				if network.GetFitness() > bestFitness {
 					bestFitness = network.GetFitness()
@@ -116,7 +142,7 @@ func main() {
 				break ForSelect
 			}
 		}
-		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
+		fmt.Printf("Generation %v, evaluations so far %v, best fitness is %v\n", generations, evals, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// CHECK STAGNATION
