@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
 	"github.com/edmore/esp/population"
+
 	"log"
 	"os"
 	"runtime"
 	"runtime/pprof"
-	"time"
 )
 
 var (
@@ -18,6 +19,8 @@ var (
 	bestNetwork network.Network
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
+	ch          = make(chan network.Network)
+	chans       = make([]chan network.Network, 0)
 )
 
 // Initialize subpopulations
@@ -56,7 +59,10 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 }
 
 // Run a split of evaluations
-func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population) {
+func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population, c chan network.Network) {
+	var phaseBestNetwork network.Network
+	phaseBestFitness := 0
+
 	for x := 0; x < (numTrials / numCPU); x++ {
 		// Build the network
 		feedForward := network.NewFeedForward(i, h, o, true)
@@ -64,8 +70,16 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 		// Evaluate the network in the environment(e)
 		e := environment.NewCartpole()
 		e.Reset()
-		go evaluate(e, feedForward)
+		go evaluate(e, feedForward, c)
 	}
+	for x := 0; x < (numTrials / numCPU); x++ {
+		network := <-c
+		if network.GetFitness() > phaseBestFitness {
+			phaseBestFitness = network.GetFitness()
+			phaseBestNetwork = network
+		}
+	}
+	ch <- phaseBestNetwork
 }
 
 func main() {
@@ -110,7 +124,7 @@ func main() {
 	mutationRate = 0.4
 	stagnated = false
 	count := 0
-	evals := 0
+
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
@@ -125,24 +139,20 @@ func main() {
 		runtime.GOMAXPROCS(numCPU)
 		// Distribute a split of evaluations over multiple cores/CPUs
 		for y := 0; y < numCPU; y++ {
-			go splitEvals(numTrials, numCPU, i, h, o, subpops)
+			chans = append(chans, make(chan network.Network))
+			go splitEvals(numTrials, numCPU, i, h, o, subpops, chans[y])
 		}
-	ForSelect:
-		for {
-			select {
-			case network := <-ch:
-				evals = evals + 1
-				network.SetNeuronFitness()
-				if network.GetFitness() > bestFitness {
-					bestFitness = network.GetFitness()
-					bestNetwork = network
-					bestNetwork.Tag()
-				}
-			case <-time.After(500 * time.Millisecond):
-				break ForSelect
+		for z := 0; z < numCPU; z++ {
+			network := <-ch
+			network.SetNeuronFitness()
+			if network.GetFitness() > bestFitness {
+				bestFitness = network.GetFitness()
+				bestNetwork = network
+				bestNetwork.Tag()
 			}
 		}
-		fmt.Printf("Generation %v, evaluations so far %v, best fitness is %v\n", generations, evals, bestFitness)
+
+		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// CHECK STAGNATION
@@ -210,6 +220,8 @@ func main() {
 		}
 		// reset stagnation
 		stagnated = false
+		// reset channels
+		chans = make([]chan network.Network, 0)
 		generations++
 	}
 }
