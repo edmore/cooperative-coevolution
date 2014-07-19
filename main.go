@@ -125,10 +125,11 @@ func main() {
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
+	hiddenUnits := *h
 	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
-	subpops := initialize(*h, *n, network.NewFeedForward(*i, *h, *o, true).GeneSize)
+	subpops := initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 
 	for bestFitness < goalFitness && generations < *maxGens {
 		numTrials := 10 * *n
@@ -138,7 +139,7 @@ func main() {
 		// Distribute a split of evaluations over multiple cores/CPUs
 		for y := 0; y < numCPU; y++ {
 			chans = append(chans, make(chan network.Network))
-			go splitEvals(numTrials, numCPU, *i, *h, *o, subpops, chans[y])
+			go splitEvals(numTrials, numCPU, *i, hiddenUnits, *o, subpops, chans[y])
 		}
 		for z := 0; z < numCPU; z++ {
 			network := <-ch
@@ -158,7 +159,7 @@ func main() {
 		//   if fitness has not improved after two(2) burst mutations
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
-		if len(bestNetwork.GetHiddenUnits()) == *h {
+		if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
 			if performanceQueue[*b+generations] == performanceQueue[generations] {
 				if count == 2 {
 					fmt.Println("Adapting network size ...")
@@ -175,8 +176,8 @@ func main() {
 							// delete subpopulation to subpops
 							//decrement h
 							subpops = append(subpops[:item], subpops[item+1:]...)
-							*h--
-							fmt.Println("Subpopulations decreased to ", *h)
+							hiddenUnits--
+							fmt.Println("Subpopulations decreased to ", hiddenUnits)
 						} else {
 							neuron.Lesioned = false
 						}
@@ -184,10 +185,10 @@ func main() {
 					// if no neuron was removed
 					// increment h
 					// add a new population to subpops
-					if len(bestNetwork.GetHiddenUnits()) == *h {
-						*h++
-						fmt.Println("Subpopulations increased to ", *h)
-						p := population.NewPopulation(*n, network.NewFeedForward(*i, *h, *o, true).GeneSize)
+					if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
+						hiddenUnits++
+						fmt.Println("Subpopulations increased to ", hiddenUnits)
+						p := population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 						p.Create()
 						subpops = append(subpops, p)
 					}
