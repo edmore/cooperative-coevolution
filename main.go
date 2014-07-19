@@ -17,17 +17,27 @@ import (
 var (
 	goalFitness int = 100000 // the goal fitness in time steps
 	bestNetwork network.Network
-	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
-	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
+)
+
+// Flags
+var (
+	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+	cpus       = flag.Int("cpus", 1, "number of cpus to use")
+	h          = flag.Int("h", 10, "number of hidden units / subpopulations")
+	n          = flag.Int("n", 100, "number of individuals per subpopulation")
+	i          = flag.Int("i", 6, " number of inputs")
+	o          = flag.Int("o", 1, "number of outputs")
+	b          = flag.Int("b", 10, "number of generations before burst mutation")
+	maxGens    = flag.Int("maxGens", 100000, "maximum generations")
 )
 
 // Initialize subpopulations
 func initialize(h int, n int, s int) []*population.Population {
 	var pops []*population.Population // population pool
 
-	for i := 0; i < h; i++ {
+	for w := 0; w < h; w++ {
 		p := population.NewPopulation(n, s)
 		p.Create()
 		pops = append(pops, p)
@@ -94,34 +104,21 @@ func main() {
 	}
 
 	var (
-		h              int     // number of hidden units / subpopulations
-		n              int     // number of individuals per subpopulation
-		i              int     // number of inputs
-		o              int     // number of outputs
-		b              int     // number of generations before burst mutation
-		maxGenerations int     // maximum generations
-		mutationRate   float32 // rate of mutation
-		stagnated      bool
+		stagnated    bool
+		mutationRate float32 = 0.4
 	)
 
-	fmt.Println("Number of inputs is 6 (Markov)")
-	fmt.Printf("Please enter the number of hidden units (h) : ")
-	fmt.Scanf("%d", &h)
-	fmt.Printf("Please enter the number of output(s) : ")
-	fmt.Scanf("%d", &o)
-	fmt.Printf("Please enter the number of individuals per population (n): ")
-	fmt.Scanf("%d", &n)
-	fmt.Printf("Please enter the max generations : ")
-	fmt.Scanf("%d", &maxGenerations)
-	fmt.Printf("Mutation Rate is set at 0.4.\n")
-	fmt.Printf("Burst mutate after how many constant generations? (b) : ")
-	fmt.Scanf("%d", &b)
+	fmt.Printf("Number of inputs (i) is %v.\n", *i)
+	fmt.Printf("Number of hidden units (h) is %v.\n", *h)
+	fmt.Printf("Number of output(s) is %v.\n", *o)
+	fmt.Printf("Number of individuals per population (n) is %v.\n", *n)
+	fmt.Printf("Max generations is %v.\n", *maxGens)
+	fmt.Printf("Mutation Rate is set at %v.\n", mutationRate)
+	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
 
-	performanceQueue := make([]int, b)
+	performanceQueue := make([]int, *b)
 	bestFitness := 0
 	generations := 0
-	i = 6 // Double Pole balancing Task (Markov)
-	mutationRate = 0.4
 	stagnated = false
 	count := 0
 
@@ -131,16 +128,17 @@ func main() {
 	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
-	subpops := initialize(h, n, network.NewFeedForward(i, h, o, true).GeneSize)
+	subpops := initialize(*h, *n, network.NewFeedForward(*i, *h, *o, true).GeneSize)
 
-	for bestFitness < goalFitness && generations < maxGenerations {
-		numTrials := 10 * n
+	for bestFitness < goalFitness && generations < *maxGens {
+		numTrials := 10 * *n
+
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
 		// Distribute a split of evaluations over multiple cores/CPUs
 		for y := 0; y < numCPU; y++ {
 			chans = append(chans, make(chan network.Network))
-			go splitEvals(numTrials, numCPU, i, h, o, subpops, chans[y])
+			go splitEvals(numTrials, numCPU, *i, *h, *o, subpops, chans[y])
 		}
 		for z := 0; z < numCPU; z++ {
 			network := <-ch
@@ -160,8 +158,8 @@ func main() {
 		//   if fitness has not improved after two(2) burst mutations
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
-		if len(bestNetwork.GetHiddenUnits()) == h {
-			if performanceQueue[b+generations] == performanceQueue[generations] {
+		if len(bestNetwork.GetHiddenUnits()) == *h {
+			if performanceQueue[*b+generations] == performanceQueue[generations] {
 				if count == 2 {
 					fmt.Println("Adapting network size ...")
 					for item, neuron := range bestNetwork.GetHiddenUnits() {
@@ -177,8 +175,8 @@ func main() {
 							// delete subpopulation to subpops
 							//decrement h
 							subpops = append(subpops[:item], subpops[item+1:]...)
-							h--
-							fmt.Println("Subpopulations decreased to ", h)
+							*h--
+							fmt.Println("Subpopulations decreased to ", *h)
 						} else {
 							neuron.Lesioned = false
 						}
@@ -186,10 +184,10 @@ func main() {
 					// if no neuron was removed
 					// increment h
 					// add a new population to subpops
-					if len(bestNetwork.GetHiddenUnits()) == h {
-						h++
-						fmt.Println("Subpopulations increased to ", h)
-						p := population.NewPopulation(n, network.NewFeedForward(i, h, o, true).GeneSize)
+					if len(bestNetwork.GetHiddenUnits()) == *h {
+						*h++
+						fmt.Println("Subpopulations increased to ", *h)
+						p := population.NewPopulation(*n, network.NewFeedForward(*i, *h, *o, true).GeneSize)
 						p.Create()
 						subpops = append(subpops, p)
 					}
