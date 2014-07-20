@@ -5,10 +5,8 @@ import (
 	"github.com/edmore/esp/network"
 )
 
-var ch = make(chan network.Network)
-
 // Evaluate the network in the trial environment
-func evaluate(e environment.Environment, n network.Network) {
+func evaluate(e environment.Environment, n network.Network, c chan network.Network) {
 	fitness := 0
 	input := make([]float64, n.GetTotalInputs())
 
@@ -30,5 +28,5 @@ func evaluate(e environment.Environment, n network.Network) {
 	}
 	// award fitness score to network
 	n.SetFitness(fitness)
-	ch <- n
+	c <- n
 }
