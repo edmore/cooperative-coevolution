@@ -132,9 +132,8 @@ func main() {
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 
+	numTrials := 10 * *n
 	for bestFitness < *goalFitness && generations < *maxGens {
-		numTrials := 10 * *n
-
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
 		// Distribute a split of evaluations over multiple cores/CPUs
@@ -151,7 +150,7 @@ func main() {
 				bestNetwork.Tag()
 			}
 		}
-
+		runtime.GOMAXPROCS(defaultCPU)
 		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
