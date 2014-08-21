@@ -6,7 +6,7 @@
 package environment
 
 import (
-	"github.com/edmore/esp/rungekutta/rk4"
+	"github.com/edmore/esp/rungekutta/euler"
 
 	"math"
 )
@@ -74,7 +74,7 @@ func (c *Cartpole) PerformAction(action float64) {
 func step(action float64, c *Cartpole) {
 	dt := 0.01 // step size
 	var F float64
-	F = action
+	F = (action - 0.5) * (ForceMag * 2)
 
 	sinTheta1 := math.Sin(c.state.Theta1)
 	cosTheta1 := math.Cos(c.state.Theta1)
@@ -107,23 +107,23 @@ func step(action float64, c *Cartpole) {
 	eq6 := func(x, y float64) float64 { return thetaDotDot2 }
 
 	// update position of cart
-	pt := rk4.NewPoint(0, c.state.X)
+	pt := euler.NewPoint(0, c.state.X)
 	c.state.X = pt.Solve(dt, eq1, Tau)
 
 	// update angles of the poles
-	pt = rk4.NewPoint(0, c.state.Theta1)
+	pt = euler.NewPoint(0, c.state.Theta1)
 	c.state.Theta1 = pt.Solve(dt, eq2, Tau)
-	pt = rk4.NewPoint(0, c.state.Theta2)
+	pt = euler.NewPoint(0, c.state.Theta2)
 	c.state.Theta2 = pt.Solve(dt, eq3, Tau)
 
 	// update velocity of cart
-	pt = rk4.NewPoint(0, c.state.XDot)
+	pt = euler.NewPoint(0, c.state.XDot)
 	c.state.XDot = pt.Solve(dt, eq4, Tau)
 
 	// update angular velocities of the poles
-	pt = rk4.NewPoint(0, c.state.ThetaDot1)
+	pt = euler.NewPoint(0, c.state.ThetaDot1)
 	c.state.ThetaDot1 = pt.Solve(dt, eq5, Tau)
-	pt = rk4.NewPoint(0, c.state.ThetaDot2)
+	pt = euler.NewPoint(0, c.state.ThetaDot2)
 	c.state.ThetaDot2 = pt.Solve(dt, eq6, Tau)
 }
 
