@@ -51,7 +51,7 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 	input := make([]float64, n.GetTotalInputs())
 	output := make([]float64, n.GetTotalOutputs())
 
-	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+	for e.WithinTrackBounds() && e.WithinAngleBounds() && lesionedFitness < *goalFitness {
 		state := e.GetState()
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2

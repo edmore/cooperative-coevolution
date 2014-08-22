@@ -11,7 +11,7 @@ func evaluate(e environment.Environment, n network.Network, c chan network.Netwo
 	input := make([]float64, n.GetTotalInputs())
 	output := make([]float64, n.GetTotalOutputs())
 
-	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+	for e.WithinTrackBounds() && e.WithinAngleBounds() && fitness < *goalFitness {
 		state := e.GetState()
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
