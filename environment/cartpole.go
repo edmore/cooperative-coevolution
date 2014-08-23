@@ -73,7 +73,7 @@ func (c *Cartpole) PerformAction(action float64) {
 // Runge-Kutta Step - approximate state variables at time Tau
 func step(action float64, c *Cartpole) {
 	dt := 0.01 // step size
-	oneOverTwoFiftySix := 0.0390625
+	oneOverTwoFiftySix := 1.0 / 256.0
 	var F float64
 	F = (action - 0.5) * (ForceMag * 2)
 
