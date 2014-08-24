@@ -62,7 +62,7 @@ func NewCartpole() *Cartpole {
 
 // Re-initialize the environment
 func (c *Cartpole) Reset() {
-	c.state.Theta1 = DegToRad // angle of the long pole - 1 degree
+	c.state.Theta1 = 0.07 // angle of the long pole - 4 degrees
 }
 
 // Stores the desired action for the next Runge-Kutta step
@@ -73,8 +73,16 @@ func (c *Cartpole) PerformAction(action float64) {
 // Runge-Kutta Step - approximate state variables at time Tau
 func step(action float64, c *Cartpole) {
 	dt := 0.01 // step size
+	oneOverTwoFiftySix := 1.0 / 256.0
 	var F float64
-	F = action
+	F = (action - 0.5) * (ForceMag * 2)
+
+	if F >= 0 && F < oneOverTwoFiftySix {
+		F = oneOverTwoFiftySix
+	}
+	if F < 0 && F > -oneOverTwoFiftySix {
+		F = -oneOverTwoFiftySix
+	}
 
 	sinTheta1 := math.Sin(c.state.Theta1)
 	cosTheta1 := math.Cos(c.state.Theta1)

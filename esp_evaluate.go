@@ -9,8 +9,9 @@ import (
 func evaluate(e environment.Environment, n network.Network, c chan network.Network) {
 	fitness := 0
 	input := make([]float64, n.GetTotalInputs())
+	output := make([]float64, n.GetTotalOutputs())
 
-	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+	for e.WithinTrackBounds() && e.WithinAngleBounds() && fitness < *goalFitness {
 		state := e.GetState()
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
@@ -22,8 +23,8 @@ func evaluate(e environment.Environment, n network.Network, c chan network.Netwo
 		if n.HasBias() {
 			input[6] = 0.5 // bias
 		}
-		output := n.Activate(input)
-		e.PerformAction(output[0])
+		out := n.Activate(input, output)
+		e.PerformAction(out[0])
 		fitness++
 	}
 	// award fitness score to network

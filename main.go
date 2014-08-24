@@ -15,7 +15,6 @@ import (
 )
 
 var (
-	goalFitness int = 100000 // the goal fitness in time steps
 	bestNetwork network.Network
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
@@ -23,14 +22,15 @@ var (
 
 // Flags
 var (
-	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
-	cpus       = flag.Int("cpus", 1, "number of cpus to use")
-	h          = flag.Int("h", 10, "number of hidden units / subpopulations")
-	n          = flag.Int("n", 100, "number of individuals per subpopulation")
-	i          = flag.Int("i", 6, " number of inputs")
-	o          = flag.Int("o", 1, "number of outputs")
-	b          = flag.Int("b", 10, "number of generations before burst mutation")
-	maxGens    = flag.Int("maxGens", 100000, "maximum generations")
+	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
+	cpus        = flag.Int("cpus", 1, "number of cpus to use")
+	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
+	n           = flag.Int("n", 100, "number of individuals per subpopulation")
+	i           = flag.Int("i", 6, " number of inputs")
+	o           = flag.Int("o", 1, "number of outputs")
+	b           = flag.Int("b", 10, "number of generations before burst mutation")
+	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
+	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
 )
 
 // Initialize subpopulations
@@ -49,8 +49,9 @@ func initialize(h int, n int, s int) []*population.Population {
 func evaluateLesioned(e environment.Environment, n network.Network) int {
 	lesionedFitness := 0
 	input := make([]float64, n.GetTotalInputs())
+	output := make([]float64, n.GetTotalOutputs())
 
-	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+	for e.WithinTrackBounds() && e.WithinAngleBounds() && lesionedFitness < *goalFitness {
 		state := e.GetState()
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
@@ -61,8 +62,8 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 		if n.HasBias() {
 			input[6] = 0.5 // bias
 		}
-		output := n.Activate(input)
-		e.PerformAction(output[0])
+		out := n.Activate(input, output)
+		e.PerformAction(out[0])
 		lesionedFitness++
 	}
 	return lesionedFitness
@@ -131,9 +132,8 @@ func main() {
 	// TODO - work out whether using the network genesize is the best way to do this
 	subpops := initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 
-	for bestFitness < goalFitness && generations < *maxGens {
-		numTrials := 10 * *n
-
+	numTrials := 10 * *n
+	for bestFitness < *goalFitness && generations < *maxGens {
 		// EVALUATION
 		runtime.GOMAXPROCS(numCPU)
 		// Distribute a split of evaluations over multiple cores/CPUs
@@ -150,7 +150,7 @@ func main() {
 				bestNetwork.Tag()
 			}
 		}
-
+		runtime.GOMAXPROCS(defaultCPU)
 		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
@@ -172,9 +172,9 @@ func main() {
 						fmt.Println("Lesioned Fitness: ", lesionedFitness)
 
 						threshold := 1
-						if lesionedFitness > (bestFitness * threshold) {
+						if lesionedFitness > (bestFitness*threshold) && len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
 							// delete subpopulation to subpops
-							//decrement h
+							// decrement h
 							subpops = append(subpops[:item], subpops[item+1:]...)
 							hiddenUnits--
 							fmt.Println("Subpopulations decreased to ", hiddenUnits)

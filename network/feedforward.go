@@ -49,8 +49,7 @@ func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 }
 
 // Activate
-func (f *FeedForward) Activate(input []float64) []float64 {
-	output := make([]float64, f.NumOutputs)
+func (f *FeedForward) Activate(input []float64, output []float64) []float64 {
 	// input layer -> hidden layer
 	for key, neuron := range f.HiddenUnits {
 		if !neuron.Lesioned {
@@ -89,6 +88,11 @@ func (f *FeedForward) GetTotalInputs() int {
 	} else {
 		return f.NumInputs
 	}
+}
+
+// Return the total number of outputs
+func (f *FeedForward) GetTotalOutputs() int {
+	return f.NumOutputs
 }
 
 // Return true if network has bias
