@@ -25,7 +25,7 @@ var (
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
-	n           = flag.Int("n", 100, "number of individuals per subpopulation")
+	n           = flag.Int("n", 20, "number of individuals per subpopulation")
 	i           = flag.Int("i", 6, " number of inputs")
 	o           = flag.Int("o", 1, "number of outputs")
 	b           = flag.Int("b", 10, "number of generations before burst mutation")
