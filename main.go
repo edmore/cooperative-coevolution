@@ -123,6 +123,7 @@ func main() {
 	stagnated = false
 	count := 0
 
+	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
