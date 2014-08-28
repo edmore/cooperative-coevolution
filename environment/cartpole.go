@@ -77,11 +77,11 @@ func step(action float64, c *Cartpole) {
 	var F float64
 	F = (action - 0.5) * (ForceMag * 2)
 
-	if F >= 0 && F < oneOverTwoFiftySix {
-		F = oneOverTwoFiftySix
+	if F >= 0 && F < (oneOverTwoFiftySix*ForceMag) {
+		F = (oneOverTwoFiftySix * ForceMag)
 	}
-	if F < 0 && F > -oneOverTwoFiftySix {
-		F = -oneOverTwoFiftySix
+	if F < 0 && F > (-oneOverTwoFiftySix*ForceMag) {
+		F = (-oneOverTwoFiftySix * ForceMag)
 	}
 
 	sinTheta1 := math.Sin(c.state.Theta1)
