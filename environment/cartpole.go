@@ -92,11 +92,11 @@ func step(action float64, c *Cartpole) {
 	cosTheta2 := math.Cos(c.state.Theta2)
 	gSinTheta2 := Gravity * sinTheta2
 
-	temp1 := c.Up * c.state.Theta1 / c.Length1 * c.MassPole1
-	temp2 := c.Up * c.state.Theta2 / c.Length2 * c.MassPole2
-	fi1 := (c.Length1 * c.MassPole1 * math.Pow(c.state.Theta1, 2) * sinTheta1) +
+	temp1 := (c.Up * c.state.ThetaDot1) / (c.Length1 * c.MassPole1)
+	temp2 := (c.Up * c.state.ThetaDot2) / (c.Length2 * c.MassPole2)
+	fi1 := (c.Length1 * c.MassPole1 * math.Pow(c.state.ThetaDot1, 2) * sinTheta1) +
 		(0.75 * c.MassPole1 * cosTheta1 * (temp1 + gSinTheta1))
-	fi2 := (c.Length2 * c.MassPole2 * math.Pow(c.state.Theta2, 2) * sinTheta2) +
+	fi2 := (c.Length2 * c.MassPole2 * math.Pow(c.state.ThetaDot2, 2) * sinTheta2) +
 		(0.75 * c.MassPole2 * cosTheta2 * (temp2 + gSinTheta2))
 	mi1 := c.MassPole1 * (1 - (0.75 * math.Pow(cosTheta1, 2)))
 	mi2 := c.MassPole2 * (1 - (0.75 * math.Pow(cosTheta2, 2)))
