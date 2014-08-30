@@ -5,15 +5,14 @@ import (
 	"github.com/edmore/esp/network"
 )
 
-var ch = make(chan network.Network)
-
 // Evaluate the network in the trial environment
-func evaluate(e environment.Environment, n network.Network) {
+func evaluate(e environment.Environment, n network.Network, c chan network.Network) {
 	fitness := 0
-	//	outputs := make([]float64, 0)
-	for e.WithinTrackBounds() && e.WithinAngleBounds() {
+	input := make([]float64, n.GetTotalInputs())
+	output := make([]float64, n.GetTotalOutputs())
+
+	for e.WithinTrackBounds() && e.WithinAngleBounds() && fitness < *goalFitness {
 		state := e.GetState()
-		input := make([]float64, n.GetTotalInputs())
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
 		input[2] = state.Theta1 / 0.52
@@ -24,13 +23,11 @@ func evaluate(e environment.Environment, n network.Network) {
 		if n.HasBias() {
 			input[6] = 0.5 // bias
 		}
-		output := n.Activate(input)
-		//	outputs = append(outputs, output[0])
-		e.PerformAction(output[0])
+		out := n.Activate(input, output)
+		e.PerformAction(out[0])
 		fitness++
 	}
 	// award fitness score to network
 	n.SetFitness(fitness)
-	//	fmt.Println(outputs)
-	ch <- n
+	c <- n
 }
