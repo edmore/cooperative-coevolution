@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
 	"github.com/edmore/esp/environment"
 	"github.com/edmore/esp/network"
@@ -22,6 +23,7 @@ var (
 
 // Flags
 var (
+	simulation  = flag.Bool("sim", false, "simulate best network on task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
@@ -91,6 +93,39 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 		}
 	}
 	ch <- phaseBestNetwork
+}
+
+// Simulation server functions
+func viewHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Double Pole Balancing Simulation")
+}
+
+func startHandler(w http.ResponseWriter, r *http.Request) {
+	simulatedFitness := 0
+	input := make([]float64, bestNetwork.GetTotalInputs())
+	output := make([]float64, bestNetwork.GetTotalOutputs())
+
+	e := environment.NewCartpole()
+	e.Reset()
+	log.Println("Starting simulation ...")
+	fmt.Fprintf(w, "Running simulation ...")
+
+	for simulatedFitness < *goalFitness {
+		state := e.GetState()
+		fmt.Println(state)
+		input[0] = state.X / 4.8
+		input[1] = state.XDot / 2
+		input[2] = state.Theta1 / 0.52
+		input[3] = state.Theta2 / 0.52
+		input[4] = state.ThetaDot1 / 2
+		input[5] = state.ThetaDot2 / 2
+		if bestNetwork.HasBias() {
+			input[6] = 0.5 // bias
+		}
+		out := bestNetwork.Activate(input, output)
+		e.PerformAction(out[0])
+		simulatedFitness++
+	}
 }
 
 func main() {
@@ -223,5 +258,15 @@ func main() {
 		// reset channels
 		chans = make([]chan network.Network, 0)
 		generations++
+	}
+
+	// Start Webserver for simulation
+	if *simulation != false {
+		log.Println("Starting simulation server ...")
+		fmt.Println(bestNetwork)
+		http.HandleFunc("/", viewHandler)
+		http.HandleFunc("/start/", startHandler)
+		http.ListenAndServe(":8080", nil)
+
 	}
 }
