@@ -4,6 +4,11 @@
 // Simulation variables
 float X;
 
+void update(int x){
+X+=x;
+}
+
+
 void setup()
 {
   size(480, 200);
@@ -14,7 +19,6 @@ void setup()
 
 void draw()
 {
-  //X+=2
   background(102);
   drawPoles();
   drawCart();
@@ -41,11 +45,15 @@ void drawCart(){
 }
 </script>
 <canvas id="mycanvas"></canvas>
-
 <script type="text/javascript">
-// better to have a button call this code ...
-var pjs = Processing.getInstanceById("mycanvas");
-pjs.draw();
-var data = $.get("/browser/json/states.json");
-console.log(data);
+function sketch(id){
+    var data = $.get("/browser/json/states.json");
+    console.log(data);
+    var pjs = Processing.getInstanceById(id);
+
+    // loop and update state variables
+    pjs.update(2);
+    pjs.draw();
+}
 </script>
+<div id="controller"><button type="button" id="sketch" onclick="sketch('mycanvas')">Simulate</button></div>
