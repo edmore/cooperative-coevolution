@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/edmore/esp/environment"
@@ -95,24 +97,22 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 	ch <- phaseBestNetwork
 }
 
-// Simulation server functions
-func viewHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Double Pole Balancing Simulation")
-}
-
-func startHandler(w http.ResponseWriter, r *http.Request) {
+// Create the json file for use in simulation
+func createJSON() {
 	simulatedFitness := 0
 	input := make([]float64, bestNetwork.GetTotalInputs())
 	output := make([]float64, bestNetwork.GetTotalOutputs())
+	var state *environment.State
+	states := make([]environment.State, 0)
 
-	e := environment.NewCartpole()
-	e.Reset()
-	log.Println("Starting simulation ...")
-	fmt.Fprintf(w, "Running simulation ...")
+	simEnviron := environment.NewCartpole()
+	simEnviron.Reset()
 
 	for simulatedFitness < *goalFitness {
-		state := e.GetState()
-		fmt.Println(state)
+		state = simEnviron.GetState()
+		// push state into states slice
+		states = append(states, *state)
+		// Proceed to next state
 		input[0] = state.X / 4.8
 		input[1] = state.XDot / 2
 		input[2] = state.Theta1 / 0.52
@@ -123,8 +123,17 @@ func startHandler(w http.ResponseWriter, r *http.Request) {
 			input[6] = 0.5 // bias
 		}
 		out := bestNetwork.Activate(input, output)
-		e.PerformAction(out[0])
+		simEnviron.PerformAction(out[0])
 		simulatedFitness++
+	}
+	// write the states to a json file
+	b, err := json.Marshal(states)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	err = ioutil.WriteFile("simulation/browser/json/states.json", b, 0644)
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -262,11 +271,9 @@ func main() {
 
 	// Start Webserver for simulation
 	if *simulation != false {
+		// write states to file
+		createJSON()
 		log.Println("Starting simulation server ...")
-		fmt.Println(bestNetwork)
-		http.HandleFunc("/", viewHandler)
-		http.HandleFunc("/start/", startHandler)
-		http.ListenAndServe(":8080", nil)
-
+		log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("simulation"))))
 	}
 }

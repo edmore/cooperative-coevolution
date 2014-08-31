@@ -62,7 +62,8 @@ func NewCartpole() *Cartpole {
 
 // Re-initialize the environment
 func (c *Cartpole) Reset() {
-	c.state.Theta1 = 0.07 // angle of the long pole - 4 degrees
+	c.state.Theta1 = 0.07   // angle of the long pole - 4 degrees
+	c.state.ThetaDot1 = 0.7 // angle of the long pole - 4 degrees
 }
 
 // Stores the desired action for the next Runge-Kutta step
