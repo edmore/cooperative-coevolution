@@ -1,1 +1,51 @@
-hello
+<script type="text/javascript" src="browser/js/jquery.js"></script>
+<script src="browser/js/processing.min.js"></script>
+<script type="text/processing" data-processing-target="mycanvas">
+// Simulation variables
+float X;
+
+void setup()
+{
+  size(480, 200);
+  rectMode(CORNERS);
+  noStroke();
+  noLoop();
+}
+
+void draw()
+{
+  //X+=2
+  background(102);
+  drawPoles();
+  drawCart();
+  println(X);
+}
+
+void drawPoles()
+{
+  stroke(255);
+  // short pole
+  strokeWeight(4);
+  // should be like 0.1m for short pole
+  line(240+X, 120, 240+X, 150);
+
+  // long pole
+  strokeWeight(4);
+  line(260+X, 50, 240+X, 150);
+}
+
+void drawCart(){
+  fill(0.2);
+  rectMode(CORNER);
+  rect(190+X, 150, 100, 50);
+}
+</script>
+<canvas id="mycanvas"></canvas>
+
+<script type="text/javascript">
+// better to have a button call this code ...
+var pjs = Processing.getInstanceById("mycanvas");
+pjs.draw();
+var data = $.get("/browser/json/states.json");
+console.log(data);
+</script>
