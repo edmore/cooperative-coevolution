@@ -4,8 +4,9 @@
 // Simulation variables
 float X;
 
-void update(int x){
-X+=x;
+void update(float x){
+    // the simulation track is in cm (480cm)
+    X+=(x*100);
 }
 
 
@@ -47,13 +48,15 @@ void drawCart(){
 <canvas id="mycanvas"></canvas>
 <script type="text/javascript">
 function sketch(id){
-    var data = $.get("/browser/json/states.json");
-    console.log(data);
     var pjs = Processing.getInstanceById(id);
+    $.getJSON( "/browser/json/states.json", function( data ) {
 
-    // loop and update state variables
-    pjs.update(2);
-    pjs.draw();
+    for (var i = 0; i < data.length; i++){
+        console.log(data[i])
+        pjs.update(data[i].X);
+        pjs.draw();
+    }
+     });
 }
 </script>
 <div id="controller"><button type="button" id="sketch" onclick="sketch('mycanvas')">Simulate</button></div>
