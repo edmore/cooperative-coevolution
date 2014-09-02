@@ -19,7 +19,7 @@ void setup()
 
 void draw()
 {
-  background(102);
+ background(102);
   drawPoles();
   drawCart();
   println(X);
@@ -53,9 +53,9 @@ function sketch(id){
     for (var i = 0; i < data.length; i++){
         console.log(data[i])
         pjs.update(data[i].X);
-        pjs.draw();
-    }
-     });
+        pjs.redraw();
+   }
+  });
 }
 </script>
 <div id="controller"><button type="button" id="sketch" onclick="sketch('mycanvas')">Simulate</button></div>
