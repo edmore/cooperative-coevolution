@@ -2,7 +2,9 @@
 <script src="js/processing.min.js"></script>
 <script type="text/processing" data-processing-target="mycanvas">
 // Simulation variables
-float X;
+float X; // position of cart
+float Theta1 = 0.62; //long pole angle
+float Theta2 = 0; //long pole angle
 
 void update(float x){
     // the simulation track is in cm (480cm)
@@ -30,12 +32,18 @@ void drawPoles()
   stroke(255);
   // short pole
   strokeWeight(4);
-  // should be like 0.1m for short pole
-  line(240+X, 120, 240+X, 150);
+  // short pole
+  pushMatrix();
+  rotate(radians(Theta2), 0);
+  line(240+X, 140, 240+X, 150);
+  popMatrix();
 
   // long pole
   strokeWeight(4);
-  line(260+X, 50, 240+X, 150);
+  pushMatrix();
+  rotate(radians(Theta1), 0);
+  line(260+X, 50, 260+X, 150);
+  popMatrix();
 }
 
 void drawCart(){
