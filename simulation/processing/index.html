@@ -1,5 +1,5 @@
-<script type="text/javascript" src="browser/js/jquery.js"></script>
-<script src="browser/js/processing.min.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script src="js/processing.min.js"></script>
 <script type="text/processing" data-processing-target="mycanvas">
 // Simulation variables
 float X;
@@ -48,10 +48,10 @@ void drawCart(){
 <script type="text/javascript">
 function sketch(id){
     var pjs = Processing.getInstanceById(id);
-    $.getJSON( "/browser/json/states.json", function( data ) {
+    $.getJSON( "json/states.json", function( data ) {
 
     for (var i = 0; i < data.length; i++){
-        console.log(data[i])
+        console.log(data[i]);
         pjs.update(data[i].X);
         pjs.redraw();
    }

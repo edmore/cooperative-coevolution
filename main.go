@@ -131,7 +131,7 @@ func createJSON() {
 	if err != nil {
 		fmt.Println("error:", err)
 	}
-	err = ioutil.WriteFile("simulation/browser/json/states.json", b, 0644)
+	err = ioutil.WriteFile("simulation/processing/json/states.json", b, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -274,6 +274,6 @@ func main() {
 		// write states to file
 		createJSON()
 		log.Println("Starting simulation server ...")
-		log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("simulation"))))
+		log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("simulation/processing/"))))
 	}
 }
