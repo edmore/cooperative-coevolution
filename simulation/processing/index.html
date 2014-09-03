@@ -3,8 +3,8 @@
 <script type="text/processing" data-processing-target="mycanvas">
 // Simulation variables
 float X; // position of cart
-float Theta1 = 0.62; //long pole angle
-float Theta2 = 0; //long pole angle
+float Theta1 = 0.62; // long pole angle
+float Theta2 = 0; // short pole angle
 
 void update(float x){
     // the simulation track is in cm (480cm)
@@ -14,7 +14,6 @@ void update(float x){
 void setup()
 {
   size(480, 200);
-  rectMode(CORNERS);
   noStroke();
   noLoop();
 }
@@ -22,27 +21,33 @@ void setup()
 void draw()
 {
  background(102);
-  drawPoles();
   drawCart();
+  drawPoles();
   println(X);
 }
 
 void drawPoles()
 {
   stroke(255);
-  // short pole
   strokeWeight(4);
   // short pole
   pushMatrix();
-  rotate(radians(Theta2), 0);
-  line(240+X, 140, 240+X, 150);
+  rectMode(CORNER);
+  rotate(Theta2);
+  fill(0.2);
+  rect(240+X, 100, 1, 50);
   popMatrix();
 
   // long pole
-  strokeWeight(4);
   pushMatrix();
-  rotate(radians(Theta1), 0);
-  line(260+X, 50, 260+X, 150);
+  // move the origin to the pivot point
+  translate(230+X, 50);
+  rectMode(CORNER);
+  // then pivot the grid - as this is what moves
+  rotate(0.62);
+  fill(0.2);
+ // and draw the square at the new origin
+  rect(0, 0, 1, 100);
   popMatrix();
 }
 
