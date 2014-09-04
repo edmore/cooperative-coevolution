@@ -3,12 +3,14 @@
 <script type="text/processing" data-processing-target="mycanvas">
 // Simulation variables
 float X; // position of cart
-float Theta1 = 0.62; // long pole angle
-float Theta2 = 0; // short pole angle
+float Theta1; // long pole angle
+float Theta2; // short pole angle
 
-void update(float x){
+void update(float x, float theta1, float theta2){
     // the simulation track is in cm (480cm)
     X=(x*100);
+    Theta1 = theta1;
+    Theta2 = theta2;
 }
 
 void setup()
@@ -29,22 +31,26 @@ void draw()
 void drawPoles()
 {
   stroke(255);
-  strokeWeight(4);
+  strokeWeight(3);
   // short pole
   pushMatrix();
+  // move the origin to the pivot point
+  translate(240+X, 150);
   rectMode(CORNER);
-  rotate(Theta2);
+  // then pivot the grid - as this is what moves
+  rotate(Theta2 + radians(180));
   fill(0.2);
-  rect(240+X, 100, 1, 50);
+ // and draw the square at the new origin
+  rect(0, 0, 1, 20);
   popMatrix();
 
   // long pole
   pushMatrix();
   // move the origin to the pivot point
-  translate(230+X, 50);
+  translate(240+X, 150);
   rectMode(CORNER);
   // then pivot the grid - as this is what moves
-  rotate(0.62);
+  rotate(Theta1 + radians(180));
   fill(0.2);
  // and draw the square at the new origin
   rect(0, 0, 1, 100);
@@ -65,7 +71,7 @@ function sketch(id){
 
     for (var i = 0; i < data.length; i++){
         console.log(data[i]);
-        pjs.update(data[i].X);
+        pjs.update(data[i].X, data[i].Theta1, data[i].Theta2);
         pjs.redraw();
    }
   });
