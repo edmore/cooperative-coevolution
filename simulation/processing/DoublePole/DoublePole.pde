@@ -9,9 +9,9 @@ int counter;
 void setup(){
   // Load the JSON file as a JSON object
   states = loadJSONArray("../../processingjs/json/states.json");
-  size(480, 200);
+  size(480, 200, P2D);
   smooth();
-  frameRate(4);
+  frameRate(30);
   counter = 0;
 }
 
