@@ -16,52 +16,62 @@ void update(float x, float theta1, float theta2){
 void setup()
 {
   size(480, 200);
-  noStroke();
   noLoop();
 }
 
 void draw()
 {
-  background(102);
+  background(255, 204, 0);
+  drawCentreLine();
   drawCart();
   drawPoles();
   println("{X : " + X + " (cm), " + "Theta1 : " + Theta1 + ", "  + "Theta2 : " + Theta2 + "}");
 }
 
+void drawCentreLine()
+{
+  strokeWeight(1);
+  line(240, 0, 240, 200);
+}
+
 void drawPoles()
 {
-  stroke(255);
-  strokeWeight(3);
+  stroke(0, 102, 0);
+  strokeWeight(4);
+  smooth();
   // short pole
   pushMatrix();
   // move the origin to the pivot point
-  translate(240+X, 150);
+  translate(230+X, 150);
   rectMode(CORNER);
   // then pivot the grid - as this is what moves
   rotate(Theta2 + radians(180));
   fill(0.2);
- // and draw the square at the new origin
-  rect(0, 0, 1, 20);
+  // and draw the square at the new origin
+  rect(0, 0, 1, 10);
   popMatrix();
 
   // long pole
   pushMatrix();
   // move the origin to the pivot point
-  translate(240+X, 150);
+  translate(250+X, 150);
   rectMode(CORNER);
   // then pivot the grid - as this is what moves
   rotate(Theta1 + radians(180));
-  fill(0.2);
- // and draw the square at the new origin
+  fill(153);
+  // and draw the square at the new origin
   rect(0, 0, 1, 100);
   popMatrix();
 }
 
 void drawCart(){
   fill(0.2);
+  noStroke();
   rectMode(CORNER);
   rect(190+X, 150, 100, 50);
 }
+
+
 </script>
 <canvas id="mycanvas"></canvas>
 <script type="text/javascript">
@@ -69,7 +79,7 @@ function sketch(id){
     var pjs = Processing.getInstanceById(id);
     $.getJSON( "json/states.json", function( data ) {
 
-    for (var i = 0; i < data.length; i++){
+    for (var i = 0; i < 1000; i++){
         console.log(data[i]);
         pjs.update(data[i].X, data[i].Theta1, data[i].Theta2);
         pjs.redraw();
