@@ -1,3 +1,6 @@
+// Double pole balancing task simulation
+// Written by Edmore Moyo
+
 // Declare some global variables
 JSONArray states;
 JSONObject state;
