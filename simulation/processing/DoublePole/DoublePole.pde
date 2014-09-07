@@ -10,7 +10,7 @@ float Theta2; // short pole angle
 int counter;
 
 void setup(){
-  // Load the JSON file as a JSON object
+  // Load the JSON file
   states = loadJSONArray("../../processingjs/json/states.json");
   size(480, 200, P2D);
   smooth();
@@ -19,7 +19,7 @@ void setup(){
 }
 
 void draw()
-{ 
+{
   background(255, 204, 0);
   // get and set the new state
   if (counter < states.size()){
@@ -28,16 +28,24 @@ void draw()
   }else{
     noLoop();
   }
-  X = state.getFloat("X") * 100; 
-  Theta1 = state.getFloat("Theta1"); 
-  Theta2 = state.getFloat("Theta2"); 
+  X = state.getFloat("X") * 100;
+  Theta1 = state.getFloat("Theta1");
+  Theta2 = state.getFloat("Theta2");
+
   drawCentreLine();
   drawCart();
   drawPoles();
-  
+
   println("{X : " + X + " (cm), " + "Theta1 : " + Theta1 + ", "  + "Theta2 : " + Theta2 + "}");
   counter++;
   delay(200);
+}
+
+void drawCart(){
+  fill(0.2);
+  noStroke();
+  rectMode(CORNER);
+  rect(190+X, 150, 100, 50);
 }
 
 void drawCentreLine()
@@ -74,11 +82,4 @@ void drawPoles()
   // and draw the square at the new origin
   rect(0, 0, 1, 100);
   popMatrix();
-}
-
-void drawCart(){
-  fill(0.2);
-  noStroke();
-  rectMode(CORNER);
-  rect(190+X, 150, 100, 50);
 }
