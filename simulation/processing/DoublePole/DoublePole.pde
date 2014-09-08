@@ -9,6 +9,7 @@ float Theta1; // long pole angle
 float Theta2; // short pole angle
 int counter;
 
+
 void setup(){
   // Load the JSON file as a JSON object
   states = loadJSONArray("../../processingjs/json/states.json");
@@ -35,7 +36,7 @@ void draw()
   drawCart();
   drawPoles();
   
-  println("{X : " + X + " (cm), " + "Theta1 : " + Theta1 + ", "  + "Theta2 : " + Theta2 + "}");
+  println("{X : " + X + " (cm), " + "Theta1 : " + (Theta1 * 57.295) + "(degrees), "  + "Theta2 : " + (Theta2 * 57.295)  + "(degrees)}");
   counter++;
   delay(10);
 }
