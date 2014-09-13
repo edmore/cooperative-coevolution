@@ -1,5 +1,5 @@
 /*
-Package network implements a feedforward artificial neural network
+Package network implements a recurrent artificial neural network
 */
 
 package network
@@ -10,7 +10,7 @@ import (
 	"github.com/edmore/esp/population"
 )
 
-type FeedForward struct {
+type Recurrent struct {
 	Id          int
 	Activation  []float64
 	HiddenUnits []*neuron.Neuron
@@ -26,14 +26,14 @@ type FeedForward struct {
 }
 
 // FeedForward Network constructor
-func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
+func NewRecurrent(in int, hid int, out int, bias bool) *Recurrent {
 	counter++
 	genesize := in + out
 	if bias == true {
 		genesize++
 	}
 
-	return &FeedForward{
+	return &Recurrent{
 		Id:          counter,
 		Activation:  make([]float64, hid),
 		HiddenUnits: make([]*neuron.Neuron, hid),
@@ -47,20 +47,20 @@ func NewFeedForward(in int, hid int, out int, bias bool) *FeedForward {
 }
 
 // Activate
-func (f *FeedForward) Activate(input []float64, output []float64) []float64 {
+func (r *Recurrent) Activate(input []float64, output []float64) []float64 {
 	// input layer -> hidden layer
-	for key, neuron := range f.HiddenUnits {
+	for key, neuron := range r.HiddenUnits {
 		if !neuron.Lesioned {
 			for i := 0; i < len(input); i++ {
-				f.Activation[key] = f.Activation[key] + (neuron.Weight[i] * input[i])
+				r.Activation[key] = r.Activation[key] + (neuron.Weight[i] * input[i])
 			}
-			f.Activation[key] = sigmoid.Logistic(1.0, f.Activation[key])
+			r.Activation[key] = sigmoid.Logistic(1.0, r.Activation[key])
 		}
 	}
 	// hidden layer -> output layer
-	for i := 0; i < f.NumOutputs; i++ {
-		for key, neuron := range f.HiddenUnits {
-			output[i] = output[i] + (f.Activation[key] * neuron.Weight[len(input)+i])
+	for i := 0; i < r.NumOutputs; i++ {
+		for key, neuron := range r.HiddenUnits {
+			output[i] = output[i] + (r.Activation[key] * neuron.Weight[len(input)+i])
 		}
 		output[i] = sigmoid.Logistic(1.0, output[i])
 	}
@@ -68,67 +68,67 @@ func (f *FeedForward) Activate(input []float64, output []float64) []float64 {
 }
 
 // Return the hidden units
-func (f *FeedForward) GetHiddenUnits() []*neuron.Neuron {
-	return f.HiddenUnits
+func (r *Recurrent) GetHiddenUnits() []*neuron.Neuron {
+	return r.HiddenUnits
 }
 
 // Create the hidden units by randomly selecting them
-func (f *FeedForward) Create(pops []*population.Population) {
+func (r *Recurrent) Create(pops []*population.Population) {
 	for i := 0; i < len(pops); i++ {
-		f.HiddenUnits[i] = pops[i].SelectNeuron()
+		r.HiddenUnits[i] = pops[i].SelectNeuron()
 	}
 }
 
 // Return the total number of inputs
-func (f *FeedForward) GetTotalInputs() int {
-	if f.Bias == true {
-		return f.NumInputs + 1
+func (r *Recurrent) GetTotalInputs() int {
+	if r.Bias == true {
+		return r.NumInputs + 1
 	} else {
-		return f.NumInputs
+		return r.NumInputs
 	}
 }
 
 // Return the total number of outputs
-func (f *FeedForward) GetTotalOutputs() int {
-	return f.NumOutputs
+func (r *Recurrent) GetTotalOutputs() int {
+	return r.NumOutputs
 }
 
 // Return true if network has bias
-func (f *FeedForward) HasBias() bool {
-	return f.Bias
+func (r *Recurrent) HasBias() bool {
+	return r.Bias
 }
 
 // Set the fitness for a network
-func (f *FeedForward) SetFitness(fitness int) {
-	f.Fitness = fitness
+func (r *Recurrent) SetFitness(fitness int) {
+	r.Fitness = fitness
 }
 
 // Get the fitness for a network
-func (f *FeedForward) GetFitness() int {
-	return f.Fitness
+func (r *Recurrent) GetFitness() int {
+	return r.Fitness
 }
 
 // Increment the cumulative fitness and trials for the network neurons
-func (f *FeedForward) SetNeuronFitness() {
-	for _, neuron := range f.HiddenUnits {
-		neuron.SetFitness(f.Fitness)
+func (r *Recurrent) SetNeuronFitness() {
+	for _, neuron := range r.HiddenUnits {
+		neuron.SetFitness(r.Fitness)
 		neuron.Trials++
 	}
 }
 
 // Tag best neurons
-func (f *FeedForward) Tag() {
-	for _, neuron := range f.HiddenUnits {
+func (r *Recurrent) Tag() {
+	for _, neuron := range r.HiddenUnits {
 		neuron.Tag = true
 	}
 }
 
 // Reset the network activation
-func (f *FeedForward) ResetActivation() {
-	f.Activation = make([]float64, len(f.GetHiddenUnits()))
+func (r *Recurrent) ResetActivation() {
+	r.Activation = make([]float64, len(r.GetHiddenUnits()))
 }
 
 // Reset the network fitness and trials
-func (f *FeedForward) ResetFitness() {
-	f.Fitness, f.Trials = 0, 0
+func (r *Recurrent) ResetFitness() {
+	r.Fitness, r.Trials = 0, 0
 }

@@ -15,3 +15,5 @@ type Network interface {
 	ResetFitness()
 	Tag()
 }
+
+var counter int = 0
