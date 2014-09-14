@@ -19,6 +19,8 @@ import (
 
 var (
 	bestNetwork network.Network
+	feedForward *network.FeedForward
+	recurrent   *network.Recurrent
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
 )
@@ -92,12 +94,21 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 
 	for x := 0; x < (numTrials / numCPU); x++ {
 		// Build the network
-		feedForward := network.NewFeedForward(i, h, o, true)
-		feedForward.Create(subpops)
+		if *markov {
+			feedForward = network.NewFeedForward(i, h, o, true)
+			feedForward.Create(subpops)
+		} else {
+			recurrent = network.NewRecurrent(i, h, o, true)
+			recurrent.Create(subpops)
+		}
 		// Evaluate the network in the environment(e)
 		e := environment.NewCartpole()
 		e.Reset()
-		go evaluate(e, feedForward, c)
+		if *markov {
+			go evaluate(e, feedForward, c)
+		} else {
+			go evaluate(e, recurrent, c)
+		}
 	}
 	for x := 0; x < (numTrials / numCPU); x++ {
 		network := <-c
@@ -202,7 +213,12 @@ func main() {
 	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
-	subpops := initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+	var subpops []*population.Population
+	if *markov {
+		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+	} else {
+		subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+	}
 
 	numTrials := 10 * *n
 	for bestFitness < *goalFitness && generations < *maxGens {
@@ -260,7 +276,12 @@ func main() {
 					if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
 						hiddenUnits++
 						fmt.Println("Subpopulations increased to ", hiddenUnits)
-						p := population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+						var p *population.Population
+						if *markov {
+							p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+						} else {
+							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+						}
 						p.Create()
 						subpops = append(subpops, p)
 					}
