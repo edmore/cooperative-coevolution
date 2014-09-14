@@ -26,6 +26,7 @@ var (
 // Flags
 var (
 	simulation  = flag.Bool("sim", false, "simulate best network on task")
+	markov      = flag.Bool("markov", true, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
@@ -57,15 +58,26 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 
 	for e.WithinTrackBounds() && e.WithinAngleBounds() && lesionedFitness < *goalFitness {
 		state := e.GetState()
-		input[0] = state.X / 4.8
-		input[1] = state.XDot / 2
-		input[2] = state.Theta1 / 0.52
-		input[3] = state.Theta2 / 0.52
-		input[4] = state.ThetaDot1 / 2
-		input[5] = state.ThetaDot2 / 2
-		if n.HasBias() {
-			input[6] = 0.5 // bias
+
+		if *markov {
+			input[0] = state.X / 4.8
+			input[1] = state.XDot / 2
+			input[2] = state.Theta1 / 0.52
+			input[3] = state.Theta2 / 0.52
+			input[4] = state.ThetaDot1 / 2
+			input[5] = state.ThetaDot2 / 2
+			if n.HasBias() {
+				input[6] = 0.5 // bias
+			}
+		} else {
+			input[0] = state.X / 4.8
+			input[1] = state.Theta1 / 0.52
+			input[2] = state.Theta2 / 0.52
+			if n.HasBias() {
+				input[3] = 0.5 // bias
+			}
 		}
+
 		out := n.Activate(input, output)
 		e.PerformAction(out[0])
 		lesionedFitness++
@@ -113,14 +125,24 @@ func createJSON() {
 		// push state into states slice
 		states = append(states, *state)
 		// Proceed to next state
-		input[0] = state.X / 4.8
-		input[1] = state.XDot / 2
-		input[2] = state.Theta1 / 0.52
-		input[3] = state.Theta2 / 0.52
-		input[4] = state.ThetaDot1 / 2
-		input[5] = state.ThetaDot2 / 2
-		if bestNetwork.HasBias() {
-			input[6] = 0.5 // bias
+		if *markov {
+			input[0] = state.X / 4.8
+			input[1] = state.XDot / 2
+			input[2] = state.Theta1 / 0.52
+			input[3] = state.Theta2 / 0.52
+			input[4] = state.ThetaDot1 / 2
+			input[5] = state.ThetaDot2 / 2
+			if bestNetwork.HasBias() {
+				input[6] = 0.5 // bias
+			}
+		} else {
+			input[0] = state.X / 4.8
+			input[1] = state.Theta1 / 0.52
+			input[2] = state.Theta2 / 0.52
+			if bestNetwork.HasBias() {
+				input[3] = 0.5 // bias
+			}
+
 		}
 		out := bestNetwork.Activate(input, output)
 		simEnviron.PerformAction(out[0])
@@ -152,6 +174,11 @@ func main() {
 		stagnated    bool
 		mutationRate float32 = 0.4
 	)
+
+	// number of inputs for Non-markov Task
+	if !*markov {
+		*i = 3
+	}
 
 	fmt.Printf("Number of inputs (i) is %v.\n", *i)
 	fmt.Printf("Number of hidden units (h) is %v.\n", *h)

@@ -25,7 +25,7 @@ type Recurrent struct {
 	GeneSize    int
 }
 
-// FeedForward Network constructor
+// Recurrent Network constructor
 func NewRecurrent(in int, hid int, out int, bias bool) *Recurrent {
 	counter++
 	genesize := in + out
@@ -42,27 +42,32 @@ func NewRecurrent(in int, hid int, out int, bias bool) *Recurrent {
 		Bias:        bias,
 		Parent1:     -1,
 		Parent2:     -1,
-		Name:        "Feed Forward",
+		Name:        "Recurrent",
 		GeneSize:    genesize}
 }
 
 // Activate
 func (r *Recurrent) Activate(input []float64, output []float64) []float64 {
-	// input layer -> hidden layer
-	for key, neuron := range r.HiddenUnits {
-		if !neuron.Lesioned {
-			for i := 0; i < len(input); i++ {
-				r.Activation[key] = r.Activation[key] + (neuron.Weight[i] * input[i])
-			}
-			r.Activation[key] = sigmoid.Logistic(1.0, r.Activation[key])
-		}
-	}
-	// hidden layer -> output layer
-	for i := 0; i < r.NumOutputs; i++ {
+	delay := 2
+	tmp := make([]float64, len(input)+len(r.Activation))
+
+	for d := 0; d < delay; d++ {
+		tmp = append(input, r.Activation...)
+
+		// input layer -> hidden layer
 		for key, neuron := range r.HiddenUnits {
-			output[i] = output[i] + (r.Activation[key] * neuron.Weight[len(input)+i])
+			r.Activation[key] = 0.0
+			if !neuron.Lesioned {
+				for i := 0; i < len(input); i++ {
+					r.Activation[key] = r.Activation[key] + (neuron.Weight[i] * tmp[i])
+				}
+				r.Activation[key] = sigmoid.Logistic(1.0, r.Activation[key])
+			}
 		}
-		output[i] = sigmoid.Logistic(1.0, output[i])
+
+		for i := 0; i < r.NumOutputs; i++ {
+			output[i] = r.Activation[i]
+		}
 	}
 	return output
 }
