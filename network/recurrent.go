@@ -28,7 +28,7 @@ type Recurrent struct {
 // Recurrent Network constructor
 func NewRecurrent(in int, hid int, out int, bias bool) *Recurrent {
 	counter++
-	genesize := in + out
+	genesize := in + hid
 	if bias == true {
 		genesize++
 	}
