@@ -217,7 +217,7 @@ func main() {
 	if *markov {
 		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 	} else {
-		subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+		subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize+hiddenUnits)
 	}
 
 	numTrials := 10 * *n
@@ -280,7 +280,7 @@ func main() {
 						if *markov {
 							p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 						} else {
-							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize+hiddenUnits)
 						}
 						p.Create()
 						subpops = append(subpops, p)

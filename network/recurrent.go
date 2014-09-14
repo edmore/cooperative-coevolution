@@ -49,16 +49,17 @@ func NewRecurrent(in int, hid int, out int, bias bool) *Recurrent {
 // Activate
 func (r *Recurrent) Activate(input []float64, output []float64) []float64 {
 	delay := 2
-	tmp := make([]float64, len(input)+len(r.Activation))
+	//tmp := make([]float64, len(input)+len(r.Activation))
 
 	for d := 0; d < delay; d++ {
-		tmp = append(input, r.Activation...)
+		tmp := input
+		tmp = append(tmp, r.Activation...)
 
 		// input layer -> hidden layer
 		for key, neuron := range r.HiddenUnits {
 			r.Activation[key] = 0.0
 			if !neuron.Lesioned {
-				for i := 0; i < len(input); i++ {
+				for i := 0; i < len(input)+len(r.GetHiddenUnits()); i++ {
 					r.Activation[key] = r.Activation[key] + (neuron.Weight[i] * tmp[i])
 				}
 				r.Activation[key] = sigmoid.Logistic(1.0, r.Activation[key])
