@@ -283,6 +283,10 @@ func main() {
 							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
 						}
 						p.Create()
+						// Grow the neurons in the already existent populations
+						for _, subpop := range subpops {
+							subpop.GrowIndividuals()
+						}
 						subpops = append(subpops, p)
 					}
 					count = 0

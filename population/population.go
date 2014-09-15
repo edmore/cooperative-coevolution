@@ -131,3 +131,11 @@ func (p *Population) Mutate(m float32) {
 		}
 	}
 }
+
+// Grow the neuron weights for each individual in the population
+func (p *Population) GrowIndividuals() {
+	for i := 0; i < p.NumIndividuals; i++ {
+		tmp := []float64{1.0}
+		p.Individuals[i].Weight = append(p.Individuals[i].Weight, tmp...)
+	}
+}
