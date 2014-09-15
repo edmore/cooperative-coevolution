@@ -266,6 +266,12 @@ func main() {
 							subpops = append(subpops[:item], subpops[item+1:]...)
 							hiddenUnits--
 							fmt.Println("Subpopulations decreased to ", hiddenUnits)
+							// Shrink the neuron connection weights in the already existent populations
+							if !*markov {
+								//for _, subpop := range subpops {
+								//subpop.ShrinkIndividuals()
+								//}
+							}
 						} else {
 							neuron.Lesioned = false
 						}
@@ -283,7 +289,7 @@ func main() {
 							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
 						}
 						p.Create()
-						// Grow the neurons in the already existent populations
+						// Grow the neuron connection weights in the already existent populations
 						if !*markov {
 							for _, subpop := range subpops {
 								subpop.GrowIndividuals()
