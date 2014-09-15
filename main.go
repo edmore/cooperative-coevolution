@@ -284,8 +284,10 @@ func main() {
 						}
 						p.Create()
 						// Grow the neurons in the already existent populations
-						for _, subpop := range subpops {
-							subpop.GrowIndividuals()
+						if !*markov {
+							for _, subpop := range subpops {
+								subpop.GrowIndividuals()
+							}
 						}
 						subpops = append(subpops, p)
 					}
