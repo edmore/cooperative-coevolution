@@ -16,8 +16,8 @@ import (
 
 var (
 	bestNetwork network.Network
-	feedForward *network.FeedForward
-	recurrent   *network.Recurrent
+	feedForward network.Network
+	recurrent   network.Network
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
 )
@@ -104,7 +104,7 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 			// Evaluate the network in the environment(e)
 			e := environment.NewCartpole()
 			e.Reset()
-			go evaluate(e, recurrent, c)
+                        go evaluate(e, recurrent, c)
 		}
 
 	}
