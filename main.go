@@ -94,18 +94,19 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 		if *markov {
 			feedForward = network.NewFeedForward(i, h, o, true)
 			feedForward.Create(subpops)
+			// Evaluate the network in the environment(e)
+			e := environment.NewCartpole()
+			e.Reset()
+			go evaluate(e, feedForward, c)
 		} else {
 			recurrent = network.NewRecurrent(i, h, o, true)
 			recurrent.Create(subpops)
-		}
-		// Evaluate the network in the environment(e)
-		e := environment.NewCartpole()
-		e.Reset()
-		if *markov {
-			go evaluate(e, feedForward, c)
-		} else {
+			// Evaluate the network in the environment(e)
+			e := environment.NewCartpole()
+			e.Reset()
 			go evaluate(e, recurrent, c)
 		}
+
 	}
 	for x := 0; x < (numTrials / numCPU); x++ {
 		network := <-c
