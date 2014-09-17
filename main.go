@@ -18,7 +18,7 @@ var (
 	bestNetwork network.Network
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
-subpops []*population.Population
+	subpops     []*population.Population
 )
 
 // Flags
@@ -56,7 +56,7 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 
 	for e.WithinTrackBounds() && e.WithinAngleBounds() && lesionedFitness < *goalFitness {
 		state := e.GetState()
-		if *markov ==true{
+		if *markov == true {
 			input[0] = state.X / 4.8
 			input[1] = state.XDot / 2
 			input[2] = state.Theta1 / 0.52
@@ -97,7 +97,7 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 			go evaluate(e, feedForward, c)
 		} else {
 			// Build the network
-			recurrent := network.NewFeedForward(i, h, o, true)
+			recurrent := network.NewRecurrent(i, h, o, true)
 			recurrent.Create(subpops)
 			// Evaluate the network in the environment(e)
 			e := environment.NewCartpole()

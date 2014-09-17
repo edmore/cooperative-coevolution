@@ -23,7 +23,7 @@ func evaluate(e environment.Environment, n network.Network, c chan network.Netwo
 		// push state into states slice
 		states = append(states, *state)
 		// Proceed to next state
-		if *markov {
+		if *markov == true {
 			input[0] = state.X / 4.8
 			input[1] = state.XDot / 2
 			input[2] = state.Theta1 / 0.52
