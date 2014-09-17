@@ -16,10 +16,9 @@ import (
 
 var (
 	bestNetwork network.Network
-	feedForward network.Network
-	recurrent   network.Network
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
+subpops []*population.Population
 )
 
 // Flags
@@ -57,8 +56,7 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 
 	for e.WithinTrackBounds() && e.WithinAngleBounds() && lesionedFitness < *goalFitness {
 		state := e.GetState()
-
-		if *markov {
+		if *markov ==true{
 			input[0] = state.X / 4.8
 			input[1] = state.XDot / 2
 			input[2] = state.Theta1 / 0.52
@@ -76,7 +74,6 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 				input[3] = 0.5 // bias
 			}
 		}
-
 		out := n.Activate(input, output)
 		e.PerformAction(out[0])
 		lesionedFitness++
@@ -90,23 +87,23 @@ func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*popul
 	phaseBestFitness := 0
 
 	for x := 0; x < (numTrials / numCPU); x++ {
-		// Build the network
-		if *markov {
-			feedForward = network.NewFeedForward(i, h, o, true)
+		if *markov == true {
+			// Build the network
+			feedForward := network.NewFeedForward(i, h, o, true)
 			feedForward.Create(subpops)
 			// Evaluate the network in the environment(e)
 			e := environment.NewCartpole()
 			e.Reset()
 			go evaluate(e, feedForward, c)
 		} else {
-			recurrent = network.NewRecurrent(i, h, o, true)
+			// Build the network
+			recurrent := network.NewFeedForward(i, h, o, true)
 			recurrent.Create(subpops)
 			// Evaluate the network in the environment(e)
 			e := environment.NewCartpole()
 			e.Reset()
-                        go evaluate(e, recurrent, c)
+			go evaluate(e, recurrent, c)
 		}
-
 	}
 	for x := 0; x < (numTrials / numCPU); x++ {
 		network := <-c
@@ -135,7 +132,7 @@ func main() {
 	)
 
 	// number of inputs for Non-markov Task
-	if !*markov {
+	if *markov == false {
 		*i = 3
 	}
 
@@ -161,8 +158,7 @@ func main() {
 	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
-	var subpops []*population.Population
-	if *markov {
+	if *markov == true {
 		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 	} else {
 		subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
@@ -214,12 +210,6 @@ func main() {
 							subpops = append(subpops[:item], subpops[item+1:]...)
 							hiddenUnits--
 							fmt.Println("Subpopulations decreased to ", hiddenUnits)
-							// Shrink the neuron connection weights in the already existent populations
-							if !*markov {
-								//for _, subpop := range subpops {
-								//subpop.ShrinkIndividuals()
-								//}
-							}
 						} else {
 							neuron.Lesioned = false
 						}
@@ -230,15 +220,16 @@ func main() {
 					if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
 						hiddenUnits++
 						fmt.Println("Subpopulations increased to ", hiddenUnits)
+
 						var p *population.Population
-						if *markov {
+						if *markov == true {
 							p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 						} else {
 							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
 						}
 						p.Create()
 						// Grow the neuron connection weights in the already existent populations
-						if !*markov {
+						if *markov == false {
 							for _, subpop := range subpops {
 								subpop.GrowIndividuals()
 							}
@@ -276,4 +267,5 @@ func main() {
 		chans = make([]chan network.Network, 0)
 		generations++
 	}
+
 }
