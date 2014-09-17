@@ -1,6 +1,5 @@
 /*
  Cartpole - The Double Pole balancing / Inverted Pendulum Task.
- Currently - with full state information (markov)
 */
 
 package environment
