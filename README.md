@@ -1,3 +1,3 @@
 ESP in Go(lang)
 
-https://travis-ci.org/[edmore]/[esp].png
+https://magnum.travis-ci.com/edmore/esp.svg?token=qCqiUCDFN1395pnZuyJY&branch=master
