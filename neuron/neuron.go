@@ -37,9 +37,9 @@ func NewNeuron(size int) *Neuron {
 
 // Create a new set of random weights
 func (n *Neuron) Create() {
-	rand.Seed(time.Now().UnixNano())
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < len(n.Weight); i++ {
-		n.Weight[i] = (rand.Float64() * 12.0) - 6.0
+		n.Weight[i] = (r.Float64() * 12.0) - 6.0
 	}
 }
 
