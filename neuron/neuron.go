@@ -6,8 +6,8 @@ package neuron
 
 import (
 	"github.com/edmore/esp/random"
-
 	"math/rand"
+	"time"
 )
 
 type Neuron struct {
@@ -37,6 +37,7 @@ func NewNeuron(size int) *Neuron {
 
 // Create a new set of random weights
 func (n *Neuron) Create() {
+	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < len(n.Weight); i++ {
 		n.Weight[i] = (rand.Float64() * 12.0) - 6.0
 	}
