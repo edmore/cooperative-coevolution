@@ -26,7 +26,6 @@ var (
 	simulation  = flag.Bool("sim", false, "simulate best network on task")
 	markov      = flag.Bool("markov", true, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
-	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
 	n           = flag.Int("n", 20, "number of individuals per subpopulation")
 	i           = flag.Int("i", 6, " number of inputs")
@@ -175,9 +174,8 @@ func main() {
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
-	numCPU := *cpus
 	hiddenUnits := *h
-	fmt.Println("CPU(s) in use ", numCPU)
+
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	if *markov == true {
