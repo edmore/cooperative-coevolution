@@ -19,6 +19,7 @@ var (
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
 	subpops     []*population.Population
+	nets        []network.Network
 )
 
 // Flags
@@ -82,36 +83,24 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 }
 
 // Run a split of evaluations
-func splitEvals(numTrials int, numCPU int, i int, h int, o int, subpops []*population.Population, c chan network.Network) {
+func splitEvals(nets []network.Network, s int, e int, c chan network.Network) {
 	var phaseBestNetwork network.Network
 	phaseBestFitness := 0
 
-	for x := 0; x < (numTrials / numCPU); x++ {
-		if *markov == true {
-			// Build the network
-			feedForward := network.NewFeedForward(i, h, o, true)
-			feedForward.Create(subpops)
-			// Evaluate the network in the environment(e)
-			e := environment.NewCartpole()
-			e.Reset()
-			go evaluate(e, feedForward, c)
-		} else {
-			// Build the network
-			recurrent := network.NewRecurrent(i, h, o, true)
-			recurrent.Create(subpops)
-			// Evaluate the network in the environment(e)
-			e := environment.NewCartpole()
-			e.Reset()
-			go evaluate(e, recurrent, c)
-		}
+	for x := s; x < e; x++ {
+		// Evaluate the network in the environment(e)
+		e := environment.NewCartpole()
+		e.Reset()
+		go evaluate(e, nets[x], c)
 	}
-	for x := 0; x < (numTrials / numCPU); x++ {
+	for x := s; x < e; x++ {
 		network := <-c
 		if network.GetFitness() > phaseBestFitness {
 			phaseBestFitness = network.GetFitness()
 			phaseBestNetwork = network
 		}
 	}
+	fmt.Printf("Core best is %v\n", phaseBestNetwork.GetFitness())
 	ch <- phaseBestNetwork
 }
 
@@ -167,11 +156,31 @@ func main() {
 	numTrials := 10 * *n
 	for bestFitness < *goalFitness && generations < *maxGens {
 		// EVALUATION
+		// Create networks
+		for z := 0; z < numTrials; z++ {
+			if *markov == true {
+				// Build the network
+				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, true)
+				feedForward.Create(subpops)
+				nets = append(nets, feedForward)
+			} else {
+				// Build the network
+				recurrent := network.NewRecurrent(*i, hiddenUnits, *o, true)
+				recurrent.Create(subpops)
+				nets = append(nets, recurrent)
+			}
+		}
+
 		runtime.GOMAXPROCS(numCPU)
 		// Distribute a split of evaluations over multiple cores/CPUs
+		split := numTrials / numCPU
+		start := 0
+		end := split - 1
 		for y := 0; y < numCPU; y++ {
 			chans = append(chans, make(chan network.Network))
-			go splitEvals(numTrials, numCPU, *i, hiddenUnits, *o, subpops, chans[y])
+			go splitEvals(nets, start, end, chans[y])
+			start = end + 1
+			end = end + split
 		}
 		for z := 0; z < numCPU; z++ {
 			network := <-ch
