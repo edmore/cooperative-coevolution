@@ -48,6 +48,7 @@ type Population struct {
 }
 
 var counter int = 0
+var r = rand.New(rand.NewSource(1))
 
 // Population constructor
 func NewPopulation(size int, genesize int) *Population {
@@ -73,7 +74,7 @@ func (p *Population) Create() {
 
 // Select a neuron at random
 func (p *Population) SelectNeuron() *neuron.Neuron {
-	index := rand.Int() % p.NumIndividuals
+	index := r.Int() % p.NumIndividuals
 	return p.Individuals[index]
 }
 
@@ -88,9 +89,9 @@ func (p *Population) Mate() {
 	for i := 0; i < p.Numbreed; i++ {
 		// Find mate
 		if i == 0 {
-			mate = rand.Int() % p.Numbreed
+			mate = r.Int() % p.Numbreed
 		} else {
-			mate = rand.Int() % i
+			mate = r.Int() % i
 		}
 		// replace lower half of population
 		childIndex1 := p.NumIndividuals - (1 + (i * 2))
@@ -101,7 +102,7 @@ func (p *Population) Mate() {
 
 // Mate and replace the lower ranking half of the population
 func onePointCrossover(parent1 *neuron.Neuron, parent2 *neuron.Neuron, child1 *neuron.Neuron, child2 *neuron.Neuron) {
-	crosspoint := rand.Int() % len(parent1.Weight) // random crossover point
+	crosspoint := r.Int() % len(parent1.Weight) // random crossover point
 	for i := 0; i < len(parent1.Weight); i++ {
 		child1.Weight[i] = parent2.Weight[i]
 		child2.Weight[i] = parent1.Weight[i]
@@ -125,8 +126,8 @@ func onePointCrossover(parent1 *neuron.Neuron, parent2 *neuron.Neuron, child1 *n
 // Mutate neurons in population
 func (p *Population) Mutate(m float32) {
 	for i := p.Numbreed * 2; i < p.NumIndividuals; i++ {
-		if rand.Float32() < m {
-			mutationIndex := rand.Int() % p.GeneSize
+		if r.Float32() < m {
+			mutationIndex := r.Int() % p.GeneSize
 			p.Individuals[i].Weight[mutationIndex] = p.Individuals[i].Weight[mutationIndex] + random.Cauchy(0.3)
 		}
 	}
