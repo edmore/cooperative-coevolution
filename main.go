@@ -177,6 +177,7 @@ func main() {
 		start := 0
 		end := split - 1
 		for y := 0; y < numCPU; y++ {
+			fmt.Printf("start %v, end %v\n", start, end)
 			chans = append(chans, make(chan network.Network))
 			go splitEvals(nets, start, end, chans[y])
 			start = end + 1
