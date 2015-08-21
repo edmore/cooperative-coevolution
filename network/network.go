@@ -18,6 +18,7 @@ type Network interface {
 	ResetActivation()
 	ResetFitness()
 	Tag()
+	GetID() int
 }
 
 var counter int = 0

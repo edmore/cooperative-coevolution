@@ -83,18 +83,22 @@ func evaluateLesioned(e environment.Environment, n network.Network) int {
 }
 
 // Run a split of evaluations
-func splitEvals(nets []network.Network, s int, e int, c chan network.Network) {
+func splitEvals(split int, nets []network.Network, c chan network.Network) {
 	var phaseBestNetwork network.Network
 	phaseBestFitness := 0
 
-	for x := s; x < e; x++ {
+	for x := 0; x < split; x++ {
 		// Evaluate the network in the environment(e)
 		e := environment.NewCartpole()
 		e.Reset()
 		go evaluate(e, nets[x], c)
+		//fmt.Println(nets[x])
 	}
-	for x := s; x < e; x++ {
+	for x := 0; x < split; x++ {
 		network := <-c
+		if network.GetID() == 2 {
+			//fmt.Println(network)
+		}
 		if network.GetFitness() > phaseBestFitness {
 			phaseBestFitness = network.GetFitness()
 			phaseBestNetwork = network
@@ -175,12 +179,12 @@ func main() {
 		// Distribute a split of evaluations over multiple cores/CPUs
 		split := numTrials / numCPU
 		start := 0
-		end := split - 1
+		end := split
 		for y := 0; y < numCPU; y++ {
 			fmt.Printf("start %v, end %v\n", start, end)
 			chans = append(chans, make(chan network.Network))
-			go splitEvals(nets, start, end, chans[y])
-			start = end + 1
+			go splitEvals(split, nets[start:end], chans[y])
+			start = end
 			end = end + split
 		}
 		for z := 0; z < numCPU; z++ {

@@ -108,6 +108,11 @@ func (f *FeedForward) GetFitness() int {
 	return f.Fitness
 }
 
+// Get the ID for a network
+func (f *FeedForward) GetID() int {
+	return f.Id
+}
+
 // Increment the cumulative fitness and trials for the network neurons
 func (f *FeedForward) SetNeuronFitness() {
 	for _, neuron := range f.HiddenUnits {

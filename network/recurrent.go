@@ -114,6 +114,11 @@ func (r *Recurrent) GetFitness() int {
 	return r.Fitness
 }
 
+// Get the ID for a network
+func (r *Recurrent) GetID() int {
+	return r.Id
+}
+
 // Increment the cumulative fitness and trials for the network neurons
 func (r *Recurrent) SetNeuronFitness() {
 	for _, neuron := range r.HiddenUnits {
