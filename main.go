@@ -96,9 +96,7 @@ func splitEvals(split int, nets []network.Network, c chan network.Network) {
 	}
 	for x := 0; x < split; x++ {
 		network := <-c
-		if network.GetID() == 2 {
-			//fmt.Println(network)
-		}
+	        network.SetNeuronFitness()
 		if network.GetFitness() > phaseBestFitness {
 			phaseBestFitness = network.GetFitness()
 			phaseBestNetwork = network
@@ -189,7 +187,6 @@ func main() {
 		}
 		for z := 0; z < numCPU; z++ {
 			network := <-ch
-			network.SetNeuronFitness()
 			if network.GetFitness() > bestFitness {
 				bestFitness = network.GetFitness()
 				bestNetwork = network
