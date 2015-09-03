@@ -181,7 +181,7 @@ func main() {
 		start := 0
 		end := split
 		for y := 0; y < numCPU; y++ {
-			fmt.Printf("start %v, end %v\n", start, end)
+			//fmt.Printf("start %v, end %v\n", start, end)
 			chans = append(chans, make(chan network.Network))
 			go splitEvals(split, nets[start:end], chans[y])
 			start = end
@@ -273,7 +273,13 @@ func main() {
 				subpop.Mate()
 				// Mutate lower half of population
 				subpop.Mutate(mutationRate)
+
+				for _, neuron := range subpop.Individuals {
+					fmt.Println(neuron)
+				}
+
 			}
+
 		}
 		// reset stagnation
 		stagnated = false
