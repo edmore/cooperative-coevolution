@@ -92,7 +92,6 @@ func splitEvals(split int, nets []network.Network, c chan network.Network) {
 		e := environment.NewCartpole()
 		e.Reset()
 		go evaluate(e, nets[x], c)
-		//fmt.Println(nets[x])
 	}
 	for x := 0; x < split; x++ {
 		network := <-c
@@ -193,6 +192,12 @@ func main() {
 			}
 		}
 		runtime.GOMAXPROCS(defaultCPU)
+
+		// Set the fitness of each neuron that participated in the evaluations
+		for _, net := range nets {
+			net.SetNeuronFitness()
+		}
+
 		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
 
@@ -270,9 +275,9 @@ func main() {
 				// Mutate lower half of population
 				subpop.Mutate(mutationRate)
 
-				for _, neuron := range subpop.Individuals {
-					fmt.Println(neuron)
-				}
+				//				for _, neuron := range subpop.Individuals {
+				//				fmt.Println(neuron)
+				//		}
 
 			}
 

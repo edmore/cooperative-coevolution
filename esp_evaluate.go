@@ -62,7 +62,5 @@ func evaluate(e environment.Environment, n network.Network, c chan network.Netwo
 	}
 	// award fitness score to network
 	n.SetFitness(fitness)
-	n.SetNeuronFitness()
-
 	c <- n
 }
