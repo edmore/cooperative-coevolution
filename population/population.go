@@ -7,10 +7,9 @@ package population
 import (
 	"github.com/edmore/esp/neuron"
 	"github.com/edmore/esp/random"
-
-	//	"fmt"
 	"math/rand"
 	"sort"
+	"time"
 )
 
 type Neurons []*neuron.Neuron
@@ -48,7 +47,7 @@ type Population struct {
 }
 
 var counter int = 0
-var r = rand.New(rand.NewSource(1))
+var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // Population constructor
 func NewPopulation(size int, genesize int) *Population {

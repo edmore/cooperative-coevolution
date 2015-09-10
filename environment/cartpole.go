@@ -19,7 +19,7 @@ const (
 var (
 	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
 	Tau          float64 = 0.02 //seconds between state updates (the time step)
-	FailureAngle float64 = 90.0 // failure angle in degrees
+	FailureAngle float64 = 36.0 // failure angle in degrees
 )
 
 type State struct {
@@ -55,7 +55,7 @@ func NewCartpole() *Cartpole {
 		MassPole1: 0.1,
 		MassPole2: 0.01,
 		Length1:   0.5,
-		Length2:   0.475,
+		Length2:   0.05,
 		state:     new(State)}
 }
 

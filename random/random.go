@@ -3,9 +3,10 @@ package random
 import (
 	"math"
 	"math/rand"
+	"time"
 )
 
-var r = rand.New(rand.NewSource(1))
+var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // Generate a random number from a cauchy distribution centered on zero.
 func Cauchy(wtrange float64) float64 {

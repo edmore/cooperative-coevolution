@@ -28,11 +28,11 @@ var (
 	markov      = flag.Bool("markov", true, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
-	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
-	n           = flag.Int("n", 20, "number of individuals per subpopulation")
+	h           = flag.Int("h", 5, "number of hidden units / subpopulations")
+	n           = flag.Int("n", 100, "number of individuals per subpopulation")
 	i           = flag.Int("i", 6, " number of inputs")
 	o           = flag.Int("o", 1, "number of outputs")
-	b           = flag.Int("b", 10, "number of generations before burst mutation")
+	b           = flag.Int("b", 15, "number of generations before burst mutation")
 	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
 )
@@ -154,6 +154,7 @@ func main() {
 	}
 
 	numTrials := 10 * *n
+	fmt.Println("Number of Evaluations per generation ", numTrials)
 	for bestFitness < *goalFitness && generations < *maxGens {
 		// EVALUATION
 		// Create networks

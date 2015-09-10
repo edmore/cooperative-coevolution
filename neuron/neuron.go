@@ -7,7 +7,7 @@ package neuron
 import (
 	"github.com/edmore/esp/random"
 	"math/rand"
-	//	"time"
+	"time"
 )
 
 type Neuron struct {
@@ -23,7 +23,7 @@ type Neuron struct {
 }
 
 var counter int = 0
-var r = rand.New(rand.NewSource(1))
+var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 // Neuron constructor
 func NewNeuron(size int) *Neuron {
