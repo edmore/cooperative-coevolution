@@ -5,8 +5,8 @@
 package environment
 
 import (
+	//"fmt"
 	"github.com/edmore/esp/rungekutta/rk4"
-
 	"math"
 )
 
@@ -19,7 +19,7 @@ const (
 var (
 	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
 	Tau          float64 = 0.02 //seconds between state updates (the time step)
-	FailureAngle float64 = 90.0 // failure angle in degrees
+	FailureAngle float64 = 36.0 // failure angle in degrees
 )
 
 type State struct {
@@ -65,9 +65,9 @@ func (c *Cartpole) Reset() {
 	c.state.Theta2 = 0.07 // angle of the long pole
 
 	c.state.ThetaDot1 = 0.2 // angular velocity of the long pole
-	c.state.ThetaDot2 = 0.2 // angular velocity of the long pole
+	c.state.ThetaDot2 = 0.2 // angular velocity of the short pole
 	c.state.X = 1           // position of the cart
-	c.state.XDot = 1.5      // velocity of the cart
+	//c.state.XDot = 1.0      // velocity of the cart
 }
 
 // Stores the desired action for the next Runge-Kutta step
@@ -88,6 +88,8 @@ func step(action float64, c *Cartpole) {
 	if F < 0 && F > (-oneOverTwoFiftySix*ForceMag) {
 		F = (-oneOverTwoFiftySix * ForceMag)
 	}
+
+	//fmt.Println(F)
 
 	sinTheta1 := math.Sin(c.state.Theta1)
 	cosTheta1 := math.Cos(c.state.Theta1)
