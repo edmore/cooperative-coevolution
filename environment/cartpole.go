@@ -19,7 +19,7 @@ const (
 var (
 	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
 	Tau          float64 = 0.02 //seconds between state updates (the time step)
-	FailureAngle float64 = 36.0 // failure angle in degrees
+	FailureAngle float64 = 90.0 // failure angle in degrees
 )
 
 type State struct {
@@ -55,14 +55,19 @@ func NewCartpole() *Cartpole {
 		MassPole1: 0.1,
 		MassPole2: 0.01,
 		Length1:   0.5,
-		Length2:   0.05,
+		Length2:   0.45,
 		state:     new(State)}
 }
 
 // Re-initialize the environment
 func (c *Cartpole) Reset() {
 	c.state.Theta1 = 0.07 // angle of the long pole
-	//	c.state.ThetaDot1 = 0.7 // angular velocity of the long pole
+	c.state.Theta2 = 0.07 // angle of the long pole
+
+	c.state.ThetaDot1 = 0.2 // angular velocity of the long pole
+	c.state.ThetaDot2 = 0.2 // angular velocity of the long pole
+	c.state.X = 1           // position of the cart
+	c.state.XDot = 1.5      // velocity of the cart
 }
 
 // Stores the desired action for the next Runge-Kutta step
