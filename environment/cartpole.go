@@ -45,7 +45,7 @@ type Cartpole struct {
 }
 
 // Cartpole Environment constructor
-func NewCartpole() *Cartpole {
+func NewCartpole(length2 float64) *Cartpole {
 	return &Cartpole{
 		Name:      "Double Pole Balancing Task",
 		TrackSize: 2.4,
@@ -55,18 +55,18 @@ func NewCartpole() *Cartpole {
 		MassPole1: 0.1,
 		MassPole2: 0.01,
 		Length1:   0.5,
-		Length2:   0.45,
+		Length2:   length2,
 		state:     new(State)}
 }
 
 // Re-initialize the environment
 func (c *Cartpole) Reset() {
 	c.state.Theta1 = 0.07 // angle of the long pole
-	c.state.Theta2 = 0.07 // angle of the long pole
+	//c.state.Theta2 = 0.07 // angle of the short pole
 
-	c.state.ThetaDot1 = 0.2 // angular velocity of the long pole
-	c.state.ThetaDot2 = 0.2 // angular velocity of the short pole
-	c.state.X = 1           // position of the cart
+	//c.state.ThetaDot1 = 0.2 // angular velocity of the long pole
+	//c.state.ThetaDot2 = 0.2 // angular velocity of the short pole
+	//c.state.X = 1           // position of the cart
 	//c.state.XDot = 1.0      // velocity of the cart
 }
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/time -l "$@"
+/usr/bin/time "$@"

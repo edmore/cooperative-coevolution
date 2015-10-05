@@ -25,7 +25,7 @@ var (
 // Flags
 var (
 	simulation  = flag.Bool("sim", false, "simulate best network on task")
-	markov      = flag.Bool("markov", true, "Markov or Non-Markov task")
+	markov      = flag.Bool("markov", false, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	h           = flag.Int("h", 5, "number of hidden units / subpopulations")
@@ -35,6 +35,7 @@ var (
 	b           = flag.Int("b", 15, "number of generations before burst mutation")
 	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
+	spl         = flag.Float64("spl", .05, "short pole length")
 )
 
 // Initialize subpopulations
@@ -89,7 +90,7 @@ func splitEvals(split int, nets []network.Network, c chan network.Network) {
 
 	for x := 0; x < split; x++ {
 		// Evaluate the network in the environment(e)
-		e := environment.NewCartpole()
+		e := environment.NewCartpole(*spl)
 		e.Reset()
 		go evaluate(e, nets[x], c)
 	}
@@ -132,6 +133,7 @@ func main() {
 	fmt.Printf("Max generations is %v.\n", *maxGens)
 	fmt.Printf("Mutation Rate is set at %v.\n", mutationRate)
 	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
+	fmt.Println("Short pole length ", (*spl)*2)
 
 	performanceQueue := make([]int, *b)
 	bestFitness := 0
@@ -144,6 +146,7 @@ func main() {
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
 	hiddenUnits := *h
+
 	fmt.Println("CPU(s) in use ", numCPU)
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
@@ -213,7 +216,7 @@ func main() {
 					fmt.Println("Adapting network size ...")
 					for item, neuron := range bestNetwork.GetHiddenUnits() {
 						neuron.Lesioned = true
-						lesionedEnviron := environment.NewCartpole()
+						lesionedEnviron := environment.NewCartpole(*spl)
 						lesionedEnviron.Reset()
 
 						lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
