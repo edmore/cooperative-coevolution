@@ -1,0 +1,13 @@
+#!/bin/sh
+
+CORES=1
+
+for d in 0.40
+do
+    POLE_LENGTH=0.8
+    for (( c=1; c<=100; c++))
+    do
+        /usr/bin/time ./esp -h=5 -n=100 -b=15 -markov=false 2>> ./runs/"runtime_{$POLE_LENGTH}_{$CORES}.csv" 1 | tail -1 >> ./runs/"convergence_{$POLE_LENGTH}_{$CORES}.csv"
+        echo "run$c done -> $POLE_LENGTH short pole length -> $CORES core(s)"
+    done
+done
