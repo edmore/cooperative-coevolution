@@ -5,6 +5,7 @@ Package network implements a recurrent artificial neural network
 package network
 
 import (
+	//	"fmt"
 	"github.com/edmore/esp/activation/sigmoid"
 	"github.com/edmore/esp/neuron"
 	"github.com/edmore/esp/population"
@@ -80,9 +81,10 @@ func (r *Recurrent) GetHiddenUnits() []*neuron.Neuron {
 
 // Create the hidden units by randomly selecting them
 func (r *Recurrent) Create(pops []*population.Population) {
-	for i := 0; i < len(pops); i++ {
-		r.HiddenUnits[i] = pops[i].SelectNeuron()
+	for i := 0; i < len(r.HiddenUnits); i++ {
+		r.HiddenUnits[i] = pops[0].SelectNeuron()
 	}
+	//	fmt.Println(r.HiddenUnits)
 }
 
 // Return the total number of inputs

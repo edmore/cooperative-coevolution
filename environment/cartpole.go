@@ -55,7 +55,7 @@ func NewCartpole() *Cartpole {
 		MassPole1: 0.1,
 		MassPole2: 0.01,
 		Length1:   0.5,
-		Length2:   0.05,
+		Length2:   0.4,
 		state:     new(State)}
 }
 
