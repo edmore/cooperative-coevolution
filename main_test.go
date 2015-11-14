@@ -18,6 +18,6 @@ func BenchmarkInitialize(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		feedForward := network.NewFeedForward(6, 5, 1, true)
 		// Initialization
-		_ = initialize(5, 100, feedForward.GeneSize)
+		_ = initialize(100, feedForward.GeneSize)
 	}
 }
