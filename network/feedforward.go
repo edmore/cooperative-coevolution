@@ -5,7 +5,7 @@ Package network implements a feedforward artificial neural network
 package network
 
 import (
-	"fmt"
+	//	"fmt"
 	"github.com/edmore/esp/activation/sigmoid"
 	"github.com/edmore/esp/neuron"
 	"github.com/edmore/esp/population"
@@ -75,7 +75,7 @@ func (f *FeedForward) GetHiddenUnits() []*neuron.Neuron {
 
 // Create the hidden units by randomly selecting them
 func (f *FeedForward) Create(pops []*population.Population) {
-	fmt.Println(f.HiddenUnits)
+	//fmt.Println(f.HiddenUnits)
 
 	for i := 0; i < len(f.HiddenUnits); i++ {
 		f.HiddenUnits[i] = pops[0].SelectNeuron()

@@ -220,6 +220,7 @@ func main() {
 
 		// RECOMBINATION - sort neurons, mate and mutate
 		if stagnated == false {
+			// neuron-level evolution
 			for _, subpop := range subpops {
 				// Sort neurons in each subpopulation
 				subpop.SortNeurons()
@@ -228,6 +229,9 @@ func main() {
 				// Mutate lower half of population
 				subpop.Mutate(mutationRate)
 			}
+			// network-level evolution can also be added i.e
+			// evolution of network blueprints
+			// TODO
 		}
 		// reset stagnation
 		stagnated = false
