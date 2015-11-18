@@ -74,8 +74,8 @@ func (f *FeedForward) GetHiddenUnits() []*neuron.Neuron {
 
 // Create the hidden units by randomly selecting them
 func (f *FeedForward) Create(pops []*population.Population) {
-	for i := 0; i < len(pops); i++ {
-		f.HiddenUnits[i] = pops[i].SelectNeuron()
+	for i := 0; i < len(f.HiddenUnits); i++ {
+		f.HiddenUnits[i] = pops[0].SelectNeuron()
 	}
 }
 

@@ -32,21 +32,19 @@ var (
 	n           = flag.Int("n", 100, "number of individuals per subpopulation")
 	i           = flag.Int("i", 6, " number of inputs")
 	o           = flag.Int("o", 1, "number of outputs")
-	b           = flag.Int("b", 15, "number of generations before burst mutation")
 	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
 	spl         = flag.Float64("spl", .05, "short pole length")
 )
 
 // Initialize subpopulations
-func initialize(h int, n int, s int) []*population.Population {
+func initialize(n int, s int) []*population.Population {
 	var pops []*population.Population // population pool
 
-	for w := 0; w < h; w++ {
-		p := population.NewPopulation(n, s)
-		p.Create()
-		pops = append(pops, p)
-	}
+	p := population.NewPopulation(n, s)
+	p.Create()
+	pops = append(pops, p)
+
 	return pops
 }
 
@@ -132,14 +130,11 @@ func main() {
 	fmt.Printf("Number of individuals per population (n) is %v.\n", *n)
 	fmt.Printf("Max generations is %v.\n", *maxGens)
 	fmt.Printf("Mutation Rate is set at %v.\n", mutationRate)
-	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
 	fmt.Println("Short pole length ", (*spl)*2)
 
-	performanceQueue := make([]int, *b)
 	bestFitness := 0
 	generations := 0
 	stagnated = false
-	count := 0
 
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
@@ -151,9 +146,9 @@ func main() {
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	if *markov == true {
-		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+		subpops = initialize(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
 	} else {
-		subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+		subpops = initialize(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
 	}
 
 	numTrials := 10 * *n
@@ -203,71 +198,6 @@ func main() {
 		}
 
 		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
-		performanceQueue = append(performanceQueue, bestFitness)
-
-		// CHECK STAGNATION
-		// if bestFitness has not improved in b generations
-		//   if fitness has not improved after two(2) burst mutations
-		//   then ADAPT-NETWORK-SIZE()
-		//   else BURST_MUTATE()
-		if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-			if performanceQueue[*b+generations] == performanceQueue[generations] {
-				if count == 2 {
-					fmt.Println("Adapting network size ...")
-					for item, neuron := range bestNetwork.GetHiddenUnits() {
-						neuron.Lesioned = true
-						lesionedEnviron := environment.NewCartpole(*spl)
-						lesionedEnviron.Reset()
-
-						lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
-						fmt.Println("Lesioned Fitness: ", lesionedFitness)
-
-						threshold := 1
-						if lesionedFitness > (bestFitness*threshold) && len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-							// delete subpopulation to subpops
-							// decrement h
-							subpops = append(subpops[:item], subpops[item+1:]...)
-							hiddenUnits--
-							fmt.Println("Subpopulations decreased to ", hiddenUnits)
-						} else {
-							neuron.Lesioned = false
-						}
-					}
-					// if no neuron was removed
-					// increment h
-					// add a new population to subpops
-					if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-						hiddenUnits++
-						fmt.Println("Subpopulations increased to ", hiddenUnits)
-
-						var p *population.Population
-						if *markov == true {
-							p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
-						} else {
-							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
-						}
-						p.Create()
-						// Grow the neuron connection weights in the already existent populations
-						if *markov == false {
-							for _, subpop := range subpops {
-								subpop.GrowIndividuals()
-							}
-						}
-						subpops = append(subpops, p)
-					}
-					count = 0
-				} else {
-					fmt.Println("Burst Mutate ...")
-					stagnated = true
-					for index, subpop := range subpops {
-						for _, neuron := range subpop.Individuals {
-							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
-						}
-					}
-					count++
-				}
-			}
-		}
 
 		// RECOMBINATION - sort neurons, mate and mutate
 		if stagnated == false {
@@ -275,6 +205,7 @@ func main() {
 				// Sort neurons in each subpopulation
 				subpop.SortNeurons()
 				// Mate top quartile of neurons in each population
+
 				subpop.Mate()
 				// Mutate lower half of population
 				subpop.Mutate(mutationRate)
