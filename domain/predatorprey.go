@@ -9,75 +9,49 @@ import (
 	"math"
 )
 
-const (
-	RadToDeg         = 180 / math.Pi
-	DegToRad         = math.Pi / 180
-	Gravity  float64 = 9.81
-)
+const ()
 
-var (
-	ForceMag     float64 = 10.0 // Fixed Force magnitude i.e. (+ / -) 10.0
-	Tau          float64 = 0.02 //seconds between state updates (the time step)
-	FailureAngle float64 = 36.0 // failure angle in degrees
-)
+var ()
 
 type State struct {
-	X         float64 // position of the cart
-	XDot      float64 // velocity of the cart
-	Theta1    float64 // angle of the 1st pole
-	Theta2    float64 // angle of the 2nd pole
-	ThetaDot1 float64 // angular velocity of the 1st pole
-	ThetaDot2 float64 // angular velocity of the 2nd pole
+	PredatorX []int // x position(s) of the predator(s)
+	PredatorY []int // y position(s) of the predator(s)
+	PreyX     int   // x position of the prey
+	PreyY     int   // y position of the prey
 }
 
 type PredatorPrey struct {
-	Name      string
-	TrackSize float64
-	Up        float64 // Pole-hinge Friction Coefficient
-	Uc        float64 // Cart-track Friction Coefficient
-	MassCart  float64
-	MassPole1 float64
-	MassPole2 float64
-	Length1   float64 // actually half the pole's length
-	Length2   float64 // actually half the pole's length
-	state     *State
+	Name  string
+	state *State
 }
 
-// Cartpole Environment constructor
-func NewPredatorPrey(length2 float64) *PredatorPrey {
+// PredatorPrey Environment constructor
+func NewPredatorPrey() *PredatorPrey {
 	return &PredatorPrey{
-		Name:      "Predator Prey Task",
-		TrackSize: 2.4,
-		Up:        0.000002,
-		Uc:        0.0005,
-		MassCart:  1.0,
-		MassPole1: 0.1,
-		MassPole2: 0.01,
-		Length1:   0.5,
-		Length2:   length2,
-		state:     new(State)}
+		Name:  "Predator Prey Task",
+		state: new(State)}
 }
 
 // Re-initialize the environment
 func (p *PredatorPrey) Reset() {
-
+	// you can set the position of the predators here
 }
 
-// Stores the desired action for the next Runge-Kutta step
+// Stores the desired action for the next step
 func (p *PredatorPrey) PerformPredatorAction(action float64) {
 	predatorStep(action, c)
 }
 
-// Runge-Kutta Step - approximate state variables at time Tau
+// Step
 func predatorStep(action float64, p *PredatorPrey) {
 }
 
-// Stores the desired action for the next Runge-Kutta step
+// Stores the desired action for the next step
 func (p *PredatorPrey) PerformPreyAction(action float64) {
 	preyStep(action, c)
 }
 
-// Runge-Kutta Step - approximate state variables at time Tau
+// Step
 func preyStep(action float64, p *PredatorPrey) {
 }
 
@@ -91,7 +65,7 @@ func (p *PredatorPrey) Caught() bool {
 	return false
 }
 
-// Prey Caught
+// Prey Surrounded
 func (p *PredatorPrey) Surrrounded() bool {
 	return false
 }
