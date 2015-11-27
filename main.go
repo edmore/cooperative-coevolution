@@ -28,9 +28,9 @@ var (
 	markov      = flag.Bool("markov", false, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
-	n           = flag.Int("n", 20, "number of individuals per subpopulation")
-	i           = flag.Int("i", 6, " number of inputs")
-	o           = flag.Int("o", 1, "number of outputs")
+	n           = flag.Int("n", 100, "number of individuals per subpopulation")
+	i           = flag.Int("i", 2, " number of inputs")
+	o           = flag.Int("o", 5, "number of outputs")
 	b           = flag.Int("b", 10, "number of generations before burst mutation")
 	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
@@ -154,11 +154,6 @@ func main() {
 		mutationRate float32 = 0.4
 	)
 
-	// number of inputs for Non-markov Task
-	if *markov == false {
-		*i = 3
-	}
-
 	fmt.Printf("Number of inputs (i) is %v.\n", *i)
 	fmt.Printf("Number of hidden units (h) is %v.\n", *h)
 	fmt.Printf("Number of output(s) is %v.\n", *o)
@@ -185,9 +180,9 @@ func main() {
 	// TODO - work out whether using the network genesize is the best way to do this
 	for p := 0; p < numPreds; p++ {
 		if *markov == true {
-			subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+			subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
 		} else {
-			subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+			subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, false).GeneSize)
 		}
 		// predator subpopulations
 		predSubpops.append(subpops)
