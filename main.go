@@ -49,8 +49,10 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
-// Evaluate the network in the trial environment
-func evaluate(e environment.Environment, n network.Network) network.Network {
+// Evaluate the team of networks (predators) in the trial environment
+func evaluate(e environment.Environment, n []network.Network) []network.Network {
+	// where the prey is should be initialized by the environment
+
 	fitness := 0
 	input := make([]float64, n.GetTotalInputs())
 	output := make([]float64, n.GetTotalOutputs())
@@ -231,64 +233,67 @@ func main() {
 		//   if fitness has not improved after two(2) burst mutations
 		//   then ADAPT-NETWORK-SIZE()
 		//   else BURST_MUTATE()
-		if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-			if performanceQueue[*b+generations] == performanceQueue[generations] {
-				if count == 2 {
-					fmt.Println("Adapting network size ...")
-					for item, neuron := range bestNetwork.GetHiddenUnits() {
-						neuron.Lesioned = true
-						lesionedEnviron := environment.NewCartpole()
-						lesionedEnviron.Reset()
+		/*
+			if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
+				if performanceQueue[*b+generations] == performanceQueue[generations] {
+					if count == 2 {
+						fmt.Println("Adapting network size ...")
+						for item, neuron := range bestNetwork.GetHiddenUnits() {
+							neuron.Lesioned = true
+							lesionedEnviron := environment.NewCartpole()
+							lesionedEnviron.Reset()
 
-						lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
-						fmt.Println("Lesioned Fitness: ", lesionedFitness)
+							lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
+							fmt.Println("Lesioned Fitness: ", lesionedFitness)
 
-						threshold := 1
-						if lesionedFitness > (bestFitness*threshold) && len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-							// delete subpopulation to subpops
-							// decrement h
-							subpops = append(subpops[:item], subpops[item+1:]...)
-							hiddenUnits--
-							fmt.Println("Subpopulations decreased to ", hiddenUnits)
-						} else {
-							neuron.Lesioned = false
-						}
-					}
-					// if no neuron was removed
-					// increment h
-					// add a new population to subpops
-					if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-						hiddenUnits++
-						fmt.Println("Subpopulations increased to ", hiddenUnits)
-
-						var p *population.Population
-						if *markov == true {
-							p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
-						} else {
-							p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
-						}
-						p.Create()
-						// Grow the neuron connection weights in the already existent populations
-						if *markov == false {
-							for _, subpop := range subpops {
-								subpop.GrowIndividuals()
+							threshold := 1
+							if lesionedFitness > (bestFitness*threshold) && len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
+								// delete subpopulation to subpops
+								// decrement h
+								subpops = append(subpops[:item], subpops[item+1:]...)
+								hiddenUnits--
+								fmt.Println("Subpopulations decreased to ", hiddenUnits)
+							} else {
+								neuron.Lesioned = false
 							}
 						}
-						subpops = append(subpops, p)
-					}
-					count = 0
-				} else {
-					fmt.Println("Burst Mutate ...")
-					stagnated = true
-					for index, subpop := range subpops {
-						for _, neuron := range subpop.Individuals {
-							neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
+						// if no neuron was removed
+						// increment h
+						// add a new population to subpops
+						if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
+							hiddenUnits++
+							fmt.Println("Subpopulations increased to ", hiddenUnits)
+
+							var p *population.Population
+							if *markov == true {
+								p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
+							} else {
+								p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
+							}
+							p.Create()
+							// Grow the neuron connection weights in the already existent populations
+							if *markov == false {
+								for _, subpop := range subpops {
+									subpop.GrowIndividuals()
+								}
+							}
+							subpops = append(subpops, p)
 						}
+						count = 0
+					} else {
+						fmt.Println("Burst Mutate ...")
+						stagnated = true
+						for index, subpop := range subpops {
+							for _, neuron := range subpop.Individuals {
+								neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
+							}
+						}
+						count++
 					}
-					count++
 				}
 			}
-		}
+
+		*/
 
 		// RECOMBINATION - sort neurons, mate and mutate
 		if stagnated == false {
