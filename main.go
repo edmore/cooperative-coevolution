@@ -50,94 +50,56 @@ func initialize(h int, n int, s int) []*population.Population {
 }
 
 // Evaluate the team of networks (predators) in the trial environment
-func evaluate(e environment.Environment, n []network.Network) []network.Network {
-	// where the prey is should be initialized by the environment
-
+func evaluate(e environment.Environment, team []network.Network) []network.Network {
 	fitness := 0
-	input := make([]float64, n.GetTotalInputs())
-	output := make([]float64, n.GetTotalOutputs())
+	steps := 0
+	maxSteps := 150
+	input := make([]float64, team[0].GetTotalInputs())
+	output := make([]float64, team[0].GetTotalOutputs())
 	var state *environment.State
 	states := make([]environment.State, 0)
 
-	for e.WithinTrackBounds() && e.WithinAngleBounds() && fitness < *goalFitness {
+	// calculate average INITIAL distance
+
+	for !e.Caught() && steps < maxSteps {
 		state = e.GetState()
 		// push state into states slice
 		states = append(states, *state)
-		// Proceed to next state
-		if *markov == true {
-			input[0] = state.X / 4.8
-			input[1] = state.XDot / 2
-			input[2] = state.Theta1 / 0.52
-			input[3] = state.Theta2 / 0.52
-			input[4] = state.ThetaDot1 / 2
-			input[5] = state.ThetaDot2 / 2
-			if n.HasBias() {
-				input[6] = 0.5 // bias
-			}
-		} else {
-			input[0] = state.X / 4.8
-			input[1] = state.Theta1 / 0.52
-			input[2] = state.Theta2 / 0.52
-			if n.HasBias() {
-				input[3] = 0.5 // bias
-			}
-		}
+		// Proceed to next state ...
 
-		out := n.Activate(input, output)
-		e.PerformAction(out[0])
-		fitness++
+		// Perform prey action
+		e.PerformPreyAction()
+
+		// Perform each predator action
+		for _, predator := range team {
+			input[0] = state.PreyX
+			input[1] = state.PreyY
+
+			out := predator.Activate(input, output)
+			e.PerformPredAction(predator, out)
+		}
+		steps++
 	}
 
 	if *simulation == true {
-		if fitness == *goalFitness {
-			// write the states to a json file
-			b, err := json.Marshal(states)
-			if err != nil {
-				fmt.Println("error:", err)
-			}
-			err = ioutil.WriteFile("simulation/processingjs/json/states.json", b, 0644)
-			if err != nil {
-				panic(err)
-			}
+		// write the states to a json file
+		b, err := json.Marshal(states)
+		if err != nil {
+			fmt.Println("error:", err)
+		}
+		err = ioutil.WriteFile("simulation/processingjs/json/states.json", b, 0644)
+		if err != nil {
+			panic(err)
 		}
 	}
-	// award fitness score to network
-	n.SetFitness(fitness)
-	n.SetNeuronFitness()
-	return n
-}
+	// calculate fitness - which is average FINAL distance from the prey
 
-// Evaluate a lesioned network
-func evaluateLesioned(e environment.Environment, n network.Network) int {
-	lesionedFitness := 0
-	input := make([]float64, n.GetTotalInputs())
-	output := make([]float64, n.GetTotalOutputs())
-
-	for e.WithinTrackBounds() && e.WithinAngleBounds() && lesionedFitness < *goalFitness {
-		state := e.GetState()
-		if *markov == true {
-			input[0] = state.X / 4.8
-			input[1] = state.XDot / 2
-			input[2] = state.Theta1 / 0.52
-			input[3] = state.Theta2 / 0.52
-			input[4] = state.ThetaDot1 / 2
-			input[5] = state.ThetaDot2 / 2
-			if n.HasBias() {
-				input[6] = 0.5 // bias
-			}
-		} else {
-			input[0] = state.X / 4.8
-			input[1] = state.Theta1 / 0.52
-			input[2] = state.Theta2 / 0.52
-			if n.HasBias() {
-				input[3] = 0.5 // bias
-			}
-		}
-		out := n.Activate(input, output)
-		e.PerformAction(out[0])
-		lesionedFitness++
+	// award fitness score to team
+	for _, predator := range team {
+		predator.SetFitness(fitness)
+		predator.SetNeuronFitness()
 	}
-	return lesionedFitness
+	return team
 }
 
 func main() {
@@ -194,106 +156,23 @@ func main() {
 	for bestFitness < *goalFitness && generations < *maxGens {
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
-			if *markov == true {
-				// Build the network
-				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, true)
-				feedForward.Create(subpops)
-				// Evaluate the network in the environment(e)
-				e := environment.NewCartpole()
-				e.Reset()
-				n := evaluate(e, feedForward)
-				if n.GetFitness() > bestFitness {
-					bestFitness = n.GetFitness()
-					bestNetwork = n
-					bestNetwork.Tag()
-				}
-
-			} else {
-				// Build the network
-				recurrent := network.NewRecurrent(*i, hiddenUnits, *o, true)
-				recurrent.Create(subpops)
-				// Evaluate the network in the environment(e)
-				e := environment.NewCartpole()
-				e.Reset()
-				n := evaluate(e, recurrent)
-				if n.GetFitness() > bestFitness {
-					bestFitness = n.GetFitness()
-					bestNetwork = n
-					bestNetwork.Tag()
-				}
-
+			// Build the network
+			feedForward := network.NewFeedForward(*i, hiddenUnits, *o, true)
+			feedForward.Create(subpops)
+			// Evaluate the network in the environment(e)
+			e := environment.NewCartpole()
+			e.Reset()
+			n := evaluate(e, feedForward)
+			if n.GetFitness() > bestFitness {
+				bestFitness = n.GetFitness()
+				bestNetwork = n
+				bestNetwork.Tag()
 			}
+
 		}
 
 		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
 		performanceQueue = append(performanceQueue, bestFitness)
-
-		// CHECK STAGNATION
-		// if bestFitness has not improved in b generations
-		//   if fitness has not improved after two(2) burst mutations
-		//   then ADAPT-NETWORK-SIZE()
-		//   else BURST_MUTATE()
-		/*
-			if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-				if performanceQueue[*b+generations] == performanceQueue[generations] {
-					if count == 2 {
-						fmt.Println("Adapting network size ...")
-						for item, neuron := range bestNetwork.GetHiddenUnits() {
-							neuron.Lesioned = true
-							lesionedEnviron := environment.NewCartpole()
-							lesionedEnviron.Reset()
-
-							lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)
-							fmt.Println("Lesioned Fitness: ", lesionedFitness)
-
-							threshold := 1
-							if lesionedFitness > (bestFitness*threshold) && len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-								// delete subpopulation to subpops
-								// decrement h
-								subpops = append(subpops[:item], subpops[item+1:]...)
-								hiddenUnits--
-								fmt.Println("Subpopulations decreased to ", hiddenUnits)
-							} else {
-								neuron.Lesioned = false
-							}
-						}
-						// if no neuron was removed
-						// increment h
-						// add a new population to subpops
-						if len(bestNetwork.GetHiddenUnits()) == hiddenUnits {
-							hiddenUnits++
-							fmt.Println("Subpopulations increased to ", hiddenUnits)
-
-							var p *population.Population
-							if *markov == true {
-								p = population.NewPopulation(*n, network.NewFeedForward(*i, hiddenUnits, *o, true).GeneSize)
-							} else {
-								p = population.NewPopulation(*n, network.NewRecurrent(*i, hiddenUnits, *o, true).GeneSize)
-							}
-							p.Create()
-							// Grow the neuron connection weights in the already existent populations
-							if *markov == false {
-								for _, subpop := range subpops {
-									subpop.GrowIndividuals()
-								}
-							}
-							subpops = append(subpops, p)
-						}
-						count = 0
-					} else {
-						fmt.Println("Burst Mutate ...")
-						stagnated = true
-						for index, subpop := range subpops {
-							for _, neuron := range subpop.Individuals {
-								neuron.Perturb(bestNetwork.GetHiddenUnits()[index])
-							}
-						}
-						count++
-					}
-				}
-			}
-
-		*/
 
 		// RECOMBINATION - sort neurons, mate and mutate
 		if stagnated == false {
