@@ -54,15 +54,22 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	fitness := 0
 	steps := 0
 	maxSteps := 150
+	average_initial_distance := 0
+	average_final_distance := 0
+
 	input := make([]float64, team[0].GetTotalInputs())
 	output := make([]float64, team[0].GetTotalOutputs())
 	var state *environment.State
 	states := make([]environment.State, 0)
 
+	state = e.GetState()
 	// calculate average INITIAL distance
+	for p := 0; p < numPreds; p++ {
+		average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+	}
+	average_initial_distance = average_initial_distance / *numPreds
 
 	for !e.Caught() && steps < maxSteps {
-		state = e.GetState()
 		// push state into states slice
 		states = append(states, *state)
 		// Proceed to next state ...
@@ -79,6 +86,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 			e.PerformPredAction(predator, out)
 		}
 		steps++
+		state = e.GetState()
 	}
 
 	if *simulation == true {
@@ -93,6 +101,16 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 		}
 	}
 	// calculate fitness - which is average FINAL distance from the prey
+	for p := 0; p < numPreds; p++ {
+		average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+	}
+	average_final_distance = average_final_distance / *numPreds
+
+	if !e.caught {
+		fitness = (average_initial_distance - average_final_distance) / 10
+	} else {
+		fitness = (200 - average_final_distance) / 10
+	}
 
 	// award fitness score to team
 	for _, predator := range team {
@@ -100,6 +118,24 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 		predator.SetNeuronFitness()
 	}
 	return team
+}
+
+// Calculate Manhattan Distance
+func calculateDistance(predX int, predY int, preyX int, preyY int) {
+	distanceX := 0
+	distanceY := 0
+
+	distanceX = abs(predX - preyX)
+	if distanceX > NewWorld().Length/2 {
+		distanceX = NewWorld().Length - distanceX
+	}
+
+	distanceY = abs(predY - preyY)
+	if distanceY > NewWorld().Length/2 {
+		distanceY = NewWorld().Length - distanceY
+	}
+
+	return (distanceX + distanceY)
 }
 
 func main() {
