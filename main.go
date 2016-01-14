@@ -9,6 +9,7 @@ import (
 	"github.com/edmore/esp/population"
 	"io/ioutil"
 	"log"
+	"math"
 	"os"
 	"runtime"
 	"runtime/pprof"
@@ -125,14 +126,14 @@ func calculateDistance(predX int, predY int, preyX int, preyY int) {
 	distanceX := 0
 	distanceY := 0
 
-	distanceX = abs(predX - preyX)
-	if distanceX > NewWorld().Length/2 {
-		distanceX = NewWorld().Length - distanceX
+	distanceX = math.Abs(predX - preyX)
+	if distanceX > world.NewWorld().Length/2 {
+		distanceX = world.NewWorld().Length - distanceX
 	}
 
-	distanceY = abs(predY - preyY)
-	if distanceY > NewWorld().Length/2 {
-		distanceY = NewWorld().Length - distanceY
+	distanceY = math.Abs(predY - preyY)
+	if distanceY > world.NewWorld().Length/2 {
+		distanceY = world.NewWorld().Length - distanceY
 	}
 
 	return (distanceX + distanceY)
