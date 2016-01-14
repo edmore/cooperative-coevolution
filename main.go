@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	bestNetwork network.Network
+	bestTeam    []network.Network
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
 	subpops     []*population.Population
@@ -26,7 +26,6 @@ var (
 // Flags
 var (
 	simulation  = flag.Bool("sim", false, "simulate best network on task")
-	markov      = flag.Bool("markov", false, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
 	n           = flag.Int("n", 100, "number of individuals per subpopulation")
@@ -180,32 +179,27 @@ func main() {
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	for p := 0; p < numPreds; p++ {
-		if *markov == true {
-			subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
-		} else {
-			subpops = initialize(hiddenUnits, *n, network.NewRecurrent(*i, hiddenUnits, *o, false).GeneSize)
-		}
+		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
 		// predator subpopulations
 		predSubpops.append(subpops)
 	}
 
 	numTrials := 10 * *n
-	for bestFitness < *goalFitness && generations < *maxGens {
+	for generations < *maxGens {
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
 			// Build the network
-			feedForward := network.NewFeedForward(*i, hiddenUnits, *o, true)
+			feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 			feedForward.Create(subpops)
-			// Evaluate the network in the environment(e)
-			e := environment.NewCartpole()
+			// Evaluate the team in the environment(e)
+			e := domain.NewPredatorPrey()
 			e.Reset()
 			n := evaluate(e, feedForward)
 			if n.GetFitness() > bestFitness {
 				bestFitness = n.GetFitness()
-				bestNetwork = n
-				bestNetwork.Tag()
+				bestTeam = n
+				bestTeam.Tag()
 			}
-
 		}
 
 		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
@@ -228,5 +222,4 @@ func main() {
 		chans = make([]chan network.Network, 0)
 		generations++
 	}
-
 }
