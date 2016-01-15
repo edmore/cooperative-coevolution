@@ -188,11 +188,11 @@ func main() {
 	for generations < *maxGens {
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
-			// Build the network
+			// Build the team of predators
 			feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 			feedForward.Create(subpops)
 			// Evaluate the team in the environment(e)
-			e := domain.NewPredatorPrey()
+			e := environment.NewPredatorPrey()
 			e.Reset()
 			n := evaluate(e, feedForward)
 			if n.GetFitness() > bestFitness {
