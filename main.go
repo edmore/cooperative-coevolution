@@ -191,21 +191,23 @@ func main() {
 		for x := 0; x < numTrials; x++ {
 			// Build the team of predators
 			// [[p,p,p], [p,p,p]....]
-
-			//loop
-			// probably initialize a new network at the top and then append to a team
-			feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
-			feedForward.Create(subpops)
-			//end loop
-
+			// has to be a unique network
+			var team []network.network
+			for i := 0; i < len(predSubpops); i++ {
+				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
+				feedForward.Create(predSubpops[i])
+				team.append(feedForward)
+			}
 			// Evaluate the team in the environment(e)
 			e := environment.NewPredatorPrey()
 			e.Reset()
-			n := evaluate(e, team)
-			if n.GetFitness() > bestFitness {
-				bestFitness = n.GetFitness()
-				bestTeam = n
-				bestTeam.Tag()
+			t := evaluate(e, team)
+			if t[0].GetFitness() > bestFitness {
+				bestFitness = t[0].GetFitness()
+				bestTeam = t
+				for i := 0; i < len(bestTeam); i++ {
+					bestTeam[i].Tag()
+				}
 			}
 		}
 
