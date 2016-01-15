@@ -67,7 +67,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	for p := 0; p < numPreds; p++ {
 		average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
-	average_initial_distance = average_initial_distance / *numPreds
+	average_initial_distance = average_initial_distance / numPreds
 
 	for !e.Caught() && steps < maxSteps {
 		// push state into states slice
@@ -104,9 +104,9 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	for p := 0; p < numPreds; p++ {
 		average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
-	average_final_distance = average_final_distance / *numPreds
+	average_final_distance = average_final_distance / numPreds
 
-	if !e.caught {
+	if !e.Caught {
 		fitness = (average_initial_distance - average_final_distance) / 10
 	} else {
 		fitness = (200 - average_final_distance) / 10
@@ -126,17 +126,19 @@ func calculateDistance(predX int, predY int, preyX int, preyY int) {
 	distanceY := 0
 
 	distanceX = math.Abs(predX - preyX)
-	if distanceX > world.NewWorld().Length/2 {
-		distanceX = world.NewWorld().Length - distanceX
+	if distanceX > e.NewGridworld().Length/2 {
+		distanceX = e.NewGridworld().Length - distanceX
 	}
 
 	distanceY = math.Abs(predY - preyY)
-	if distanceY > world.NewWorld().Length/2 {
-		distanceY = world.NewWorld().Length - distanceY
+	if distanceY > e.NewGridworld().Length/2 {
+		distanceY = e.NewGridworld().Length - distanceY
 	}
 
 	return (distanceX + distanceY)
 }
+
+var numPreds int = *p
 
 func main() {
 	flag.Parse()
@@ -169,7 +171,6 @@ func main() {
 	generations := 0
 	stagnated = false
 	count := 0
-	numPred = *p
 
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)

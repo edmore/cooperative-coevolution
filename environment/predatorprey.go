@@ -2,11 +2,11 @@
  Predator Prey Task
 */
 
-package predatorprey
+package environment
 
 import (
-	//"fmt"
-	"math"
+//"fmt"
+//	"math"
 )
 
 const ()
@@ -39,7 +39,7 @@ func (p *PredatorPrey) Reset() {
 
 // Stores the desired action for the next step
 func (p *PredatorPrey) PerformPredatorAction(action float64) {
-	predatorStep(action, c)
+	predatorStep(action, p)
 }
 
 // Step
@@ -48,7 +48,7 @@ func predatorStep(action float64, p *PredatorPrey) {
 
 // Stores the desired action for the next step
 func (p *PredatorPrey) PerformPreyAction(action float64) {
-	preyStep(action, c)
+	preyStep(action, p)
 }
 
 // Step
