@@ -178,9 +178,10 @@ func main() {
 
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
+	// You have to remember that if you have 3 predators and number of hidden units is 3 that means 9 subpops
 	for p := 0; p < numPreds; p++ {
 		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
-		// predator subpopulations
+		// predator subpopulations - a multidimensional array
 		predSubpops.append(subpops)
 	}
 
@@ -189,12 +190,18 @@ func main() {
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
 			// Build the team of predators
+			// [[p,p,p], [p,p,p]....]
+
+			//loop
+			// probably initialize a new network at the top and then append to a team
 			feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 			feedForward.Create(subpops)
+			//end loop
+
 			// Evaluate the team in the environment(e)
 			e := environment.NewPredatorPrey()
 			e.Reset()
-			n := evaluate(e, feedForward)
+			n := evaluate(e, team)
 			if n.GetFitness() > bestFitness {
 				bestFitness = n.GetFitness()
 				bestTeam = n
