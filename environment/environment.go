@@ -2,8 +2,9 @@ package environment
 
 type Environment interface {
 	GetState() *State
-	WithinTrackBounds() bool
-	WithinAngleBounds() bool
-	PerformAction(float64)
+	Caught() bool
+	Surrounded() bool
+	PerformPreyAction()
+	PerformPredatorAction()
 	Reset()
 }

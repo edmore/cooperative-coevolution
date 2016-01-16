@@ -106,7 +106,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	}
 	average_final_distance = average_final_distance / numPreds
 
-	if !e.Caught {
+	if !e.Caught() {
 		fitness = (average_initial_distance - average_final_distance) / 10
 	} else {
 		fitness = (200 - average_final_distance) / 10
