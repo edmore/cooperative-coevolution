@@ -13,6 +13,11 @@ const ()
 
 var ()
 
+type Gridworld struct {
+	Length int
+	Height int
+}
+
 type State struct {
 	PredatorX []int // x position(s) of the predator(s)
 	PredatorY []int // y position(s) of the predator(s)
@@ -23,13 +28,15 @@ type State struct {
 type PredatorPrey struct {
 	Name  string
 	state *State
+	world *Gridworld
 }
 
 // PredatorPrey Environment constructor
 func NewPredatorPrey() *PredatorPrey {
 	return &PredatorPrey{
 		Name:  "Predator Prey Task",
-		state: new(State)}
+		state: new(State),
+		world: new(Gridworld)}
 }
 
 // Re-initialize the environment
@@ -58,6 +65,10 @@ func preyStep(action float64, p *PredatorPrey) {
 // Get the current state variables
 func (p *PredatorPrey) GetState() *State {
 	return p.state
+}
+
+func (p *PredatorPrey) GetWorld() *Gridworld {
+	return p.world
 }
 
 // Prey Caught

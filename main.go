@@ -21,6 +21,7 @@ var (
 	chans       = make([]chan network.Network, 0)
 	subpops     []*population.Population
 	predSubpops []*population.Population
+	world       *environment.Gridworld
 )
 
 // Flags
@@ -63,9 +64,11 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	states := make([]environment.State, 0)
 
 	state = e.GetState()
+	world = e.GetWorld()
+
 	// calculate average INITIAL distance
 	for p := 0; p < numPreds; p++ {
-		average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+		average_initial_distance = average_initial_distance + calculateDistance(e, state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
 	average_initial_distance = average_initial_distance / numPreds
 
@@ -83,7 +86,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 			input[1] = state.PreyY
 
 			out := predator.Activate(input, output)
-			e.PerformPredAction(predator, out)
+			e.PerformPredatorAction(predator, out)
 		}
 		steps++
 		state = e.GetState()
@@ -102,7 +105,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	}
 	// calculate fitness - which is average FINAL distance from the prey
 	for p := 0; p < numPreds; p++ {
-		average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+		average_final_distance = average_final_distance + calculateDistance(e, state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
 	average_final_distance = average_final_distance / numPreds
 
@@ -121,18 +124,18 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 }
 
 // Calculate Manhattan Distance
-func calculateDistance(predX int, predY int, preyX int, preyY int) {
+func calculateDistance(e environment.Environment, predX int, predY int, preyX int, preyY int) {
 	distanceX := 0
 	distanceY := 0
 
 	distanceX = math.Abs(predX - preyX)
-	if distanceX > e.NewGridworld().Length/2 {
-		distanceX = e.NewGridworld().Length - distanceX
+	if distanceX > world.Length/2 {
+		distanceX = world.Length - distanceX
 	}
 
 	distanceY = math.Abs(predY - preyY)
-	if distanceY > e.NewGridworld().Length/2 {
-		distanceY = e.NewGridworld().Length - distanceY
+	if distanceY > world.Height/2 {
+		distanceY = world.Height - distanceY
 	}
 
 	return (distanceX + distanceY)
@@ -193,7 +196,7 @@ func main() {
 			// Build the team of predators
 			// [[p,p,p], [p,p,p]....]
 			// has to be a unique network
-			var team []network.network
+			var team []network.Network
 			for i := 0; i < len(predSubpops); i++ {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 				feedForward.Create(predSubpops[i])
