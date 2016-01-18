@@ -5,8 +5,9 @@
 package environment
 
 import (
-//"fmt"
-//	"math"
+	//"fmt"
+	//	"math"
+	"github.com/edmore/esp/network"
 )
 
 const ()
@@ -45,12 +46,12 @@ func (p *PredatorPrey) Reset() {
 }
 
 // Stores the desired action for the next step
-func (p *PredatorPrey) PerformPredatorAction(action float64) {
+func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []float64) {
 	predatorStep(action, p)
 }
 
 // Step
-func predatorStep(action float64, p *PredatorPrey) {
+func predatorStep(action []float64, p *PredatorPrey) {
 }
 
 // Stores the desired action for the next step

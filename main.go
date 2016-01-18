@@ -58,8 +58,8 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	average_initial_distance := 0
 	average_final_distance := 0
 
-	input := make([]float64, team[0].GetTotalInputs())
-	output := make([]float64, team[0].GetTotalOutputs())
+	input := make([]float64, team[0].GetTotalInputs())   // position of the prey
+	output := make([]float64, team[0].GetTotalOutputs()) // N,S,E,W,Stay
 	var state *environment.State
 	states := make([]environment.State, 0)
 
