@@ -82,8 +82,8 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 
 		// Perform each predator action
 		for _, predator := range team {
-			input[0] = state.PreyX
-			input[1] = state.PreyY
+			input[0] = float64(state.PreyX)
+			input[1] = float64(state.PreyY)
 
 			out := predator.Activate(input, output)
 			e.PerformPredatorAction(predator, out)
@@ -125,20 +125,20 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 
 // Calculate Manhattan Distance
 func calculateDistance(e environment.Environment, predX int, predY int, preyX int, preyY int) int {
-	distanceX := 0
-	distanceY := 0
+	distanceX := 0.0
+	distanceY := 0.0
 
-	distanceX = math.Abs(predX - preyX)
-	if distanceX > world.Length/2 {
-		distanceX = world.Length - distanceX
+	distanceX = math.Abs(float64(predX - preyX))
+	if distanceX > float64(world.Length/2) {
+		distanceX = float64(world.Length) - distanceX
 	}
 
-	distanceY = math.Abs(predY - preyY)
-	if distanceY > world.Height/2 {
-		distanceY = world.Height - distanceY
+	distanceY = math.Abs(float64(predY - preyY))
+	if distanceY > float64(world.Height/2) {
+		distanceY = float64(world.Height) - distanceY
 	}
 
-	return (distanceX + distanceY)
+	return int(distanceX + distanceY)
 }
 
 var numPreds int = *p
