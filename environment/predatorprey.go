@@ -45,22 +45,12 @@ func (p *PredatorPrey) Reset() {
 	// you can set the position of the predators here
 }
 
-// Stores the desired action for the next step
 func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []float64) {
-	predatorStep(action, p)
+
 }
 
-// Step
-func predatorStep(action []float64, p *PredatorPrey) {
-}
 
-// Stores the desired action for the next step
-func (p *PredatorPrey) PerformPreyAction(action float64) {
-	preyStep(action, p)
-}
-
-// Step
-func preyStep(action float64, p *PredatorPrey) {
+func (p *PredatorPrey) PerformPreyAction(state *State) {
 }
 
 // Get the current state variables
@@ -78,6 +68,6 @@ func (p *PredatorPrey) Caught() bool {
 }
 
 // Prey Surrounded
-func (p *PredatorPrey) Surrrounded() bool {
+func (p *PredatorPrey) Surrounded() bool {
 	return false
 }

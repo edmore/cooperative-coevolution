@@ -78,7 +78,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 		// Proceed to next state ...
 
 		// Perform prey action
-		e.PerformPreyAction()
+		e.PerformPreyAction(state)
 
 		// Perform each predator action
 		for _, predator := range team {
@@ -197,9 +197,9 @@ func main() {
 			// [[p,p,p], [p,p,p]....]
 			// has to be a unique network
 			var team []network.Network
-			for i := 0; i < len(predSubpops); i++ {
+			for f := 0; f < len(predSubpops); f++ {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
-				feedForward.Create(predSubpops[i])
+				feedForward.Create(predSubpops[f])
 				team.append(feedForward)
 			}
 			// Evaluate the team in the environment(e)
