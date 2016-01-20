@@ -124,7 +124,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 }
 
 // Calculate Manhattan Distance
-func calculateDistance(e environment.Environment, predX int, predY int, preyX int, preyY int) {
+func calculateDistance(e environment.Environment, predX int, predY int, preyX int, preyY int) int {
 	distanceX := 0
 	distanceY := 0
 
