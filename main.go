@@ -173,7 +173,6 @@ func main() {
 	bestFitness := 0
 	generations := 0
 	stagnated = false
-	count := 0
 
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
@@ -186,7 +185,7 @@ func main() {
 	for p := 0; p < numPreds; p++ {
 		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
 		// predator subpopulations - a multidimensional array
-		predSubpops.append(subpops)
+		predSubpops = append(predSubpops, subpops)
 	}
 
 	numTrials := 10 * *n
@@ -200,7 +199,7 @@ func main() {
 			for f := 0; f < len(predSubpops); f++ {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 				feedForward.Create(predSubpops[f])
-				team.append(feedForward)
+				team = append(team, feedForward)
 			}
 			// Evaluate the team in the environment(e)
 			e := environment.NewPredatorPrey()
