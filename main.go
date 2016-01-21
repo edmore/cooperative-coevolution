@@ -17,8 +17,6 @@ import (
 
 var (
 	bestTeam    []network.Network
-	ch          = make(chan network.Network)
-	chans       = make([]chan network.Network, 0)
 	subpops     []*population.Population
 	predSubpops [][]*population.Population
 	world       *environment.Gridworld
@@ -154,10 +152,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	var (
-		stagnated    bool
-		mutationRate float32 = 0.4
-	)
+	var mutationRate float32 = 0.4
 
 	fmt.Printf("Number of inputs (i) is %v.\n", *i)
 	fmt.Printf("Number of hidden units (h) is %v.\n", *h)
@@ -172,7 +167,6 @@ func main() {
 	performanceQueue := make([]int, *b)
 	bestFitness := 0
 	generations := 0
-	stagnated = false
 
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
@@ -218,8 +212,8 @@ func main() {
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// RECOMBINATION - sort neurons, mate and mutate
-		if stagnated == false {
-			for _, subpop := range subpops {
+		for _, predatorPops := range predSubpops {
+			for _, subpop := range predatorPops {
 				// Sort neurons in each subpopulation
 				subpop.SortNeurons()
 				// Mate top quartile of neurons in each population
@@ -228,10 +222,6 @@ func main() {
 				subpop.Mutate(mutationRate)
 			}
 		}
-		// reset stagnation
-		stagnated = false
-		// reset channels
-		chans = make([]chan network.Network, 0)
 		generations++
 	}
 }
