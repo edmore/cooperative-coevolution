@@ -20,7 +20,7 @@ var (
 	ch          = make(chan network.Network)
 	chans       = make([]chan network.Network, 0)
 	subpops     []*population.Population
-	predSubpops []*population.Population
+	predSubpops [][]*population.Population
 	world       *environment.Gridworld
 )
 
