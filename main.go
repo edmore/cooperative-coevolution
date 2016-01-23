@@ -61,8 +61,13 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	var state *environment.State
 	states := make([]environment.State, 0)
 
+
+
 	state = e.GetState()
 	world = e.GetWorld()
+
+	fmt.Println(state)
+	// need to initialize the predator and prey starting points
 
 	// calculate average INITIAL distance
 	for p := 0; p < numPreds; p++ {
@@ -198,6 +203,9 @@ func main() {
 			// Evaluate the team in the environment(e)
 			e := environment.NewPredatorPrey()
 			e.Reset()
+			fmt.Println(e)
+			fmt.Println(team[0])
+
 			t := evaluate(e, team)
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
