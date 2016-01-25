@@ -42,7 +42,11 @@ func NewPredatorPrey() *PredatorPrey {
 
 // Re-initialize the environment
 func (p *PredatorPrey) Reset() {
-	// you can set the position of the predators here
+	// initialise prey
+	p.State.PreyX = 0
+	p.State.PreyY = 0
+
+	// initialize predators
 }
 
 func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []float64) {
