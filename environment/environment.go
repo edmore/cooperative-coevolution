@@ -9,5 +9,5 @@ type Environment interface {
 	Surrounded() bool
 	PerformPreyAction(*State)
 	PerformPredatorAction(network.Network, []float64)
-	Reset()
+	Reset(int)
 }

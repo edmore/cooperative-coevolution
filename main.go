@@ -66,9 +66,6 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	state = e.GetState()
 	world = e.GetWorld()
 
-	fmt.Println(state)
-	// need to initialize the predator and prey starting points
-
 	// calculate average INITIAL distance
 	for p := 0; p < numPreds; p++ {
 		average_initial_distance = average_initial_distance + calculateDistance(e, state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
@@ -183,7 +180,7 @@ func main() {
 	// You have to remember that if you have 3 predators and number of hidden units is 3 that means 9 subpops
 	for p := 0; p < numPreds; p++ {
 		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
-		// predator subpopulations - a multidimensional array
+		// predator subpopulations - a multidimensional array of subpopulations
 		predSubpops = append(predSubpops, subpops)
 	}
 
@@ -192,20 +189,19 @@ func main() {
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
 			// Build the team of predators
-			// [[p,p,p], [p,p,p]....]
+			// [[p,p,p], [p,p,p]....] - predator subpops
 			// has to be a unique network
 			var team []network.Network
-			for f := 0; f < len(predSubpops); f++ {
+			for f := 0; f < numPreds; f++ {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 				feedForward.Create(predSubpops[f])
 				team = append(team, feedForward)
 			}
 			// Evaluate the team in the environment(e)
 			e := environment.NewPredatorPrey()
-			e.Reset()
-			fmt.Println(e)
-			fmt.Println(team[0])
+			e.Reset(numPreds)
 
+			// TODO : Fix the logic below
 			t := evaluate(e, team)
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()

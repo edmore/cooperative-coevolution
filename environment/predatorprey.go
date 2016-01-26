@@ -28,25 +28,29 @@ type State struct {
 
 type PredatorPrey struct {
 	Name  string
-	state *State
-	world *Gridworld
+	State *State
+	World *Gridworld
 }
 
 // PredatorPrey Environment constructor
 func NewPredatorPrey() *PredatorPrey {
 	return &PredatorPrey{
 		Name:  "Predator Prey Task",
-		state: new(State),
-		world: new(Gridworld)}
+		State: new(State),
+		World: new(Gridworld)}
 }
 
 // Re-initialize the environment
-func (p *PredatorPrey) Reset() {
+func (p *PredatorPrey) Reset(n int) {
 	// initialise prey
 	p.State.PreyX = 0
-	p.State.PreyY = 0
+	p.State.PreyY = 32
 
 	// initialize predators
+	for i:=0; i< n; i++{
+		p.State.PredatorX = append(p.State.PredatorX, i*2)
+		p.State.PredatorY = append(p.State.PredatorY, 0)
+	}
 }
 
 func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []float64) {
@@ -59,11 +63,11 @@ func (p *PredatorPrey) PerformPreyAction(state *State) {
 
 // Get the current state variables
 func (p *PredatorPrey) GetState() *State {
-	return p.state
+	return p.State
 }
 
 func (p *PredatorPrey) GetWorld() *Gridworld {
-	return p.world
+	return p.World
 }
 
 // Prey Caught
