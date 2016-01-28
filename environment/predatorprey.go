@@ -42,12 +42,16 @@ func NewPredatorPrey() *PredatorPrey {
 
 // Re-initialize the environment
 func (p *PredatorPrey) Reset(n int) {
+	// initialize world
+	p.World.Length = 100
+	p.World.Height = 100
+
 	// initialise prey
 	p.State.PreyX = 0
-	p.State.PreyY = 32
+	p.State.PreyY = 99
 
 	// initialize predators
-	for i:=0; i< n; i++{
+	for i := 0; i < n; i++ {
 		p.State.PredatorX = append(p.State.PredatorX, i*2)
 		p.State.PredatorY = append(p.State.PredatorY, 0)
 	}
@@ -56,7 +60,6 @@ func (p *PredatorPrey) Reset(n int) {
 func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []float64) {
 
 }
-
 
 func (p *PredatorPrey) PerformPreyAction(state *State) {
 }

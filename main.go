@@ -61,10 +61,9 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	var state *environment.State
 	states := make([]environment.State, 0)
 
-
-
 	state = e.GetState()
 	world = e.GetWorld()
+	fmt.Println(world)
 
 	// calculate average INITIAL distance
 	for p := 0; p < numPreds; p++ {
@@ -202,10 +201,14 @@ func main() {
 			e.Reset(numPreds)
 
 			// TODO : Fix the logic below
+			// might need to make the prey starting points random : original code has 9 evaluations and finds average
+			// then again remember the networks are different i.e. different random weights
 			t := evaluate(e, team)
+
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
 				bestTeam = t
+
 				for i := 0; i < len(bestTeam); i++ {
 					bestTeam[i].Tag()
 				}
