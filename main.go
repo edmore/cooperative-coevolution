@@ -63,7 +63,6 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 
 	state = e.GetState()
 	world = e.GetWorld()
-	fmt.Println(world)
 
 	// calculate average INITIAL distance
 	for p := 0; p < numPreds; p++ {
@@ -184,6 +183,8 @@ func main() {
 	}
 
 	numTrials := 10 * *n
+	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
+	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
 	for generations < *maxGens {
 		// EVALUATION
 		for x := 0; x < numTrials; x++ {
