@@ -1,85 +1,41 @@
-// Double pole balancing task simulation
+// Prey Capture simulation
 // Written by Edmore Moyo
 
 // Declare some global variables
 JSONArray states;
 JSONObject state;
-float X; // position of cart
-float Theta1; // long pole angle
-float Theta2; // short pole angle
-int counter;
+float PreyX; // x position of the prey
+float PreyY; // y position of the prey
 
+// Size of each cell in the grid, ratio of window size to video size
+// 80 * 8 = 640
+// 60 * 8 = 480
+int videoScale = 8;
 
-void setup(){
-  // Load the JSON file as a JSON object
-  states = loadJSONArray("../../processingjs/json/states.json");
-  size(480, 200, P2D);
-  smooth();
-  frameRate(30);
-  counter = 0;
+// Number of columns and rows in our system
+int cols, rows;
+
+void setup() {
+  size(640,480);
+
+  // Initialize columns and rows
+  cols = width/videoScale;
+  rows = height/videoScale;
 }
 
-void draw()
-{ 
-  background(255, 204, 0);
-  // get and set the new state
-  if (counter < states.size()){
-     state = states.getJSONObject(counter);
-     //println(state);
-  }else{
-    noLoop();
+void draw() {
+  // Begin loop for columns
+  for (int i = 0; i < cols; i++) {
+    // Begin loop for rows
+    for (int j = 0; j < rows; j++) {
+
+      // Scaling up to draw a rectangle at (x,y)
+      int x = i*videoScale;
+      int y = j*videoScale;
+      fill(255);
+      stroke(0);
+      // For every column and row, a rectangle is drawn at an (x,y) location scaled and sized by videoScale.
+      rect(x,y,videoScale,videoScale);
+    }
   }
-  X = state.getFloat("X") * 100; 
-  Theta1 = state.getFloat("Theta1"); 
-  Theta2 = state.getFloat("Theta2"); 
-  drawCentreLine();
-  drawCart();
-  drawPoles();
-  
-  println("{X : " + X + " (cm), " + "Theta1 : " + (Theta1 * 57.295) + "(degrees), "  + "Theta2 : " + (Theta2 * 57.295)  + "(degrees)}");
-  counter++;
-  delay(10);
-}
-
-void drawCentreLine()
-{
-  strokeWeight(1);
-  line(240, 0, 240, 200);
-}
-
-void drawPoles()
-{
-  stroke(0, 102, 0);
-  strokeWeight(4);
-  smooth();
-  // short pole
-  pushMatrix();
-  // move the origin to the pivot point
-  translate(230+X, 150);
-  rectMode(CORNER);
-  // then pivot the grid - as this is what moves
-  rotate(Theta2 + radians(180));
-  fill(0.2);
-  // and draw the square at the new origin
-  rect(0, 0, 1, 10);
-  popMatrix();
-
-  // long pole
-  pushMatrix();
-  // move the origin to the pivot point
-  translate(250+X, 150);
-  rectMode(CORNER);
-  // then pivot the grid - as this is what moves
-  rotate(Theta1 + radians(180));
-  fill(153);
-  // and draw the square at the new origin
-  rect(0, 0, 1, 100);
-  popMatrix();
-}
-
-void drawCart(){
-  fill(0.2);
-  noStroke();
-  rectMode(CORNER);
-  rect(190+X, 150, 100, 50);
 }
