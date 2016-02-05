@@ -64,9 +64,13 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	state = e.GetState()
 	world = e.GetWorld()
 
+	nearestDistance := 0
+	nearestPredator := 0
+	currentDistance := 0
+
 	// calculate average INITIAL distance
 	for p := 0; p < numPreds; p++ {
-		average_initial_distance = average_initial_distance + calculateDistance(e, state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+		average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
 	average_initial_distance = average_initial_distance / numPreds
 
@@ -75,8 +79,17 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 		states = append(states, *state)
 		// Proceed to next state ...
 
+		// find the nearest predator
+		for p := 0; p < numPreds; p++ {
+			currentDistance = calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+			if currentDistance < nearestDistance {
+				nearestDistance = currentDistance
+				nearestPredator = p
+			}
+		}
+
 		// Perform prey action
-		e.PerformPreyAction(state)
+		e.PerformPreyAction(nearestPredator)
 
 		// Perform each predator action
 		for _, predator := range team {
@@ -91,6 +104,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	}
 
 	if *simulation == true {
+		// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
 		// write the states to a json file
 		b, err := json.Marshal(states)
 		if err != nil {
@@ -101,9 +115,10 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 			panic(err)
 		}
 	}
+
 	// calculate fitness - which is average FINAL distance from the prey
 	for p := 0; p < numPreds; p++ {
-		average_final_distance = average_final_distance + calculateDistance(e, state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+		average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
 	average_final_distance = average_final_distance / numPreds
 
@@ -122,7 +137,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 }
 
 // Calculate Manhattan Distance
-func calculateDistance(e environment.Environment, predX int, predY int, preyX int, preyY int) int {
+func calculateDistance(predX int, predY int, preyX int, preyY int) int {
 	distanceX := 0.0
 	distanceY := 0.0
 

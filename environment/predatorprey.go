@@ -6,8 +6,8 @@ package environment
 
 import (
 	//"fmt"
-	//	"math"
 	"github.com/edmore/esp/network"
+	"math"
 )
 
 const ()
@@ -61,7 +61,41 @@ func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []
 
 }
 
-func (p *PredatorPrey) PerformPreyAction(state *State) {
+func (p *PredatorPrey) PerformPreyAction(nearest int) {
+	// calculate nearest predator offset with wrap-around
+	distanceX := float64(p.State.PredatorX[nearest] - p.State.PreyX)
+	if math.Abs(distanceX) > float64(p.World.Length/2) {
+		temp := distanceX
+		distanceX = float64(p.World.Length) - math.Abs(distanceX)
+		if temp > 0 {
+			distanceX = 0 - distanceX
+		}
+	}
+
+	distanceY := float64(p.State.PredatorY[nearest] - p.State.PreyY)
+	if math.Abs(distanceY) > float64(p.World.Height/2) {
+		temp := distanceY
+		distanceY = float64(p.World.Height) - math.Abs(distanceY)
+		if temp > 0 {
+			distanceY = 0 - distanceY
+		}
+	}
+
+	// Move N,S,E,W or Stay
+	if distanceY < 0 && (math.Abs(float64(distanceY)) >= math.Abs(float64(distanceX))) {
+		// Move N
+		p.State.PreyY++
+	} else if distanceX < 0 && (math.Abs(float64(distanceX)) >= math.Abs(float64(distanceY))) {
+		// Move E
+		p.State.PreyX++
+	} else if distanceY > 0 && (math.Abs(float64(distanceY)) >= math.Abs(float64(distanceX))) {
+		// Move S
+		p.State.PreyY--
+	} else if distanceX > 0 && (math.Abs(float64(distanceX)) >= math.Abs(float64(distanceY))) {
+		// Move W
+		p.State.PreyX--
+	}
+	// Else Stay
 }
 
 // Get the current state variables

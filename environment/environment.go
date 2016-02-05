@@ -7,7 +7,7 @@ type Environment interface {
 	GetState() *State
 	Caught() bool
 	Surrounded() bool
-	PerformPreyAction(*State)
+	PerformPreyAction(int)
 	PerformPredatorAction(network.Network, []float64)
 	Reset(int)
 }
