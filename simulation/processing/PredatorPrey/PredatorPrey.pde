@@ -47,9 +47,11 @@ void draw()
 }
 
 void drawPrey(){
-  rect(PreyX, PreyY, 10, 10);
+  rect(PreyX, PreyY, 5, 5);
 }
 
 void drawPredator(){
-  //fill(0.5);
+  for (int i=0; i < PredatorX.size(); i++){
+    rect(PredatorX.getInt(i), PredatorY.getInt(i), 5, 5);
+  }
 }
