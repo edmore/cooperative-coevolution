@@ -96,6 +96,21 @@ func (p *PredatorPrey) PerformPreyAction(nearest int) {
 		p.State.PreyX--
 	}
 	// Else Stay
+
+	// the toroid wrap-around
+	if p.State.PreyX > p.World.Length {
+		p.State.PreyX = p.State.PreyX - p.World.Length
+	}
+	if p.State.PreyY > p.World.Height {
+		p.State.PreyY = p.State.PreyY - p.World.Height
+	}
+	if p.State.PreyX < 0 {
+		p.State.PreyX = p.State.PreyX + p.World.Length
+	}
+	if p.State.PreyY < 0 {
+		p.State.PreyY = p.State.PreyY + p.World.Height
+	}
+
 }
 
 // Get the current state variables
