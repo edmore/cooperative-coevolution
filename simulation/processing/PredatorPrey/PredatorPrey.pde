@@ -22,7 +22,7 @@ void setup() {
 
 void draw()
 { 
-  background(255, 200, 0);
+  background(255, 210, 0);
   // get and set the new state
   if (counter < states.size()){
      state = states.getJSONObject(counter);
@@ -47,11 +47,14 @@ void draw()
 }
 
 void drawPrey(){
+  fill(#000000);
   rect(PreyX, PreyY, 5, 5);
 }
 
 void drawPredator(){
   for (int i=0; i < PredatorX.size(); i++){
+    fill(#FFFFFF);
+    rectMode(CORNER);
     rect(PredatorX.getInt(i), PredatorY.getInt(i), 5, 5);
   }
 }
