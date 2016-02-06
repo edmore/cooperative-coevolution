@@ -47,8 +47,8 @@ func (p *PredatorPrey) Reset(n int) {
 	p.World.Height = 100
 
 	// initialise prey
-	p.State.PreyX = 0
-	p.State.PreyY = 99
+	p.State.PreyX = 6
+	p.State.PreyY = 0
 
 	// initialize predators
 	for i := 0; i < n; i++ {
