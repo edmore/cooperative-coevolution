@@ -120,14 +120,14 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 
 		tempState = TempState{PredatorX: tempPredatorX, PredatorY: tempPredatorY, PreyX: state.PreyX, PreyY: state.PreyY}
 		states = append(states, tempState)
-
 	}
 
 	if *simulation == true {
 		if e.Caught() {
-			fmt.Println("Steps ", steps)
+			//fmt.Println("Steps ", steps)
+			catches++
 			// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
-			fmt.Println(states)
+			//			fmt.Println(states)
 			// write the states to a json file
 			b, err := json.Marshal(states)
 			//fmt.Println(b)
@@ -181,6 +181,7 @@ func calculateDistance(predX int, predY int, preyX int, preyY int) int {
 
 // TODO - suspect does not appear overrid-able
 var numPreds int = *pred
+var catches int
 
 func main() {
 	flag.Parse()
@@ -258,7 +259,7 @@ func main() {
 			}
 		}
 
-		fmt.Printf("Generation %v, best fitness is %v\n", generations, bestFitness)
+		fmt.Printf("Generation %v, best fitness is %v, catches is %v\n", generations, bestFitness, catches)
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// RECOMBINATION - sort neurons, mate and mutate
@@ -273,5 +274,6 @@ func main() {
 			}
 		}
 		generations++
+		catches = 0
 	}
 }

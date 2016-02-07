@@ -5,7 +5,7 @@
 package environment
 
 import (
-	"fmt"
+	//	"fmt"
 	"math"
 )
 
@@ -90,7 +90,7 @@ func (p *PredatorPrey) PerformPredatorAction(position int, action []float64) {
 	//	fmt.Println(p.State)
 	if (p.State.PredatorX[position] == p.State.PreyX) && (p.State.PredatorY[position] == p.State.PreyY) {
 		caught = true
-		fmt.Println("Yay")
+		//		fmt.Println("Yay")
 	}
 }
 
