@@ -19,7 +19,7 @@ var (
 	bestTeam    []network.Network
 	subpops     []*population.Population
 	predSubpops [][]*population.Population
-	world       *environment.Gridworld
+	world       environment.Gridworld
 )
 
 // Flags
@@ -33,7 +33,7 @@ var (
 	b           = flag.Int("b", 10, "number of generations before burst mutation")
 	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
-	p           = flag.Int("pred", 3, "predators")
+	pred        = flag.Int("pred", 3, "predators")
 )
 
 // Initialize subpopulations
@@ -58,11 +58,12 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 
 	input := make([]float64, team[0].GetTotalInputs())   // position of the prey
 	output := make([]float64, team[0].GetTotalOutputs()) // N,S,E,W,Stay
-	var state *environment.State
+	//var state environment.State
 	states := make([]environment.State, 0)
+	//	fmt.Println("States ", states)
 
-	state = e.GetState()
-	world = e.GetWorld()
+	state := *e.GetState()
+	world = *e.GetWorld()
 
 	nearestDistance := 0
 	nearestPredator := 0
@@ -75,10 +76,6 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	average_initial_distance = average_initial_distance / numPreds
 
 	for !e.Caught() && steps < maxSteps {
-		// push state into states slice
-		states = append(states, *state)
-		// Proceed to next state ...
-
 		// find the nearest predator
 		for p := 0; p < numPreds; p++ {
 			currentDistance = calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
@@ -87,32 +84,41 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 				nearestPredator = p
 			}
 		}
+		// Proceed to next state ...
 
 		// Perform prey action
 		e.PerformPreyAction(nearestPredator)
 
 		// Perform each predator action
-		for _, predator := range team {
+		for key, predator := range team {
 			input[0] = float64(state.PreyX)
 			input[1] = float64(state.PreyY)
 
 			out := predator.Activate(input, output)
-			e.PerformPredatorAction(predator, out)
+			e.PerformPredatorAction(key, out)
 		}
+		state = *e.GetState()
+		fmt.Println(state)
 		steps++
-		state = e.GetState()
+		// push state into states slice
+		states = append(states, state)
 	}
 
 	if *simulation == true {
-		// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
-		// write the states to a json file
-		b, err := json.Marshal(states)
-		if err != nil {
-			fmt.Println("error:", err)
-		}
-		err = ioutil.WriteFile("simulation/processingjs/json/states.json", b, 0644)
-		if err != nil {
-			panic(err)
+		if e.Caught() {
+			fmt.Println("Steps ", steps)
+			// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
+
+			// write the states to a json file
+			b, err := json.Marshal(states)
+			//fmt.Println(b)
+			if err != nil {
+				fmt.Println("error:", err)
+			}
+			err = ioutil.WriteFile("simulation/processingjs/json/states.json", b, 0644)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 
@@ -154,7 +160,8 @@ func calculateDistance(predX int, predY int, preyX int, preyY int) int {
 	return int(distanceX + distanceY)
 }
 
-var numPreds int = *p
+// TODO - suspect does not appear overrid-able
+var numPreds int = *pred
 
 func main() {
 	flag.Parse()
@@ -177,7 +184,7 @@ func main() {
 	fmt.Printf("Mutation Rate is set at %v.\n", mutationRate)
 	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
 
-	fmt.Printf("Number of predators is %v.\n", *p)
+	fmt.Printf("Number of predators is %v.\n", *pred)
 
 	performanceQueue := make([]int, *b)
 	bestFitness := 0
@@ -202,6 +209,7 @@ func main() {
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
 	for generations < *maxGens {
 		// EVALUATION
+		// TODO - fix so it is numTrials
 		for x := 0; x < numTrials; x++ {
 			// Build the team of predators
 			// [[p,p,p], [p,p,p]....] - predator subpops

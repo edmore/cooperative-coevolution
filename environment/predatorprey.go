@@ -5,14 +5,11 @@
 package environment
 
 import (
-	//"fmt"
-	"github.com/edmore/esp/network"
+	"fmt"
 	"math"
 )
 
-const ()
-
-var ()
+var caught bool = false
 
 type Gridworld struct {
 	Length int
@@ -47,18 +44,67 @@ func (p *PredatorPrey) Reset(n int) {
 	p.World.Height = 100
 
 	// initialise prey
-	p.State.PreyX = 6
-	p.State.PreyY = 0
+	p.State.PreyX = 50
+	p.State.PreyY = 50
 
 	// initialize predators
 	for i := 0; i < n; i++ {
 		p.State.PredatorX = append(p.State.PredatorX, i*2)
 		p.State.PredatorY = append(p.State.PredatorY, 0)
 	}
+	caught = false
 }
 
-func (p *PredatorPrey) PerformPredatorAction(predator network.Network, action []float64) {
+func (p *PredatorPrey) PerformPredatorAction(position int, action []float64) {
+	// the action vector contains real numbers that map to coordinates
+	// the position of the max number maps to the direction the predator should go
+	predAction := getMaxPosition(action)
 
+	if predAction == 0 {
+		p.State.PredatorY[position]++ // N
+	} else if predAction == 1 {
+		p.State.PredatorX[position]++ // E
+	} else if predAction == 2 {
+		p.State.PredatorY[position]-- // S
+	} else if predAction == 3 {
+		p.State.PredatorX[position]-- // W
+	}
+	// else Stay
+
+	// the toroid wrap-around
+	if p.State.PredatorX[position] > p.World.Length {
+		p.State.PredatorX[position] = p.State.PredatorX[position] - p.World.Length
+	}
+	if p.State.PredatorY[position] > p.World.Height {
+		p.State.PredatorY[position] = p.State.PredatorY[position] - p.World.Height
+	}
+	if p.State.PredatorX[position] < 0 {
+		p.State.PredatorX[position] = p.State.PredatorX[position] + p.World.Length
+	}
+	if p.State.PredatorY[position] < 0 {
+		p.State.PredatorY[position] = p.State.PredatorY[position] + p.World.Height
+	}
+
+	// Check if prey has been caught
+
+	//	fmt.Println(p.State)
+	if (p.State.PredatorX[position] == p.State.PreyX) && (p.State.PredatorY[position] == p.State.PreyY) {
+		caught = true
+		fmt.Println("Yay")
+	}
+}
+
+func getMaxPosition(action []float64) int {
+	max := action[0]
+	result := 0
+
+	for i := 0; i < len(action); i++ {
+		if action[i] > max {
+			max = action[i]
+			result = i
+		}
+	}
+	return result
 }
 
 func (p *PredatorPrey) PerformPreyAction(nearest int) {
@@ -110,7 +156,6 @@ func (p *PredatorPrey) PerformPreyAction(nearest int) {
 	if p.State.PreyY < 0 {
 		p.State.PreyY = p.State.PreyY + p.World.Height
 	}
-
 }
 
 // Get the current state variables
@@ -124,7 +169,7 @@ func (p *PredatorPrey) GetWorld() *Gridworld {
 
 // Prey Caught
 func (p *PredatorPrey) Caught() bool {
-	return false
+	return caught
 }
 
 // Prey Surrounded
