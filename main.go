@@ -36,6 +36,13 @@ var (
 	pred        = flag.Int("pred", 3, "predators")
 )
 
+type TempState struct {
+	PredatorX []int // x position(s) of the predator(s)
+	PredatorY []int // y position(s) of the predator(s)
+	PreyX     int   // x position of the prey
+	PreyY     int   // y position of the prey
+}
+
 // Initialize subpopulations
 func initialize(h int, n int, s int) []*population.Population {
 	var pops []*population.Population // population pool
@@ -58,11 +65,12 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 
 	input := make([]float64, team[0].GetTotalInputs())   // position of the prey
 	output := make([]float64, team[0].GetTotalOutputs()) // N,S,E,W,Stay
-	//var state environment.State
-	states := make([]environment.State, 0)
-	//	fmt.Println("States ", states)
+	var state environment.State
 
-	state := *e.GetState()
+	var tempState TempState
+	states := make([]TempState, 0)
+
+	state = *e.GetState()
 	world = *e.GetWorld()
 
 	nearestDistance := 0
@@ -76,6 +84,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	average_initial_distance = average_initial_distance / numPreds
 
 	for !e.Caught() && steps < maxSteps {
+
 		// find the nearest predator
 		for p := 0; p < numPreds; p++ {
 			currentDistance = calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
@@ -98,17 +107,27 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 			e.PerformPredatorAction(key, out)
 		}
 		state = *e.GetState()
-		fmt.Println(state)
 		steps++
-		// push state into states slice
-		states = append(states, state)
+
+		// push tempState into the states slice : need to avoid referencing the slice address and only the last state being present
+		tempState = *new(TempState)
+		var tempPredatorY []int
+		var tempPredatorX []int
+		for i := 0; i < len(state.PredatorX); i++ {
+			tempPredatorX = append(tempPredatorX, state.PredatorX[i])
+			tempPredatorY = append(tempPredatorY, state.PredatorY[i])
+		}
+
+		tempState = TempState{PredatorX: tempPredatorX, PredatorY: tempPredatorY, PreyX: state.PreyX, PreyY: state.PreyY}
+		states = append(states, tempState)
+
 	}
 
 	if *simulation == true {
 		if e.Caught() {
 			fmt.Println("Steps ", steps)
 			// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
-
+			fmt.Println(states)
 			// write the states to a json file
 			b, err := json.Marshal(states)
 			//fmt.Println(b)
