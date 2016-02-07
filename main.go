@@ -78,15 +78,15 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	currentDistance := 0
 
 	// calculate average INITIAL distance
-	for p := 0; p < numPreds; p++ {
+	for p := 0; p < *pred; p++ {
 		average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
-	average_initial_distance = average_initial_distance / numPreds
+	average_initial_distance = average_initial_distance / *pred
 
 	for !e.Caught() && steps < maxSteps {
 
 		// find the nearest predator
-		for p := 0; p < numPreds; p++ {
+		for p := 0; p < *pred; p++ {
 			currentDistance = calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 			if currentDistance < nearestDistance {
 				nearestDistance = currentDistance
@@ -142,10 +142,10 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	}
 
 	// calculate fitness - which is average FINAL distance from the prey
-	for p := 0; p < numPreds; p++ {
+	for p := 0; p < *pred; p++ {
 		average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
 	}
-	average_final_distance = average_final_distance / numPreds
+	average_final_distance = average_final_distance / *pred
 
 	if !e.Caught() {
 		fitness = (average_initial_distance - average_final_distance) / 10
@@ -179,8 +179,6 @@ func calculateDistance(predX int, predY int, preyX int, preyY int) int {
 	return int(distanceX + distanceY)
 }
 
-// TODO - suspect does not appear overrid-able
-var numPreds int = *pred
 var catches int
 
 func main() {
@@ -218,7 +216,7 @@ func main() {
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
 	// You have to remember that if you have 3 predators and number of hidden units is 3 that means 9 subpops
-	for p := 0; p < numPreds; p++ {
+	for p := 0; p < *pred; p++ {
 		subpops = initialize(hiddenUnits, *n, network.NewFeedForward(*i, hiddenUnits, *o, false).GeneSize)
 		// predator subpopulations - a multidimensional array of subpopulations
 		predSubpops = append(predSubpops, subpops)
@@ -235,14 +233,14 @@ func main() {
 			// [[p,p,p], [p,p,p]....] - predator subpops
 			// has to be a unique network
 			var team []network.Network
-			for f := 0; f < numPreds; f++ {
+			for f := 0; f < *pred; f++ {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 				feedForward.Create(predSubpops[f])
 				team = append(team, feedForward)
 			}
 			// Evaluate the team in the environment(e)
 			e := environment.NewPredatorPrey()
-			e.Reset(numPreds)
+			e.Reset(*pred)
 
 			// TODO : Fix the logic below
 			// might need to make the prey starting points random : original code has 9 evaluations and finds average
