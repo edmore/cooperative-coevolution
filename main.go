@@ -122,15 +122,12 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 		states = append(states, tempState)
 	}
 
-	if *simulation == true {
-		if e.Caught() {
+	if e.Caught() {
+		if *simulation == true {
 			//fmt.Println("Steps ", steps)
-			catches++
 			// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
-			//			fmt.Println(states)
 			// write the states to a json file
 			b, err := json.Marshal(states)
-			//fmt.Println(b)
 			if err != nil {
 				fmt.Println("error:", err)
 			}
@@ -152,6 +149,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	} else {
 		// best case fitness would be like 20. where both predators capture the prey at the same time
 		fitness = (200 - average_final_distance) / 10
+		catches++
 	}
 
 	// award fitness score to team
