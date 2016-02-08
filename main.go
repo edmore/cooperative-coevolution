@@ -150,6 +150,7 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	if !e.Caught() {
 		fitness = (average_initial_distance - average_final_distance) / 10
 	} else {
+		// best case fitness would be like 20. where both predators capture the prey at the same time
 		fitness = (200 - average_final_distance) / 10
 	}
 

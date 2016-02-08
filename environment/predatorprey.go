@@ -71,7 +71,7 @@ func (p *PredatorPrey) PerformPredatorAction(position int, action []float64) {
 	}
 	// else Stay
 
-	// the toroid wrap-around
+	// the toroidal wrap-around
 	if p.State.PredatorX[position] > p.World.Length {
 		p.State.PredatorX[position] = p.State.PredatorX[position] - p.World.Length
 	}
@@ -143,7 +143,7 @@ func (p *PredatorPrey) PerformPreyAction(nearest int) {
 	}
 	// Else Stay
 
-	// the toroid wrap-around
+	// the toroidal wrap-around
 	if p.State.PreyX > p.World.Length {
 		p.State.PreyX = p.State.PreyX - p.World.Length
 	}
