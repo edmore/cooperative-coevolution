@@ -224,7 +224,9 @@ func main() {
 	numTrials := 10 * *n
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
-	for generations < *maxGens {
+	for generations < *maxGens && catches != numTrials {
+		// Reset catches
+		catches = 0
 		// EVALUATION
 		// TODO - fix so it is numTrials
 		for x := 0; x < numTrials; x++ {
@@ -271,6 +273,6 @@ func main() {
 			}
 		}
 		generations++
-		catches = 0
+
 	}
 }
