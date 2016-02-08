@@ -14,7 +14,7 @@ int counter;
 void setup() {
   // Load the JSON file as a JSON object
   states = loadJSONArray("../../processingjs/json/states.json");
-  size(100,100, P2D); / toroidal grid world
+  size(100,100, P2D); // toroidal grid world
   smooth();
   frameRate(30);
   counter = 0;
