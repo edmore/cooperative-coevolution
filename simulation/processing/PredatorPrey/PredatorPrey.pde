@@ -14,7 +14,7 @@ int counter;
 void setup() {
   // Load the JSON file as a JSON object
   states = loadJSONArray("../../processingjs/json/states.json");
-  size(100,100, P2D); // toroidal grid world
+  size(200,200, P2D); // toroidal grid world
   smooth();
   frameRate(30);
   counter = 0;
@@ -22,7 +22,7 @@ void setup() {
 
 void draw()
 { 
-  background(255, 210, 0);
+  background(#0080ff);
   // get and set the new state
   if (counter < states.size()){
      state = states.getJSONObject(counter);
@@ -47,14 +47,14 @@ void draw()
 }
 
 void drawPrey(){
-  fill(#000000);
-  rect(PreyX, PreyY, 5, 5);
+  fill(#ff0000);
+  rect(PreyX * 2, PreyY * 2 , 10, 10);
 }
 
 void drawPredator(){
   for (int i=0; i < PredatorX.size(); i++){
     fill(#FFFFFF);
     rectMode(CORNER);
-    rect(PredatorX.getInt(i), PredatorY.getInt(i), 5, 5);
+    rect(PredatorX.getInt(i) * 2, PredatorY.getInt(i) * 2, 10, 10);
   }
 }
