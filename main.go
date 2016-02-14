@@ -294,8 +294,8 @@ func main() {
 
 		// Set the fitness of each neuron that participated in the evaluations
 		for _, team := range teams {
-			for _, predator := range team {
-				predator.SetNeuronFitness()
+			for _, p := range team {
+				p.SetNeuronFitness()
 			}
 		}
 
@@ -313,6 +313,10 @@ func main() {
 				subpop.Mutate(mutationRate)
 			}
 		}
+		// reset channels
+		chans = make([]chan []network.Network, 0)
+		// reset teams
+		teams = make([][]network.Network, 0)
 		generations++
 
 	}
