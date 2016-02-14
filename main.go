@@ -290,6 +290,8 @@ func main() {
 		stagnated = false
 		// reset channels
 		chans = make([]chan network.Network, 0)
+		// reset nets
+		nets = make([]network.Network, 0)
 		generations++
 	}
 
