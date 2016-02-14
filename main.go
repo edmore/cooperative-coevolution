@@ -20,11 +20,13 @@ var (
 	subpops     []*population.Population
 	predSubpops [][]*population.Population
 	world       environment.Gridworld
+	teams       [][]network.Network
 )
 
 // Flags
 var (
 	simulation  = flag.Bool("sim", false, "simulate best network on task")
+	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
 	n           = flag.Int("n", 100, "number of individuals per subpopulation")
@@ -210,6 +212,7 @@ func main() {
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
+	numCPU := *cpus
 	hiddenUnits := *h
 
 	// INITIALIZATION
@@ -228,33 +231,46 @@ func main() {
 		// Reset catches
 		catches = 0
 		// EVALUATION
-		// TODO - fix so it is numTrials
+		runtime.GOMAXPROCS(numCPU)
 		for x := 0; x < numTrials; x++ {
-			// Build the team of predators
-			// [[p,p,p], [p,p,p]....] - predator subpops
-			// has to be a unique network
+			runtime.GOMAXPROCS(numCPU)
+			// Build the teams of predators
 			var team []network.Network
 			for f := 0; f < *pred; f++ {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, false)
 				feedForward.Create(predSubpops[f])
 				team = append(team, feedForward)
 			}
-			// Evaluate the team in the environment(e)
-			e := environment.NewPredatorPrey()
-			e.Reset(*pred)
+			teams = append(teams, team)
+		}
 
-			// TODO : Fix the logic below
-			// might need to make the prey starting points random : original code has 9 evaluations and finds average
-			// then again remember the networks are different i.e. different random weights
-			t := evaluate(e, team)
-
+		// Distribute a split of evaluations over multiple cores/CPUs
+		split := numTrials / numCPU
+		start := 0
+		end := split
+		for y := 0; y < numCPU; y++ {
+			//fmt.Printf("start %v, end %v\n", start, end)
+			chans = append(chans, make(chan []network.Network))
+			go splitEvals(split, teams[start:end], chans[y])
+			start = end
+			end = end + split
+		}
+		for z := 0; z < numCPU; z++ {
+			t := <-ch
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
 				bestTeam = t
-
 				for i := 0; i < len(bestTeam); i++ {
 					bestTeam[i].Tag()
 				}
+			}
+		}
+		runtime.GOMAXPROCS(defaultCPU)
+
+		// Set the fitness of each neuron that participated in the evaluations
+		for _, team := range teams {
+			for _, predator := range team {
+				predator.SetNeuronFitness()
 			}
 		}
 
