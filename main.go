@@ -17,6 +17,8 @@ import (
 
 var (
 	bestTeam    []network.Network
+	ch          = make(chan []network.Network)
+	chans       = make([]chan []network.Network, 0)
 	subpops     []*population.Population
 	predSubpops [][]*population.Population
 	world       environment.Gridworld
@@ -57,8 +59,30 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
+// Run a split of evaluations
+func splitEvals(split int, teams [][]network.Network, c chan []network.Network) {
+	var phaseBestTeam []network.Network
+	phaseBestFitness := 0
+
+	for x := 0; x < split; x++ {
+		// Evaluate the network in the environment(e)
+		e := environment.NewPredatorPrey()
+		e.Reset(*pred)
+		go evaluate(e, teams[x], c)
+	}
+	for x := 0; x < split; x++ {
+		t := <-c
+		if t[0].GetFitness() > phaseBestFitness {
+			phaseBestFitness = t[0].GetFitness()
+			phaseBestTeam = t
+		}
+	}
+	fmt.Printf("Core best is %v\n", phaseBestTeam[0].GetFitness())
+	ch <- phaseBestTeam
+}
+
 // Evaluate the team of networks (predators) in the trial environment
-func evaluate(e environment.Environment, team []network.Network) []network.Network {
+func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
 	fitness := 0
 	steps := 0
 	maxSteps := 150
@@ -157,9 +181,8 @@ func evaluate(e environment.Environment, team []network.Network) []network.Netwo
 	// award fitness score to team
 	for _, predator := range team {
 		predator.SetFitness(fitness)
-		predator.SetNeuronFitness()
 	}
-	return team
+	c <- team
 }
 
 // Calculate Manhattan Distance
@@ -214,6 +237,8 @@ func main() {
 	fmt.Println("DefaultCPU(s) ", defaultCPU)
 	numCPU := *cpus
 	hiddenUnits := *h
+
+	fmt.Println("CPU(s) in use ", numCPU)
 
 	// INITIALIZATION
 	// TODO - work out whether using the network genesize is the best way to do this
