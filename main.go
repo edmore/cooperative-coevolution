@@ -318,6 +318,5 @@ func main() {
 		// reset teams
 		teams = make([][]network.Network, 0)
 		generations++
-
 	}
 }
