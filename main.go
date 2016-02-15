@@ -63,7 +63,7 @@ func initialize(h int, n int, s int) []*population.Population {
 func splitEvals(split int, teams [][]network.Network, c chan []network.Network) {
 	var phaseBestTeam []network.Network
 	phaseBestFitness := 0
-
+	//	fmt.Println(teams[0][0])
 	for x := 0; x < split; x++ {
 		// Evaluate the network in the environment(e)
 		e := environment.NewPredatorPrey()
@@ -250,13 +250,15 @@ func main() {
 	}
 
 	numTrials := 10 * *n
+	fmt.Println("Number of Evaluations per generation ", numTrials)
+
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
 	for generations < *maxGens && catches != numTrials {
 		// Reset catches
 		catches = 0
 		// EVALUATION
-		runtime.GOMAXPROCS(numCPU)
+		// Create teams
 		for x := 0; x < numTrials; x++ {
 			runtime.GOMAXPROCS(numCPU)
 			// Build the teams of predators
@@ -269,12 +271,13 @@ func main() {
 			teams = append(teams, team)
 		}
 
+		runtime.GOMAXPROCS(numCPU)
 		// Distribute a split of evaluations over multiple cores/CPUs
 		split := numTrials / numCPU
 		start := 0
 		end := split
 		for y := 0; y < numCPU; y++ {
-			//fmt.Printf("start %v, end %v\n", start, end)
+			//	fmt.Printf("start %v, end %v\n", start, end)
 			chans = append(chans, make(chan []network.Network))
 			go splitEvals(split, teams[start:end], chans[y])
 			start = end
@@ -290,6 +293,7 @@ func main() {
 				}
 			}
 		}
+
 		runtime.GOMAXPROCS(defaultCPU)
 
 		// Set the fitness of each neuron that participated in the evaluations
