@@ -66,7 +66,7 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 	//	fmt.Println(teams[0][0])
 	for x := 0; x < split; x++ {
 		// Evaluate the network in the environment(e)
-		e := environment.NewPredatorPrey()
+		var e environment.Environment = environment.NewPredatorPrey()
 		e.Reset(*pred)
 		go evaluate(e, teams[x], c)
 	}
