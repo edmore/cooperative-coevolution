@@ -27,17 +27,18 @@ var (
 
 // Flags
 var (
-	simulation  = flag.Bool("sim", false, "simulate best network on task")
-	cpus        = flag.Int("cpus", 1, "number of cpus to use")
-	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
-	h           = flag.Int("h", 10, "number of hidden units / subpopulations")
-	n           = flag.Int("n", 100, "number of individuals per subpopulation")
-	i           = flag.Int("i", 2, " number of inputs")
-	o           = flag.Int("o", 5, "number of outputs")
-	b           = flag.Int("b", 10, "number of generations before burst mutation")
-	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
-	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
-	pred        = flag.Int("pred", 3, "predators")
+	simulation    = flag.Bool("sim", false, "simulate best network on task")
+	cpus          = flag.Int("cpus", 1, "number of cpus to use")
+	cpuprofile    = flag.String("cpuprofile", "", "write cpu profile to file")
+	h             = flag.Int("h", 10, "number of hidden units / subpopulations")
+	n             = flag.Int("n", 100, "number of individuals per subpopulation")
+	i             = flag.Int("i", 2, " number of inputs")
+	o             = flag.Int("o", 5, "number of outputs")
+	b             = flag.Int("b", 10, "number of generations before burst mutation")
+	maxGens       = flag.Int("maxGens", 100000, "maximum generations")
+	goalFitness   = flag.Int("goalFitness", 100000, "goal fitness")
+	pred          = flag.Int("pred", 3, "predators")
+	evalsPerTrial = flag.Int("evalsPerTrial", 1, "number of evaluations per trial ")
 )
 
 type TempState struct {
@@ -83,104 +84,109 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 
 // Evaluate the team of networks (predators) in the trial environment
 func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
-	fitness := 0
-	steps := 0
-	maxSteps := 150
-	average_initial_distance := 0
-	average_final_distance := 0
+	total_fitness := 0
+	for p := 0; p < *evalsPerTrial; p++ {
+		fitness := 0
+		steps := 0
+		maxSteps := 150
+		average_initial_distance := 0
+		average_final_distance := 0
 
-	input := make([]float64, team[0].GetTotalInputs())   // position of the prey
-	output := make([]float64, team[0].GetTotalOutputs()) // N,S,E,W,Stay
-	var state environment.State
+		input := make([]float64, team[0].GetTotalInputs())   // position of the prey
+		output := make([]float64, team[0].GetTotalOutputs()) // N,S,E,W,Stay
+		var state environment.State
 
-	var tempState TempState
-	states := make([]TempState, 0)
+		var tempState TempState
+		states := make([]TempState, 0)
 
-	state = *e.GetState()
-	world = *e.GetWorld()
-
-	nearestDistance := 0
-	nearestPredator := 0
-	currentDistance := 0
-
-	// calculate average INITIAL distance
-	for p := 0; p < *pred; p++ {
-		average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
-	}
-	average_initial_distance = average_initial_distance / *pred
-
-	for !e.Caught() && steps < maxSteps {
-
-		// find the nearest predator
-		for p := 0; p < *pred; p++ {
-			currentDistance = calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
-			if currentDistance < nearestDistance {
-				nearestDistance = currentDistance
-				nearestPredator = p
-			}
-		}
-		// Proceed to next state ...
-
-		// Perform prey action
-		e.PerformPreyAction(nearestPredator)
-
-		// Perform each predator action
-		for key, predator := range team {
-			input[0] = float64(state.PreyX)
-			input[1] = float64(state.PreyY)
-
-			out := predator.Activate(input, output)
-			e.PerformPredatorAction(key, out)
-		}
+		// Start at random positions
 		state = *e.GetState()
-		steps++
+		world = *e.GetWorld()
 
-		// push tempState into the states slice : need to avoid referencing the slice address and only the last state being present
-		tempState = *new(TempState)
-		var tempPredatorY []int
-		var tempPredatorX []int
-		for i := 0; i < len(state.PredatorX); i++ {
-			tempPredatorX = append(tempPredatorX, state.PredatorX[i])
-			tempPredatorY = append(tempPredatorY, state.PredatorY[i])
+		nearestDistance := 0
+		nearestPredator := 0
+		currentDistance := 0
+
+		// calculate average INITIAL distance
+		for p := 0; p < *pred; p++ {
+			average_initial_distance = average_initial_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+		}
+		average_initial_distance = average_initial_distance / *pred
+
+		for !e.Caught() && steps < maxSteps {
+
+			// find the nearest predator
+			for p := 0; p < *pred; p++ {
+				currentDistance = calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+				if currentDistance < nearestDistance {
+					nearestDistance = currentDistance
+					nearestPredator = p
+				}
+			}
+			// Proceed to next state ...
+
+			// Perform prey action
+			e.PerformPreyAction(nearestPredator)
+
+			// Perform each predator action
+			for key, predator := range team {
+				input[0] = float64(state.PreyX)
+				input[1] = float64(state.PreyY)
+
+				out := predator.Activate(input, output)
+				e.PerformPredatorAction(key, out)
+			}
+			state = *e.GetState()
+			steps++
+
+			// push tempState into the states slice : need to avoid referencing the slice address and only the last state being present
+			tempState = *new(TempState)
+			var tempPredatorY []int
+			var tempPredatorX []int
+			for i := 0; i < len(state.PredatorX); i++ {
+				tempPredatorX = append(tempPredatorX, state.PredatorX[i])
+				tempPredatorY = append(tempPredatorY, state.PredatorY[i])
+			}
+
+			tempState = TempState{PredatorX: tempPredatorX, PredatorY: tempPredatorY, PreyX: state.PreyX, PreyY: state.PreyY}
+			states = append(states, tempState)
 		}
 
-		tempState = TempState{PredatorX: tempPredatorX, PredatorY: tempPredatorY, PreyX: state.PreyX, PreyY: state.PreyY}
-		states = append(states, tempState)
-	}
-
-	if e.Caught() {
-		if *simulation == true {
-			//fmt.Println("Steps ", steps)
-			// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
-			// write the states to a json file
-			b, err := json.Marshal(states)
-			if err != nil {
-				fmt.Println("error:", err)
-			}
-			err = ioutil.WriteFile("simulation/processingjs/json/states.json", b, 0644)
-			if err != nil {
-				panic(err)
+		if e.Caught() {
+			if *simulation == true {
+				//fmt.Println("Steps ", steps)
+				// TODO - You need a clause here to say write to file if prey is caught; so you have a simulation that demonstrates a capture.
+				// write the states to a json file
+				b, err := json.Marshal(states)
+				if err != nil {
+					fmt.Println("error:", err)
+				}
+				err = ioutil.WriteFile("simulation/processingjs/json/states.json", b, 0644)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}
-	}
 
-	// calculate fitness - which is average FINAL distance from the prey
-	for p := 0; p < *pred; p++ {
-		average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
-	}
-	average_final_distance = average_final_distance / *pred
+		// calculate fitness - which is average FINAL distance from the prey
+		for p := 0; p < *pred; p++ {
+			average_final_distance = average_final_distance + calculateDistance(state.PredatorX[p], state.PredatorY[p], state.PreyX, state.PreyY)
+		}
+		average_final_distance = average_final_distance / *pred
 
-	if !e.Caught() {
-		fitness = (average_initial_distance - average_final_distance) / 10
-	} else {
-		// best case fitness would be like 20. where both predators capture the prey at the same time
-		fitness = (200 - average_final_distance) / 10
-		catches++
+		if !e.Caught() {
+			fitness = (average_initial_distance - average_final_distance) / 10
+		} else {
+			// best case fitness would be like 20. where both predators capture the prey at the same time
+			fitness = (200 - average_final_distance) / 10
+			catches++
+		}
+		total_fitness = total_fitness + fitness
 	}
 
 	// award fitness score to team
 	for _, predator := range team {
-		predator.SetFitness(fitness)
+		predator.SetFitness(total_fitness / *evalsPerTrial)
 	}
 	c <- team
 }
@@ -227,6 +233,7 @@ func main() {
 	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
 
 	fmt.Printf("Number of predators is %v.\n", *pred)
+	fmt.Printf("Number of team evaluations per trial is %v.\n", *evalsPerTrial)
 
 	performanceQueue := make([]int, *b)
 	bestFitness := 0
@@ -254,7 +261,7 @@ func main() {
 
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
-	for generations < *maxGens && catches != numTrials {
+	for generations < *maxGens && catches != (numTrials*(*evalsPerTrial))/4 {
 		// Reset catches
 		catches = 0
 		// EVALUATION
