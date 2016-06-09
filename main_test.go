@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/edmore/esp/network"
+	"github.com/edmore/cooperative-coevolution/network"
 
 	"testing"
 )

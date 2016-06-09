@@ -3,9 +3,9 @@
 package main
 
 import (
-	"github.com/edmore/esp/environment"
-	"github.com/edmore/esp/network"
-	"github.com/edmore/esp/neuron"
+	"github.com/edmore/cooperative-coevolution/environment"
+	"github.com/edmore/cooperative-coevolution/network"
+	"github.com/edmore/cooperative-coevolution/neuron"
 )
 
 var ch = make(chan []*neuron.Neuron)

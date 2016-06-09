@@ -7,7 +7,7 @@ do
     POLE_LENGTH=$(bc <<<  $d*2.0)
     for (( c=1; c<=100; c++))
     do
-        /usr/bin/time ./esp -h=5 -n=100 -b=15 -cpus=$CORES -spl=$d 2>> ./runs/"runtime_{$POLE_LENGTH}_{$CORES}.csv" 1 | tail -1 >> ./runs/"convergence_{$POLE_LENGTH}_{$CORES}.csv"
+        /usr/bin/time ./ccoperative-coevolution -h=5 -n=100 -b=15 -cpus=$CORES -spl=$d 2>> ./runs/"runtime_{$POLE_LENGTH}_{$CORES}.csv" 1 | tail -1 >> ./runs/"convergence_{$POLE_LENGTH}_{$CORES}.csv"
         echo "run$c done -> $POLE_LENGTH short pole length -> $CORES core(s)"
     done
 done
