@@ -1,6 +1,6 @@
-[![Build Status](https://magnum.travis-ci.com/edmore/esp.svg?token=qCqiUCDFN1395pnZuyJY&branch=master)](https://magnum.travis-ci.com/edmore/esp)
+[![Build Status](https://magnum.travis-ci.com/edmore/cooperative-coevolution.svg?token=qCqiUCDFN1395pnZuyJY&branch=master)](https://magnum.travis-ci.com/edmore/cooperative-coevolution)
 
-ESP in Go(lang)
+ESP (serial) in Go(lang)
 
 To install:
 
