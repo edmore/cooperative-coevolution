@@ -1,8 +1,8 @@
 package network
 
 import (
-	"github.com/edmore/esp/neuron"
-	"github.com/edmore/esp/population"
+	"github.com/edmore/cooperative-coevolution/neuron"
+	"github.com/edmore/cooperative-coevolution/population"
 )
 
 type Network interface {

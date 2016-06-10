@@ -5,8 +5,8 @@ Package population implements a population of neurons
 package population
 
 import (
-	"github.com/edmore/esp/neuron"
-	"github.com/edmore/esp/random"
+	"github.com/edmore/cooperative-coevolution/neuron"
+	"github.com/edmore/cooperative-coevolution/random"
 
 	//	"fmt"
 	"math/rand"
