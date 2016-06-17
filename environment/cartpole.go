@@ -5,7 +5,7 @@
 package environment
 
 import (
-	"github.com/edmore/esp/rungekutta/rk4"
+	"github.com/edmore/cooperative-coevolution/rungekutta/rk4"
 
 	"math"
 )
