@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/edmore/esp/environment"
-	"github.com/edmore/esp/network"
-	"github.com/edmore/esp/population"
+	"github.com/edmore/cooperative-coevolution/environment"
+	"github.com/edmore/cooperative-coevolution/network"
+	"github.com/edmore/cooperative-coevolution/population"
 	"io/ioutil"
 	"log"
 	"math"
@@ -261,7 +261,7 @@ func main() {
 
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
-	for generations < *maxGens && catches != (numTrials*(*evalsPerTrial))/4 {
+	for generations < *maxGens {
 		// Reset catches
 		catches = 0
 		// EVALUATION
