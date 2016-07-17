@@ -10,6 +10,7 @@ func TestNewRecurrent(t *testing.T) {
 	// No bias
 	rc1 := NewRecurrent(in, hid, out, false)
 	fmt.Println(rc1)
+    // for a recurrent network the Genesize is "in + hid" vs "in + out"
 	if x := rc1.GeneSize; x != in+hid {
 		t.Errorf("Without Bias : GeneSize = %v, we want %v", x, in+out)
 	}
