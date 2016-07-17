@@ -1,3 +1,7 @@
-ESP in Go(lang)
+[![Build Status](https://travis-ci.com/edmore/cooperative-coevolution.svg?token=qCqiUCDFN1395pnZuyJY&branch=sane-serial)](https://magnum.travis-ci.com/edmore/cooperative-coevolution)
 
-[![Build Status](https://magnum.travis-ci.com/edmore/esp.svg?token=qCqiUCDFN1395pnZuyJY&branch=master)](https://magnum.travis-ci.com/edmore/esp)
+Original SANE (serial) in Go(lang)
+
+To install:
+
+go build -o sane
