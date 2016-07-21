@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.com/edmore/cooperative-coevolution.svg?token=qCqiUCDFN1395pnZuyJY&branch=sane-serial)](https://magnum.travis-ci.com/edmore/cooperative-coevolution)
+[![Build Status](https://travis-ci.com/edmore/cooperative-coevolution.svg?token=qCqiUCDFN1395pnZuyJY&branch=multi-agent-esp-serial)](https://magnum.travis-ci.com/edmore/cooperative-coevolution)
 
-Original SANE (serial) in Go(lang)
+Multi-Agent ESP (serial) in Go(lang)
 
 To install:
 
-go build -o sane
+go build -o multi-agent-esp-serial

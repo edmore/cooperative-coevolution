@@ -5,7 +5,7 @@ Package neuron implements an Artificial Neural Network neuron.
 package neuron
 
 import (
-	"github.com/edmore/esp/random"
+	"github.com/edmore/cooperative-coevolution/random"
 	"math/rand"
 	"time"
 )
