@@ -11,8 +11,12 @@ func TestNewPopulation(t *testing.T) {
 }
 
 func TestCreate(t *testing.T) {
-	p := NewPopulation(10, 5)
+	const psize = 10
+	p := NewPopulation(psize, 5)
 	p.Create()
+	if p.NumIndividuals != psize {
+		t.Errorf("Size of population = %v, we want %v", p.NumIndividuals, psize)
+	}
 	fmt.Println(p)
 }
 
