@@ -4,4 +4,4 @@ Multi-Agent ESP (serial) in Go(lang)
 
 To install:
 
-go build -o multi-agent-esp-serial
+go build -o multi-agent-esp
