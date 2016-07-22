@@ -2,6 +2,6 @@
 
 Multi-Agent ESP (serial) in Go(lang)
 
-To install:
+To build:
 
 go build -o multi-agent-esp
