@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/edmore/esp/environment"
-	"github.com/edmore/esp/network"
+	"github.com/edmore/cooperative-coevolution/environment"
+	"github.com/edmore/cooperative-coevolution/network"
 
 	"io/ioutil"
 )
