@@ -2,8 +2,6 @@
 
 ESP (serial) in Go(lang)
 
-To install:
+To build:
 
 go build -o esp
-
-
