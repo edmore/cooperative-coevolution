@@ -5,9 +5,9 @@ Package network implements a recurrent artificial neural network
 package network
 
 import (
-	"github.com/edmore/esp/activation/sigmoid"
-	"github.com/edmore/esp/neuron"
-	"github.com/edmore/esp/population"
+	"github.com/edmore/cooperative-coevolution/activation/sigmoid"
+	"github.com/edmore/cooperative-coevolution/neuron"
+	"github.com/edmore/cooperative-coevolution/population"
 )
 
 type Recurrent struct {

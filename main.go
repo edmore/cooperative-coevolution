@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/edmore/esp/environment"
-	"github.com/edmore/esp/network"
-	"github.com/edmore/esp/population"
+	"github.com/edmore/cooperative-coevolution/environment"
+	"github.com/edmore/cooperative-coevolution/network"
+	"github.com/edmore/cooperative-coevolution/population"
 
 	"log"
 	"os"
