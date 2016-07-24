@@ -7,7 +7,7 @@ package environment
 import (
 	//"fmt"
 	"math"
-	"math/rand"
+	//	"math/rand"
 )
 
 type Gridworld struct {
@@ -44,8 +44,11 @@ func (p *PredatorPrey) Reset(n int) {
 	p.World.Height = 100
 
 	// initialise prey randomly
-	p.State.PreyX = rand.Intn(100)
-	p.State.PreyY = rand.Intn(100)
+	//p.State.PreyX = rand.Intn(100)
+	//p.State.PreyY = rand.Intn(100)
+
+	p.State.PreyX = 50
+	p.State.PreyY = 50
 
 	// initialize predators
 	for i := 0; i < n; i++ {

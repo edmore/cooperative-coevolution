@@ -261,7 +261,7 @@ func main() {
 
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
-	for generations < *maxGens {
+	for generations < *maxGens && catches != (numTrials*(*evalsPerTrial)) {
 		// Reset catches
 		catches = 0
 		// EVALUATION
