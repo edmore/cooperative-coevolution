@@ -25,7 +25,7 @@ var (
 // Flags
 var (
 	simulation  = flag.Bool("sim", false, "simulate best network on task")
-	markov      = flag.Bool("markov", false, "Markov or Non-Markov task")
+	markov      = flag.Bool("markov", true, "Markov or Non-Markov task")
 	cpuprofile  = flag.String("cpuprofile", "", "write cpu profile to file")
 	cpus        = flag.Int("cpus", 1, "number of cpus to use")
 	h           = flag.Int("h", 5, "number of hidden units / subpopulations")
