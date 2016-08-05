@@ -43,19 +43,18 @@ func (p *PredatorPrey) Reset(n int) {
 	p.World.Length = 100
 	p.World.Height = 100
 
-	// initialise prey randomly
-	//p.State.PreyX = rand.Intn(100)
-	//p.State.PreyY = rand.Intn(100)
-
-	p.State.PreyX = 50
-	p.State.PreyY = 50
-
 	// initialize predators
 	for i := 0; i < n; i++ {
 		p.State.PredatorX = append(p.State.PredatorX, i*2)
 		p.State.PredatorY = append(p.State.PredatorY, 0)
 	}
 	p.State.Caught = false
+}
+
+// Set the prey position
+func (p *PredatorPrey) SetPreyPosition(x int, y int) {
+	p.State.PreyX = x
+	p.State.PreyY = y
 }
 
 func (p *PredatorPrey) PerformPredatorAction(position int, action []float64) {

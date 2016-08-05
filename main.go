@@ -38,7 +38,7 @@ var (
 	maxGens       = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness   = flag.Int("goalFitness", 100000, "goal fitness")
 	pred          = flag.Int("pred", 3, "predators")
-	evalsPerTrial = flag.Int("evalsPerTrial", 1, "number of evaluations per trial ")
+	evalsPerTrial = flag.Int("evalsPerTrial", 4, "number of evaluations per trial ")
 )
 
 type TempState struct {
@@ -46,6 +46,11 @@ type TempState struct {
 	PredatorY []int // y position(s) of the predator(s)
 	PreyX     int   // x position of the prey
 	PreyY     int   // y position of the prey
+}
+
+type PreyPositions struct {
+	PreyX []int // x position(s) of the prey
+	PreyY []int // y position(s) of the prey
 }
 
 // Initialize subpopulations
@@ -85,6 +90,8 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 // Evaluate the team of networks (predators) in the trial environment
 func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
 	total_fitness := 0
+	pos := PreyPositions{PreyX: []int{25, 25, 75, 75}, PreyY: []int{25, 75, 25, 75}}
+
 	for p := 0; p < *evalsPerTrial; p++ {
 		fitness := 0
 		steps := 0
@@ -100,6 +107,7 @@ func evaluate(e environment.Environment, team []network.Network, c chan []networ
 		states := make([]TempState, 0)
 
 		// Start at random positions
+		e.SetPreyPosition(pos.PreyX[p], pos.PreyY[p])
 		state = *e.GetState()
 		world = *e.GetWorld()
 
@@ -284,7 +292,7 @@ func main() {
 		start := 0
 		end := split
 		for y := 0; y < numCPU; y++ {
-			//	fmt.Printf("start %v, end %v\n", start, end)
+			fmt.Printf("start %v, end %v\n", start, end)
 			chans = append(chans, make(chan []network.Network))
 			go splitEvals(split, teams[start:end], chans[y])
 			start = end
