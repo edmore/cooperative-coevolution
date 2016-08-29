@@ -34,11 +34,11 @@ var (
 	n             = flag.Int("n", 100, "number of individuals per subpopulation")
 	i             = flag.Int("i", 2, " number of inputs")
 	o             = flag.Int("o", 5, "number of outputs")
-	b             = flag.Int("b", 10, "number of generations before burst mutation")
+	b             = flag.Int("b", 100, "number of generations before burst mutation")
 	maxGens       = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness   = flag.Int("goalFitness", 100000, "goal fitness")
 	pred          = flag.Int("pred", 3, "predators")
-	evalsPerTrial = flag.Int("evalsPerTrial", 4, "number of evaluations per trial ")
+	trialsPerEval = flag.Int("trialsPerEval", 9, "number of trials per evaluation")
 )
 
 type TempState struct {
@@ -83,6 +83,7 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 			phaseBestTeam = t
 		}
 	}
+	fmt.Println(phaseBestTeam[0])
 	fmt.Printf("Core best is %v\n", phaseBestTeam[0].GetFitness())
 	ch <- phaseBestTeam
 }
@@ -90,9 +91,9 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 // Evaluate the team of networks (predators) in the trial environment
 func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
 	total_fitness := 0
-	pos := PreyPositions{PreyX: []int{25, 25, 75, 75}, PreyY: []int{25, 75, 25, 75}}
+	pos := PreyPositions{PreyX: []int{16, 16, 16, 50, 50, 50, 82, 82, 82}, PreyY: []int{16, 50, 82, 16, 50, 82, 16, 50, 82}}
 
-	for p := 0; p < *evalsPerTrial; p++ {
+	for p := 0; p < *trialsPerEval; p++ {
 		fitness := 0
 		steps := 0
 		maxSteps := 150
@@ -194,7 +195,7 @@ func evaluate(e environment.Environment, team []network.Network, c chan []networ
 
 	// award fitness score to team
 	for _, predator := range team {
-		predator.SetFitness(total_fitness / *evalsPerTrial)
+		predator.SetFitness(total_fitness / *trialsPerEval)
 	}
 	c <- team
 }
@@ -230,7 +231,10 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	var mutationRate float32 = 0.4
+	var (
+		stagnated    bool
+		mutationRate float32 = 0.4
+	)
 
 	fmt.Printf("Number of inputs (i) is %v.\n", *i)
 	fmt.Printf("Number of hidden units (h) is %v.\n", *h)
@@ -241,11 +245,12 @@ func main() {
 	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
 
 	fmt.Printf("Number of predators is %v.\n", *pred)
-	fmt.Printf("Number of team evaluations per trial is %v.\n", *evalsPerTrial)
+	fmt.Printf("Number of team trials per evaluation is %v.\n", *trialsPerEval)
 
 	performanceQueue := make([]int, *b)
 	bestFitness := 0
 	generations := 0
+	stagnated = false
 
 	fmt.Println("Number of Logical CPUs on machine ", runtime.NumCPU())
 	defaultCPU := runtime.GOMAXPROCS(0)
@@ -269,7 +274,7 @@ func main() {
 
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
-	for generations < *maxGens && catches != (numTrials*(*evalsPerTrial)) {
+	for generations < *maxGens && catches != (numTrials*(*trialsPerEval)) {
 		// Reset catches
 		catches = 0
 		// EVALUATION
@@ -309,7 +314,7 @@ func main() {
 			}
 		}
 
-		runtime.GOMAXPROCS(defaultCPU)
+		runtime.GOMAXPROCS(1)
 
 		// Set the fitness of each neuron that participated in the evaluations
 		for _, team := range teams {
@@ -321,17 +326,36 @@ func main() {
 		fmt.Printf("Generation %v, best fitness is %v, catches is %v\n", generations, bestFitness, catches)
 		performanceQueue = append(performanceQueue, bestFitness)
 
-		// RECOMBINATION - sort neurons, mate and mutate
-		for _, predatorPops := range predSubpops {
-			for _, subpop := range predatorPops {
-				// Sort neurons in each subpopulation
-				subpop.SortNeurons()
-				// Mate top quartile of neurons in each population
-				subpop.Mate()
-				// Mutate lower half of population
-				subpop.Mutate(mutationRate)
+		// CHECK STAGNATION every 100 generations
+		// If stagnated burst mutate
+		if generations%(*b) == 0 && generations != 0 {
+			fmt.Println("Burst Mutating ...")
+			stagnated = true
+
+			for _, predatorPops := range predSubpops {
+				for index, subpop := range predatorPops {
+					for _, neuron := range subpop.Individuals {
+						neuron.Perturb(bestTeam[0].GetHiddenUnits()[index])
+					}
+				}
 			}
 		}
+
+		// RECOMBINATION - sort neurons, mate and mutate
+		if stagnated == false {
+			for _, predatorPops := range predSubpops {
+				for _, subpop := range predatorPops {
+					// Sort neurons in each subpopulation
+					subpop.SortNeurons()
+					// Mate top quartile of neurons in each population
+					subpop.Mate()
+					// Mutate lower half of population
+					subpop.Mutate(mutationRate)
+				}
+			}
+		}
+		// reset stagnation
+		stagnated = false
 		// reset channels
 		chans = make([]chan []network.Network, 0)
 		// reset teams
