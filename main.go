@@ -38,7 +38,7 @@ var (
 	maxGens       = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness   = flag.Int("goalFitness", 100000, "goal fitness")
 	pred          = flag.Int("pred", 3, "predators")
-	trialsPerEval = flag.Int("trialsPerEval", 9, "number of trials per evaluation")
+	trialsPerEval = flag.Int("trialsPerEval", 3, "number of trials per evaluation")
 )
 
 type TempState struct {
@@ -83,7 +83,6 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 			phaseBestTeam = t
 		}
 	}
-	fmt.Println(phaseBestTeam[0])
 	fmt.Printf("Core best is %v\n", phaseBestTeam[0].GetFitness())
 	ch <- phaseBestTeam
 }
@@ -91,7 +90,7 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 // Evaluate the team of networks (predators) in the trial environment
 func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
 	total_fitness := 0
-	pos := PreyPositions{PreyX: []int{16, 16, 16, 50, 50, 50, 82, 82, 82}, PreyY: []int{16, 50, 82, 16, 50, 82, 16, 50, 82}}
+	pos := PreyPositions{PreyX: []int{16, 50, 82}, PreyY: []int{50, 50, 50}}
 
 	for p := 0; p < *trialsPerEval; p++ {
 		fitness := 0
