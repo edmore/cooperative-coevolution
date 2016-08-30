@@ -269,7 +269,7 @@ func main() {
 	}
 
 	numTrials := 10 * *n
-	fmt.Println("Number of Evaluations per generation ", numTrials)
+	fmt.Println("Number of Evaluations per generation ", numTrials*(*trialsPerEval))
 
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
