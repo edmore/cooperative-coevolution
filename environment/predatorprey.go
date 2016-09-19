@@ -51,7 +51,7 @@ func (p *PredatorPrey) Reset(n int) {
 	p.State.Caught = false
 }
 
-// Set the prey position
+// Initialise the prey position
 func (p *PredatorPrey) SetPreyPosition(x int, y int) {
 	p.State.PreyX = x
 	p.State.PreyY = y
