@@ -69,6 +69,7 @@ func initialize(h int, n int, s int) []*population.Population {
 func splitEvals(split int, teams [][]network.Network, c chan []network.Network) {
 	var phaseBestTeam []network.Network
 	phaseBestFitness := 0
+		phaseCatches := 0
 	//	fmt.Println(teams[0][0])
 	for x := 0; x < split; x++ {
 		// Evaluate the network in the environment(e)
@@ -78,18 +79,24 @@ func splitEvals(split int, teams [][]network.Network, c chan []network.Network) 
 	}
 	for x := 0; x < split; x++ {
 		t := <-c
+		phaseCatches = phaseCatches + t[0].GetCatches()
 		if t[0].GetFitness() > phaseBestFitness {
 			phaseBestFitness = t[0].GetFitness()
 			phaseBestTeam = t
 		}
 	}
 	fmt.Printf("Core best is %v\n", phaseBestTeam[0].GetFitness())
+	for _, predator := range phaseBestTeam {
+		predator.ResetCatches()
+			predator.SetCatches(phaseCatches)
+	}
 	ch <- phaseBestTeam
 }
 
 // Evaluate the team of networks (predators) in the trial environment
 func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
 	total_fitness := 0
+	catches := 0
 	pos := PreyPositions{PreyX: []int{16, 50, 82, 82, 82, 16, 50, 50, 82}, PreyY: []int{50, 50, 50, 82, 16, 50, 16, 82, 50}}
 
 	for p := 0; p < *trialsPerEval; p++ {
@@ -195,6 +202,7 @@ func evaluate(e environment.Environment, team []network.Network, c chan []networ
 	// award fitness score to team
 	for _, predator := range team {
 		predator.SetFitness(total_fitness / *trialsPerEval)
+		predator.SetCatches(catches)
 	}
 	c <- team
 }
@@ -217,7 +225,7 @@ func calculateDistance(predX int, predY int, preyX int, preyY int) int {
 	return int(distanceX + distanceY)
 }
 
-var catches int
+var totalCatches = 0
 
 func main() {
 	flag.Parse()
@@ -273,9 +281,9 @@ func main() {
 
 	// probably need to terminate when the prey has been caught at least 50% (or whatever) of the evaluations by a particular team
 	// or based on the average distance (fitness) : selection of the optimal distance from the prey; but this might be harder
-	for generations < *maxGens && catches != (numTrials*(*trialsPerEval)) {
-		// Reset catches
-		catches = 0
+	for generations < *maxGens && totalCatches != (numTrials*(*trialsPerEval)) {
+		//reset totalCatches
+		totalCatches = 0
 		// EVALUATION
 		// Create teams
 		for x := 0; x < numTrials; x++ {
@@ -304,6 +312,7 @@ func main() {
 		}
 		for z := 0; z < numCPU; z++ {
 			t := <-ch
+			totalCatches = totalCatches +  t[0].GetCatches()
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
 				bestTeam = t
@@ -322,7 +331,7 @@ func main() {
 			}
 		}
 
-		fmt.Printf("Generation %v, best fitness is %v, catches is %v\n", generations, bestFitness, catches)
+		fmt.Printf("Generation %v, best fitness is %v, catches is %v\n", generations, bestFitness, totalCatches)
 		performanceQueue = append(performanceQueue, bestFitness)
 
 		// CHECK STAGNATION every 100 generations

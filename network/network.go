@@ -13,7 +13,10 @@ type Network interface {
 	GetTotalOutputs() int
 	HasBias() bool
 	SetFitness(int)
+	SetCatches(int)
+	ResetCatches()
 	GetFitness() int
+	GetCatches() int
 	SetNeuronFitness()
 	ResetActivation()
 	ResetFitness()
