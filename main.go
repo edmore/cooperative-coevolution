@@ -34,7 +34,7 @@ var (
 	n             = flag.Int("n", 100, "number of individuals per subpopulation")
 	i             = flag.Int("i", 2, " number of inputs")
 	o             = flag.Int("o", 5, "number of outputs")
-	b             = flag.Int("b", 100, "number of generations before burst mutation")
+	b             = flag.Int("b", 500, "number of generations before burst mutation")
 	maxGens       = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness   = flag.Int("goalFitness", 100000, "goal fitness")
 	pred          = flag.Int("pred", 3, "predators")
