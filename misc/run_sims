@@ -4,7 +4,7 @@ CORES="$1"
 
 for (( c=1; c<=50; c++))
 do
-    /usr/bin/time ./multi-agent-esp-parallel -pred=6 -n=240 -h=15 -b=100 -trialsPerEval=3 -cpus=$CORES 2>> ./runs/"runtime_{$CORES}.csv" 1 | tail -1 >> ./runs/"convergence\
+    /usr/bin/time ./multi-agent-esp-parallel -pred=6 -n=540 -h=15 -cpus=$CORES 2>> ./runs/"runtime_{$CORES}.csv" 1 | tail -1 >> ./runs/"convergence\
 _{$CORES}.csv"
 echo "run$c done -> $CORES core(s)"
 done

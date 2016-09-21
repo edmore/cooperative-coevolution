@@ -34,7 +34,7 @@ var (
 	n             = flag.Int("n", 100, "number of individuals per subpopulation")
 	i             = flag.Int("i", 2, " number of inputs")
 	o             = flag.Int("o", 5, "number of outputs")
-	b             = flag.Int("b", 500, "number of generations before burst mutation")
+	b             = flag.Int("b", 200, "number of generations before burst mutation")
 	maxGens       = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness   = flag.Int("goalFitness", 100000, "goal fitness")
 	pred          = flag.Int("pred", 3, "predators")
@@ -69,7 +69,7 @@ func initialize(h int, n int, s int) []*population.Population {
 func splitEvals(split int, teams [][]network.Network, c chan []network.Network) {
 	var phaseBestTeam []network.Network
 	phaseBestFitness := 0
-		phaseCatches := 0
+	phaseCatches := 0
 	//	fmt.Println(teams[0][0])
 	for x := 0; x < split; x++ {
 		// Evaluate the network in the environment(e)
@@ -312,7 +312,7 @@ func main() {
 		}
 		for z := 0; z < numCPU; z++ {
 			t := <-ch
-			totalCatches = totalCatches +  t[0].GetCatches()
+			totalCatches = totalCatches + t[0].GetCatches()
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
 				bestTeam = t
