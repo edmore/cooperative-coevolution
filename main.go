@@ -277,6 +277,7 @@ func main() {
 			// might need to make the prey starting points random : original code has 9 evaluations and finds average
 			// then again remember the networks are different i.e. different random weights
 			t := evaluate(e, team)
+			totalCatches = totalCatches + t[0].GetCatches()
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
 				bestTeam = t
