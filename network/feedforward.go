@@ -19,6 +19,7 @@ type FeedForward struct {
 	Bias        bool
 	Trials      int
 	Fitness     int
+	Catches     int
 	Parent1     int
 	Parent2     int
 	Name        string
@@ -103,9 +104,18 @@ func (f *FeedForward) SetFitness(fitness int) {
 	f.Fitness = fitness
 }
 
+func (f *FeedForward) SetCatches(catches int) {
+	f.Catches = f.Catches + catches
+}
+
 // Get the fitness for a network
 func (f *FeedForward) GetFitness() int {
 	return f.Fitness
+}
+
+// Get the Catches for a network
+func (f *FeedForward) GetCatches() int {
+	return f.Catches
 }
 
 // Get the ID for a network
@@ -136,4 +146,8 @@ func (f *FeedForward) ResetActivation() {
 // Reset the network fitness and trials
 func (f *FeedForward) ResetFitness() {
 	f.Fitness, f.Trials = 0, 0
+}
+
+func (f *FeedForward) ResetCatches() {
+	f.Catches = 0
 }

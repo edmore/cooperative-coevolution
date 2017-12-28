@@ -5,11 +5,10 @@
 package environment
 
 import (
-	//	"fmt"
+	//"fmt"
 	"math"
+	//	"math/rand"
 )
-
-var caught bool = false
 
 type Gridworld struct {
 	Length int
@@ -21,6 +20,7 @@ type State struct {
 	PredatorY []int // y position(s) of the predator(s)
 	PreyX     int   // x position of the prey
 	PreyY     int   // y position of the prey
+	Caught    bool
 }
 
 type PredatorPrey struct {
@@ -43,16 +43,18 @@ func (p *PredatorPrey) Reset(n int) {
 	p.World.Length = 100
 	p.World.Height = 100
 
-	// initialise prey
-	p.State.PreyX = 50
-	p.State.PreyY = 50
-
 	// initialize predators
 	for i := 0; i < n; i++ {
 		p.State.PredatorX = append(p.State.PredatorX, i*2)
 		p.State.PredatorY = append(p.State.PredatorY, 0)
 	}
-	caught = false
+	p.State.Caught = false
+}
+
+// Initialise the prey position
+func (p *PredatorPrey) SetPreyPosition(x int, y int) {
+	p.State.PreyX = x
+	p.State.PreyY = y
 }
 
 func (p *PredatorPrey) PerformPredatorAction(position int, action []float64) {
@@ -89,7 +91,7 @@ func (p *PredatorPrey) PerformPredatorAction(position int, action []float64) {
 
 	//	fmt.Println(p.State)
 	if (p.State.PredatorX[position] == p.State.PreyX) && (p.State.PredatorY[position] == p.State.PreyY) {
-		caught = true
+		p.State.Caught = true
 		//		fmt.Println("Yay")
 	}
 }
@@ -169,7 +171,7 @@ func (p *PredatorPrey) GetWorld() *Gridworld {
 
 // Prey Caught
 func (p *PredatorPrey) Caught() bool {
-	return caught
+	return p.State.Caught
 }
 
 // Prey Surrounded

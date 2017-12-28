@@ -5,3 +5,5 @@ Multi-Agent ESP (serial) in Go(lang)
 To build:
 
 go build -o multi-agent-esp
+
+This is an optimized customized version for Benchmarking against the parallel version
