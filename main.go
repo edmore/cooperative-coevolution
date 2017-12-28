@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/edmore/cooperative-coevolution/environment"
-	"github.com/edmore/cooperative-coevolution/network"
-	"github.com/edmore/cooperative-coevolution/population"
 	"io/ioutil"
 	"log"
 	"math"
 	"os"
 	"runtime"
 	"runtime/pprof"
+
+	"github.com/edmore/cooperative-coevolution/environment"
+	"github.com/edmore/cooperative-coevolution/network"
+	"github.com/edmore/cooperative-coevolution/population"
 )
 
 var (
@@ -65,36 +66,8 @@ func initialize(h int, n int, s int) []*population.Population {
 	return pops
 }
 
-// Run a split of evaluations
-func splitEvals(split int, teams [][]network.Network, c chan []network.Network) {
-	var phaseBestTeam []network.Network
-	phaseBestFitness := 0
-	phaseCatches := 0
-	//	fmt.Println(teams[0][0])
-	for x := 0; x < split; x++ {
-		// Evaluate the network in the environment(e)
-		var e environment.Environment = environment.NewPredatorPrey()
-		e.Reset(*pred)
-		go evaluate(e, teams[x], c)
-	}
-	for x := 0; x < split; x++ {
-		t := <-c
-		phaseCatches = phaseCatches + t[0].GetCatches()
-		if t[0].GetFitness() > phaseBestFitness {
-			phaseBestFitness = t[0].GetFitness()
-			phaseBestTeam = t
-		}
-	}
-	fmt.Printf("Core best is %v\n", phaseBestTeam[0].GetFitness())
-	for _, predator := range phaseBestTeam {
-		predator.ResetCatches()
-			predator.SetCatches(phaseCatches)
-	}
-	ch <- phaseBestTeam
-}
-
 // Evaluate the team of networks (predators) in the trial environment
-func evaluate(e environment.Environment, team []network.Network, c chan []network.Network) {
+func evaluate(e environment.Environment, team []network.Network) []network.Network {
 	total_fitness := 0
 	catches := 0
 	pos := PreyPositions{PreyX: []int{16, 50, 82, 82, 82, 16, 50, 50, 82}, PreyY: []int{50, 50, 50, 82, 16, 50, 16, 82, 50}}
@@ -203,8 +176,9 @@ func evaluate(e environment.Environment, team []network.Network, c chan []networ
 	for _, predator := range team {
 		predator.SetFitness(total_fitness / *trialsPerEval)
 		predator.SetCatches(catches)
+		predator.SetNeuronFitness()
 	}
-	c <- team
+	return team
 }
 
 // Calculate Manhattan Distance
@@ -295,39 +269,20 @@ func main() {
 				feedForward.Create(predSubpops[f])
 				team = append(team, feedForward)
 			}
-			teams = append(teams, team)
-		}
+			// Evaluate the team in the environment(e)
+			e := environment.NewPredatorPrey()
+			e.Reset(*pred)
 
-		runtime.GOMAXPROCS(numCPU)
-		// Distribute a split of evaluations over multiple cores/CPUs
-		split := numTrials / numCPU
-		start := 0
-		end := split
-		for y := 0; y < numCPU; y++ {
-			fmt.Printf("start %v, end %v\n", start, end)
-			chans = append(chans, make(chan []network.Network))
-			go splitEvals(split, teams[start:end], chans[y])
-			start = end
-			end = end + split
-		}
-		for z := 0; z < numCPU; z++ {
-			t := <-ch
-			totalCatches = totalCatches + t[0].GetCatches()
+			// TODO : Fix the logic below
+			// might need to make the prey starting points random : original code has 9 evaluations and finds average
+			// then again remember the networks are different i.e. different random weights
+			t := evaluate(e, team)
 			if t[0].GetFitness() > bestFitness {
 				bestFitness = t[0].GetFitness()
 				bestTeam = t
 				for i := 0; i < len(bestTeam); i++ {
 					bestTeam[i].Tag()
 				}
-			}
-		}
-
-		runtime.GOMAXPROCS(1)
-
-		// Set the fitness of each neuron that participated in the evaluations
-		for _, team := range teams {
-			for _, p := range team {
-				p.SetNeuronFitness()
 			}
 		}
 
