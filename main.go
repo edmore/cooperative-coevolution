@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"github.com/edmore/cooperative-coevolution/environment"
-	"github.com/edmore/cooperative-coevolution/network"
-	"github.com/edmore/cooperative-coevolution/population"
 	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
 	"runtime/pprof"
+
+	"github.com/edmore/cooperative-coevolution/environment"
+	"github.com/edmore/cooperative-coevolution/network"
+	"github.com/edmore/cooperative-coevolution/population"
 )
 
 var (
@@ -33,6 +34,7 @@ var (
 	b           = flag.Int("b", 10, "number of generations before burst mutation")
 	maxGens     = flag.Int("maxGens", 100000, "maximum generations")
 	goalFitness = flag.Int("goalFitness", 100000, "goal fitness")
+	spl         = flag.Float64("spl", .05, "short pole length")
 )
 
 // Initialize subpopulations
@@ -164,6 +166,7 @@ func main() {
 	fmt.Printf("Max generations is %v.\n", *maxGens)
 	fmt.Printf("Mutation Rate is set at %v.\n", mutationRate)
 	fmt.Printf("Burst mutate after %v constant generations (b).\n", *b)
+	fmt.Println("Short pole length ", (*spl)*2)
 
 	performanceQueue := make([]int, *b)
 	bestFitness := 0
@@ -193,7 +196,7 @@ func main() {
 				feedForward := network.NewFeedForward(*i, hiddenUnits, *o, true)
 				feedForward.Create(subpops)
 				// Evaluate the network in the environment(e)
-				e := environment.NewCartpole()
+				e := environment.NewCartpole(*spl)
 				e.Reset()
 				n := evaluate(e, feedForward)
 				if n.GetFitness() > bestFitness {
@@ -207,7 +210,7 @@ func main() {
 				recurrent := network.NewRecurrent(*i, hiddenUnits, *o, true)
 				recurrent.Create(subpops)
 				// Evaluate the network in the environment(e)
-				e := environment.NewCartpole()
+				e := environment.NewCartpole(*spl)
 				e.Reset()
 				n := evaluate(e, recurrent)
 				if n.GetFitness() > bestFitness {
@@ -233,7 +236,7 @@ func main() {
 					fmt.Println("Adapting network size ...")
 					for item, neuron := range bestNetwork.GetHiddenUnits() {
 						neuron.Lesioned = true
-						lesionedEnviron := environment.NewCartpole()
+						lesionedEnviron := environment.NewCartpole(*spl)
 						lesionedEnviron.Reset()
 
 						lesionedFitness := evaluateLesioned(lesionedEnviron, bestNetwork)

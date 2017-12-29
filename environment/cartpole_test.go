@@ -11,13 +11,13 @@ func TestNewCartpole(t *testing.T) {
 }
 
 func TestReset(t *testing.T) {
-	c := NewCartpole()
+	c := NewCartpole(.05)
 	c.Reset()
 	//	fmt.Println(s)
 }
 
 func TestPerformAction(t *testing.T) {
-	c := NewCartpole()
+	c := NewCartpole(.05)
 	c.Reset()
 
 	fmt.Println("[Initial State:]\n", c.GetState())

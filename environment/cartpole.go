@@ -45,7 +45,7 @@ type Cartpole struct {
 }
 
 // Cartpole Environment constructor
-func NewCartpole() *Cartpole {
+func NewCartpole(length2 float64) *Cartpole {
 	return &Cartpole{
 		Name:      "Double Pole Balancing Task",
 		TrackSize: 2.4,
@@ -55,7 +55,7 @@ func NewCartpole() *Cartpole {
 		MassPole1: 0.1,
 		MassPole2: 0.01,
 		Length1:   0.5,
-		Length2:   0.05,
+		Length2:   length2,
 		state:     new(State)}
 }
 
