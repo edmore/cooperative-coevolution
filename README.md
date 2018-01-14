@@ -6,4 +6,4 @@ To build:
 
 go build -o multi-agent-esp
 
-This is an optimized customized version for Benchmarking against the parallel version
+This is an optimized serial version for Benchmarking against the parallel version
