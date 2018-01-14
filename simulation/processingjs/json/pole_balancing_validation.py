@@ -27,18 +27,18 @@ pole_angles_layout = dict(title='',
                           font=dict(size=16)
                           )
 
-trace1 = go.Scattergl(
+cart_position = go.Scattergl(
     y=X,
     mode='lines',
 )
 
-trace2 = go.Scattergl(
+long_pole = go.Scattergl(
     y=Theta1,
     mode='lines',
     name='long pole angle'
 )
 
-trace3 = go.Scattergl(
+short_pole = go.Scattergl(
     y=Theta2,
     mode='lines',
     name='short pole angle'
@@ -46,13 +46,13 @@ trace3 = go.Scattergl(
 
 # Postion of cart
 plotly.offline.plot({
-    "data": [trace1],
+    "data": [cart_position],
     "layout": position_of_cart_layout,
 }, image='png')
 
 
 # Pole angles (theta1 and theta2)
 plotly.offline.plot({
-    "data": [trace2, trace3],
+    "data": [long_pole, short_pole],
     "layout": pole_angles_layout,
 }, image='png')
