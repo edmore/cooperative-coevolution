@@ -11,37 +11,37 @@ with open('sane_parallel.json') as data_file:
     data = json.load(data_file)
     for v in data:
         # print(v['X'], v['Theta1'], v['Theta2'])
-        X.append(v['X'] * 100) # cm
-        Theta1.append(v['Theta1'] * 57.295) # degrees
-        Theta2.append(v['Theta2'] * 57.295) # degrees
+        X.append(v['X'] * 100)  # cm
+        Theta1.append(v['Theta1'] * 57.295)  # degrees
+        Theta2.append(v['Theta2'] * 57.295)  # degrees
 
-position_of_cart_layout = dict(title = '',
-              xaxis = dict(title = 'Time steps'),
-              yaxis = dict(title = 'Position of the cart (cm)'),
-              font = dict(size=16)
-              )
+position_of_cart_layout = dict(title='',
+                               xaxis=dict(title='Time steps'),
+                               yaxis=dict(title='Position of the cart (cm)'),
+                               font=dict(size=16)
+                               )
 
-pole_angles_layout = dict(title = '',
-                      xaxis = dict(title = 'Time steps'),
-                      yaxis = dict(title = 'Pole angles (degrees)'),
-                      font = dict(size=16)
-                      )
+pole_angles_layout = dict(title='',
+                          xaxis=dict(title='Time steps'),
+                          yaxis=dict(title='Pole angles (degrees)'),
+                          font=dict(size=16)
+                          )
 
 trace1 = go.Scattergl(
-    y = X,
-    mode = 'lines',
+    y=X,
+    mode='lines',
 )
 
 trace2 = go.Scattergl(
-    y = Theta1,
-    mode = 'lines',
-    name = 'long pole angle'
+    y=Theta1,
+    mode='lines',
+    name='long pole angle'
 )
 
 trace3 = go.Scattergl(
-    y = Theta2,
-    mode = 'lines',
-    name = 'short pole angle'
+    y=Theta2,
+    mode='lines',
+    name='short pole angle'
 )
 
 # Postion of cart
