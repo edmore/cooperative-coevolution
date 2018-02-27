@@ -50,6 +50,6 @@ Each implementation is in _its own branch_, this repo has the following implemen
 
 The single-agent and multi-agent methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
 
-<img src="validation_screenshots/validation_esp_serial_2a_cartpole.png" width="425"/> <img src="validation_screenshots/validation_pursuit_evasion.png" width="300"/>
+<img src="validation_screenshots/validation_esp_serial_2a_cartpole.png" width="425"/> <img src="validation_screenshots/validation_pursuit_evasion.png" width="250"/>
 
 Validation visualizations are available for download: https://www.dropbox.com/s/df5l30p1g9kz1aq/Validation_visualizations.zip
