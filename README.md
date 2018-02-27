@@ -6,7 +6,7 @@ This work was done in fulfillment of a _Masters Degree in Computer Science_ at t
 
 Dissertation: **_Accelerated Cooperative Co-Evolution on Multi-core Architectures_**.
 
-The author of this work is Edmore T. Moyo
+The author of this work is Edmore T. Moyo.
 
 Each implementation is in its own branch, this repo has the following implementations:
 
