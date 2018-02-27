@@ -36,9 +36,9 @@ more complex Cooperative Co-Evolution methods in a wider range of domains.
 
 The author of this work is Edmore T. Moyo.
 
-Each implementation is in its own branch, this repo has the following implementations:
+Each implementation is in _its own branch_, this repo has the following implementations:
 
-- master - the master branch is the blue-print algorithm, based on the Enforced Subpopulations (ESP) algorithm. It can be used as a starting point for the parallelisation of other Cooperative Co-Evolution methods.
+- master - the master branch contains the blue-print parallel algorithm, it is based on the initial Enforced Subpopulations (ESP) parallel implementation. It can be used as a starting point for the parallelization of other Cooperative Co-Evolution methods. 
 - **esp-serial** - the serial implementation of the ESP method in the double pole balancing task (supports Markov and non-Markov versions).
 - **esp-parallel** - the _parallel_ implementation of the ESP method in the double pole balancing task  (supports Markov and non-Markov versions).
 - **sane-serial** - the serial implementation of our neuron Symbiotic, Adaptive Neuro-Evolution (SANE) method in the double pole balancing task.
