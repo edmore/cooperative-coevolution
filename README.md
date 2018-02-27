@@ -27,9 +27,9 @@ single and multi-agent systems respectively, in tasks of increasing complexity. 
 maximum speed-up of 20x for the parallel Multi-Agent ESP implementation over our single
 core optimized version in the prey-capture task and a maximum speedup of 16x for ESP in
 the harder version of double pole balancing task. We also observe linear speed-ups for the
-difficult versions of the tasks for a certain range of cores, indicating that the Go 
-implementationsare efficient and that the parallel speed-ups are better for more complex 
-tasks. Wefind that in complex tasks, the Cooperative Co-Evolution Neuro-Evolution (CCNE) 
+difficult versions of the tasks for a certain range of cores, indicating that the Go
+implementationsare efficient and that the parallel speed-ups are better for more complex
+tasks. Wefind that in complex tasks, the Cooperative Co-Evolution Neuro-Evolution (CCNE)
 methodsare amenable to multi-core acceleration, which provides a basis for the study of
 even more complex Cooperative Co-Evolution methods in a wider range of domains.
 ```
@@ -38,7 +38,7 @@ The author of this work is _Edmore T. Moyo_.
 
 Each implementation is in _its own branch_, this repo has the following implementations:
 
-- master - the master branch contains the blue-print parallel algorithm, it is based on the initial Enforced Subpopulations (ESP) parallel implementation. It can be used as a starting point for the parallelization of other Cooperative Co-Evolution methods. 
+- master - the master branch contains the blue-print parallel algorithm, it is based on the initial Enforced Subpopulations (ESP) parallel implementation. It can be used as a starting point for the parallelization of other Cooperative Co-Evolution methods.
 - **esp-serial** - the serial implementation of the ESP method in the double pole balancing task (supports Markov and non-Markov versions).
 - **esp-parallel** - the _parallel_ implementation of the ESP method in the double pole balancing task  (supports Markov and non-Markov versions).
 -  **multi-agent-esp-serial** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at one starting position [50,50]).
@@ -46,5 +46,11 @@ Each implementation is in _its own branch_, this repo has the following implemen
 - **multi-agent-esp-parallel** - the _parallel_ implementation of the Multi-Agent ESP method in the prey-capture task (preys start at nine different defined positions for each trial).
 - **sane-serial** - the serial implementation of our _neuron_ Symbiotic, Adaptive Neuro-Evolution (SANE) method in the double pole balancing task.
 - **sane-parallel** - the _parallel_ implementation of our _neuron_ SANE method in the double pole balancing task.
+
+
+The single-agent and multi-agent methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
+
+![the-double-pole-balancing-task](validation_screenshots\validation_esp_serial_2a_cartpole.png "The double pole balancing task") ![the-prey-capture-task](validation_screenshots\validation_pursuit_evasion.png "The Prey-capture task")
+
 
 Validation visualizations are available for download: https://www.dropbox.com/s/df5l30p1g9kz1aq/Validation_visualizations.zip
