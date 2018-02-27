@@ -8,7 +8,7 @@ Dissertation: **_Accelerated Cooperative Co-Evolution on Multi-core Architecture
 
 Abstract:
 
-``
+```
 The Cooperative Co-Evolution model has been used in Evolutionary Computation to optimize
 the training of artificial neural networks (ANNs). This architecture has proven to be
 a useful extension to domains such as Neuro-Evolution (NE), which is the training of ANNs
@@ -32,7 +32,7 @@ are efficient and that the parallel speed-ups are better for more complex tasks.
 find that in complex tasks, the Cooperative Co-Evolution Neuro-Evolution (CCNE) methods
 are amenable to multi-core acceleration, which provides a basis for the study of even
 more complex Cooperative Co-Evolution methods in a wider range of domains.
-``
+```
 
 The author of this work is Edmore T. Moyo.
 
