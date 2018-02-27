@@ -16,7 +16,7 @@ Each implementation is in its own branch, this repo has the following implementa
 - **sane-serial** - the serial implementation of our neuron SANE method in the double pole balancing task.
 - **sane-parallel** - the _parallel_ implementation of our neuron SANE method in the double pole balancing task.
 -  **multi-agent-esp-serial** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at one starting position [50,50]).
-- **multi-agent-esp-serial-custom** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at 9 different defined positions for each trial).
-- **multi-agent-esp-parallel** - the _parallel_ implementation of the Multi-Agent ESP method in the prey-capture task (preys start at 9 different defined positions for each trial).
+- **multi-agent-esp-serial-custom** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at nine different defined positions for each trial).
+- **multi-agent-esp-parallel** - the _parallel_ implementation of the Multi-Agent ESP method in the prey-capture task (preys start at nine different defined positions for each trial).
 
 Validation visualizations are available for download: https://www.dropbox.com/s/df5l30p1g9kz1aq/Validation_visualizations.zip
