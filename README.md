@@ -48,7 +48,7 @@ Each implementation is in _its own branch_, this repo has the following implemen
 - **sane-parallel** - the _parallel_ implementation of our _neuron_ SANE method in the double pole balancing task.
 
 
-The single-agent and multi-agent methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
+The _single-agent_(ESP and neuron SANE) and _multi-agent_(Multi-Agent ESP) methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
 
 <img src="validation_screenshots/validation_esp_serial_2a_cartpole.png" width="425"/> <img src="validation_screenshots/validation_pursuit_evasion.png" width="250"/>
 
