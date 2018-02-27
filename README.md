@@ -34,7 +34,7 @@ methodsare amenable to multi-core acceleration, which provides a basis for the s
 even more complex Cooperative Co-Evolution methods in a wider range of domains.
 ```
 
-The author of this work is _Edmore T. Moyo_.
+The author of this work is **_Edmore T. Moyo_**.
 
 Each implementation is in _its own branch_, this repo has the following implementations:
 
@@ -50,7 +50,6 @@ Each implementation is in _its own branch_, this repo has the following implemen
 
 The single-agent and multi-agent methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
 
-![the-double-pole-balancing-task](validation_screenshots\validation_esp_serial_2a_cartpole.png "The double pole balancing task") ![the-prey-capture-task](validation_screenshots\validation_pursuit_evasion.png "The Prey-capture task")
-
+<img src="validation_screenshots/validation_esp_serial_2a_cartpole.png" width="400"/> <img src="validation_screenshots/validation_pursuit_evasion.png" width="300"/>
 
 Validation visualizations are available for download: https://www.dropbox.com/s/df5l30p1g9kz1aq/Validation_visualizations.zip
