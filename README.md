@@ -41,10 +41,10 @@ Each implementation is in _its own branch_, this repo has the following implemen
 - master - the master branch contains the blue-print parallel algorithm, it is based on the initial Enforced Subpopulations (ESP) parallel implementation. It can be used as a starting point for the parallelization of other Cooperative Co-Evolution methods. 
 - **esp-serial** - the serial implementation of the ESP method in the double pole balancing task (supports Markov and non-Markov versions).
 - **esp-parallel** - the _parallel_ implementation of the ESP method in the double pole balancing task  (supports Markov and non-Markov versions).
-- **sane-serial** - the serial implementation of our neuron Symbiotic, Adaptive Neuro-Evolution (SANE) method in the double pole balancing task.
-- **sane-parallel** - the _parallel_ implementation of our neuron SANE method in the double pole balancing task.
 -  **multi-agent-esp-serial** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at one starting position [50,50]).
 - **multi-agent-esp-serial-custom** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at nine different defined positions for each trial).
 - **multi-agent-esp-parallel** - the _parallel_ implementation of the Multi-Agent ESP method in the prey-capture task (preys start at nine different defined positions for each trial).
+- **sane-serial** - the serial implementation of our _neuron_ Symbiotic, Adaptive Neuro-Evolution (SANE) method in the double pole balancing task.
+- **sane-parallel** - the _parallel_ implementation of our _neuron_ SANE method in the double pole balancing task.
 
 Validation visualizations are available for download: https://www.dropbox.com/s/df5l30p1g9kz1aq/Validation_visualizations.zip
