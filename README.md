@@ -34,11 +34,11 @@ methodsare amenable to multi-core acceleration, which provides a basis for the s
 even more complex Cooperative Co-Evolution methods in a wider range of domains.
 ```
 
-The author of this work is _Edmore T. Moyo_.
+The author of this work is **_Edmore T. Moyo_**.
 
-Each implementation is in _its own branch_, this repo has the following implementations:
+Each implementation is in _its own branch_, this repository has the following implementations:
 
-- master - the master branch contains the blue-print parallel algorithm, it is based on the initial Enforced Subpopulations (ESP) parallel implementation. It can be used as a starting point for the parallelization of other Cooperative Co-Evolution methods.
+- master - the master branch contains the blue-print parallel algorithm, it is based on the initial Enforced Subpopulations (ESP) parallel implementation. It can be used as a starting point for the parallelization of other Cooperative Co-Evolution methods. The actual implementations of the Cooperative Co-Evolution Neuro-Evolution methods are available in the other repository branches.
 - **esp-serial** - the serial implementation of the ESP method in the double pole balancing task (supports Markov and non-Markov versions).
 - **esp-parallel** - the _parallel_ implementation of the ESP method in the double pole balancing task  (supports Markov and non-Markov versions).
 -  **multi-agent-esp-serial** - the serial implementation of the Multi-Agent ESP method in the prey-capture task (prey starts at one starting position [50,50]).
@@ -48,9 +48,8 @@ Each implementation is in _its own branch_, this repo has the following implemen
 - **sane-parallel** - the _parallel_ implementation of our _neuron_ SANE method in the double pole balancing task.
 
 
-The single-agent and multi-agent methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
+The _single-agent_(ESP and neuron SANE) and _multi-agent_(Multi-Agent ESP) methods were validated and benchmarked in the double pole balancing and prey-capture tasks respectively.
 
-![the-double-pole-balancing-task](validation_screenshots\validation_esp_serial_2a_cartpole.png "The double pole balancing task") ![the-prey-capture-task](validation_screenshots\validation_pursuit_evasion.png "The Prey-capture task")
-
+<img src="validation_screenshots/validation_esp_serial_2a_cartpole.png" width="425"/> <img src="validation_screenshots/validation_pursuit_evasion.png" width="250"/>
 
 Validation visualizations are available for download: https://www.dropbox.com/s/df5l30p1g9kz1aq/Validation_visualizations.zip
