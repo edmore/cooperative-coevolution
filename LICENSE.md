@@ -5,7 +5,7 @@ This version of Enforced SubPopulations (ESP), is a _parallel_ Golang implementa
 
 Version 1.0, Copyright (c) 2018 Edmore T. Moyo
 
-- this version of ESP is a Golang parallel version of the ESP method, that references the [Java](http://nn.cs.utexas.edu/?espjava) and [C++](http://nn.cs.utexas.edu/?esp) implementations.
+- this version of ESP is a Golang parallel version of the ESP method, that references the [Java](http://nn.cs.utexas.edu/?espjava) and [C++](http://nn.cs.utexas.edu/?esp) implementations, with adjustments to process evaluations on multiple cores.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License version 2 as published
