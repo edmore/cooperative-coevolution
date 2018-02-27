@@ -4,7 +4,7 @@ Cooperative Co-Evolution in Go(lang)
 
 This work was done in fulfillment of a _Masters Degree in Computer Science_ at the University of Cape Town.
 
-Dissertation: _Accelerated Cooperative Co-Evolution on Multi-core Architectures_
+Dissertation: ***_Accelerated Cooperative Co-Evolution on Multi-core Architectures_**.
 
 The author of this work is Edmore T. Moyo
 
