@@ -1,7 +1,7 @@
 This version of Symbiotic, Adaptive Neuro-Evolution (SANE), neuron SANE is a Golang implementation, based on David Moriarty's 
 SANE Algorithm.
 
-=============================================================================================================================
+==============================================================
 
 Version 1.0, 19/02/2018 Edmore T. Moyo
 
