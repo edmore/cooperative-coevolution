@@ -3,7 +3,7 @@ This version of Symbiotic, Adaptive Neuro-Evolution (SANE), neuron SANE is a ser
 
 ==============================================================
 
-Version 1.0, Copyright (C) 2018 Edmore T. Moyo
+Version 1.0, Copyright (c) 2018 Edmore T. Moyo
 
 - this version of SANE only evolves a single population of neurons and was used to gauge the effect that Cooperative Co-Evolution has
 over single population NE methods.
