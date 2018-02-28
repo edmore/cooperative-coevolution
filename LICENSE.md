@@ -1,4 +1,4 @@
-This is a blue-print _parallel_ implementation in Golang (Go) of a Cooperative Co-Evolution method. It is based on Faustino Gomez's 
+This is a blue-print _parallel_ implementation in Golang (Go) of a [Cooperative Co-Evolution](https://cs.gmu.edu/~mpotter/pubs/ecj00.pdf method. It is based on Faustino Gomez's 
 Enforced SubPopulations [(ESP)](http://nn.cs.utexas.edu/?finless-rocket) method. It serves as a starting point for 
 implementing other Cooperative Co-Evolution methods, however the actual implementations of the methods are available in the other branches.
 
