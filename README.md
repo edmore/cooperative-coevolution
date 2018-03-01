@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/edmore/cooperative-coevolution.svg?token=qCqiUCDFN1395pnZuyJY&branch=master)](https://magnum.travis-ci.com/edmore/cooperative-coevolution)
 
-[Cooperative Co-Evolution](https://cs.gmu.edu/~mpotter/pubs/ecj00.pdf) in Go(lang)
+Cooperative Co-Evolution in Go(lang)
 
 This work was done in fulfillment of a _Masters Degree in Computer Science_ at the University of Cape Town.
 
