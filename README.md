@@ -28,9 +28,9 @@ maximum speed-up of 20x for the parallel Multi-Agent ESP implementation over our
 core optimized version in the prey-capture task and a maximum speedup of 16x for ESP in
 the harder version of double pole balancing task. We also observe linear speed-ups for the
 difficult versions of the tasks for a certain range of cores, indicating that the Go
-implementationsare efficient and that the parallel speed-ups are better for more complex
-tasks. Wefind that in complex tasks, the Cooperative Co-Evolution Neuro-Evolution (CCNE)
-methodsare amenable to multi-core acceleration, which provides a basis for the study of
+implementations are efficient and that the parallel speed-ups are better for more complex
+tasks. We find that in complex tasks, the Cooperative Co-Evolution Neuro-Evolution (CCNE)
+method sare amenable to multi-core acceleration, which provides a basis for the study of
 even more complex Cooperative Co-Evolution methods in a wider range of domains.
 ```
 
