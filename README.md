@@ -4,7 +4,8 @@ Cooperative Co-Evolution in Go
 
 This work was done in fulfillment of a _Masters Degree in Computer Science_ at the University of Cape Town.
 
-Dissertation: **_Accelerated Cooperative Co-Evolution on Multi-core Architectures_**.
+Dissertation: [**_Accelerated Cooperative Co-Evolution on Multi-core Architectures_**](http://pubs.cs.uct.ac.za/id/eprint/1308/1/EdmoreMoyoMSc.pdf).
+
 
 Abstract:
 
